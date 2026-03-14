@@ -1,5 +1,28 @@
+day 11
+182
 npx create-next-app@latest . --ts --tailwind --eslint --app --src-dir --import-alias "@/*" --yes
 --shadcn
-npx shadcn@latest init
+npx shadcn@latest 
+ลง components ตามใช้ เช่น
+    npx shadcn@latest add card
+    npx shadcn@latest add label
+    npx shadcn@latest add input
+npm install -D prisma@6
+npm install @prisma/client@6
+npx prisma init
+แก้ schema.prisma
+    generator client 
+      provider = "prisma-client-js"
+      // output   = "../src/generated/prisma"
+npx prisma migrate dev
+npx prisma studio
 
-day 11
+สร้าง lib > db.ts
+    import { PrismaClient } from "@prisma/client";
+    const globalForPrisma = global as unknown as { prisma: PrismaClient };
+    export const db = globalForPrisma.prisma || new PrismaClient();
+    if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db;
+npm install zod
+npm install bcrypt
+npm install --save-dev @types/bcrypt
+npm install jose

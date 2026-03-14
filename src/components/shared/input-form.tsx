@@ -16,7 +16,6 @@ export default function InputForm({ label, id, required = false, ...props }: Inp
       <Input
         id={id}
         name={id}
-        required={required}
         {...props}
       />
     </div>

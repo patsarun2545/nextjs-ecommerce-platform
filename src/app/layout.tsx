@@ -1,5 +1,6 @@
-import { Metadata } from 'next'
 import './globals.css'
+import { Metadata } from 'next'
+import { Toaster } from '@/components/ui/sonner'
 
 
 export const metadata: Metadata = {
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang='en'>
       <body>
         {children}
+        <Toaster />
       </body>
     </html>
   )
