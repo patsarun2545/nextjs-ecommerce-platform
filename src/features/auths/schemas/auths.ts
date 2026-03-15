@@ -69,7 +69,7 @@ export const signinSchema = z.object({
   email: z
     .string()
     .email({ message: ERROR_MESSAGES.email.format })
-    .refine((emaill) => isValidEmailDomain(emaill), {
+    .refine((email) => isValidEmailDomain(email), {
       message: ERROR_MESSAGES.email.domain,
     }),
 

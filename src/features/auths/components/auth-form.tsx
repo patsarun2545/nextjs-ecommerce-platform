@@ -15,14 +15,14 @@ interface AuthFormProps {
 
 export default function AuthForm({ type }: AuthFormProps) {
 
+  const { errors, formAction, isPending, hideError, } = useForm(AuthAction, '/')
+
   const renderInput = (label: string, id: string, type = 'text', required = false) => (
     <div className="flex flex-col gap-2">
       <InputForm label={label} id={id} type={type} required={required} />
       {errors[id] && <ErrorMessage error={errors[id][0]} />}
     </div>
   )
-
-  const { errors, formAction, isPending, hideError, } = useForm(AuthAction, '/')
 
   return (
     <Form action={formAction} onChange={hideError}>

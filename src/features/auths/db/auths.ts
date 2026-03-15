@@ -2,7 +2,9 @@ import { signupSchema, signinSchema } from "@/features/auths/schemas/auths";
 import { db } from "@/lib/db";
 import { genSalt, hash, compare } from "bcrypt";
 import { SignJWT } from "jose";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { getUserbyid } from "@/features/users/db/users";
+import { revalidateUserCache } from "@/features/users/db/cache";
 
 interface SignupInput {
   name: string;
@@ -17,7 +19,7 @@ interface SigninInput {
 }
 
 const generateJwtToken = async (userId: string) => {
-  const secret = new TextEncoder().encode(process.env.JWT_SECRECT_KEY);
+  const secret = new TextEncoder().encode(process.env.JWT_SECRET_KEY);
   return await new SignJWT({ id: userId })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -25,7 +27,7 @@ const generateJwtToken = async (userId: string) => {
     .sign(secret);
 };
 
-const serCookieToken = async (token: string) => {
+const setCookieToken = async (token: string) => {
   const cookie = await cookies();
   cookie.set("token", token, {
     httpOnly: true,
@@ -35,7 +37,7 @@ const serCookieToken = async (token: string) => {
   });
 };
 
-export const signup = async (input: SignupInput) => {
+export async function signup(input: SignupInput) {
   try {
     const { success, data, error } = signupSchema.safeParse(input);
     if (!success) {
@@ -70,14 +72,16 @@ export const signup = async (input: SignupInput) => {
 
     const token = await generateJwtToken(newUser.id);
 
-    await serCookieToken(token);
+    await setCookieToken(token);
+
+    revalidateUserCache(newUser.id);
   } catch (error) {
     console.error("Error Sign Up:", error);
-    return { message: "เกิดข้อผิดพลาดในการสมัคสมาชิก" };
+    return { message: "เกิดข้อผิดพลาดในการสมัครสมาชิก" };
   }
-};
+}
 
-export const signin = async (input: SigninInput) => {
+export async function signin(input: SigninInput) {
   try {
     const { success, data, error } = signinSchema.safeParse(input);
     if (!success) {
@@ -95,7 +99,7 @@ export const signin = async (input: SigninInput) => {
 
     if (!user || !(await compare(data.password, user.password))) {
       return {
-        message: "อีเมลหรือนรหัสผ่านไม่ถูกต้อง",
+        message: "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
       };
     }
 
@@ -106,9 +110,14 @@ export const signin = async (input: SigninInput) => {
     }
     const token = await generateJwtToken(user.id);
 
-    await serCookieToken(token);
+    await setCookieToken(token);
   } catch (error) {
     console.error("Error Sign In:", error);
     return { message: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ" };
   }
-};
+}
+
+export async function authCheck() {
+  const userId = (await headers()).get("x-user-id");
+  return await getUserbyid(userId);
+}

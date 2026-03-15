@@ -1,5 +1,5 @@
 day 11
-182
+250
 npx create-next-app@latest . --ts --tailwind --eslint --app --src-dir --import-alias "@/*" --yes
 --shadcn
 npx shadcn@latest 
