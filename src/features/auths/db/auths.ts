@@ -121,3 +121,12 @@ export async function authCheck() {
   const userId = (await headers()).get("x-user-id");
   return await getUserbyid(userId);
 }
+
+export async function signout() {
+  try {
+    (await cookies()).delete("token");
+  } catch (error) {
+    console.error("Error sign out user", error);
+    return { message: "เกิดข้อผิดพลาดในการออกจากระบบ" };
+  }
+}

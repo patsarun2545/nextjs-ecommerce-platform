@@ -25,3 +25,19 @@ export function MobileNavLinks({ links = NAV_LINKS }) {
     </div>
   )
 }
+
+export function DesktopNavLinks({ links = NAV_LINKS }) {
+  return (
+    <div>
+      {links.map((link, index) => (
+        <Button
+          key={index}
+          variant='ghost'
+          size='sm'
+          asChild>
+          <Link href={link.href}>{link.title}</Link>
+        </Button>
+      ))}
+    </div>
+  )
+}
