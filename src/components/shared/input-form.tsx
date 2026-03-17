@@ -11,7 +11,7 @@ export default function InputForm({ label, id, required = false, ...props }: Inp
   return (
     <div className="flex flex-col gap-2">
       <Label htmlFor={id}>
-        {label} {required && "*"}
+        {label} {required && <span className="text-sm text-red-500">*</span>}
       </Label>
       <Input
         id={id}

@@ -2,11 +2,25 @@
 
 import Link from "next/link"
 import { useSidebar } from "@/providers/SidebarProvider"
-import { Button } from "../ui/button"
-import { X } from "lucide-react"
+import { Button } from "../../ui/button"
 import { UserType } from "@/types/user"
-import { ScrollArea } from "../ui/scroll-area"
-import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar"
+import { ScrollArea } from "../../ui/scroll-area"
+import { Avatar, AvatarImage, AvatarFallback } from "../../ui/avatar"
+import SidebarLink from "./sidebar-link"
+import { usePathname } from "next/navigation"
+import { useSignout } from "@/hooks/use-signout"
+import { cn } from "@/lib/utils"
+import {
+  LogOut,
+  X,
+  LayoutDashboard,
+  Users,
+  ShoppingCart,
+  FolderTree,
+  Percent,
+  ClipboardList,
+} from "lucide-react";
+
 
 interface SidebarAdminProps {
   user: UserType
@@ -14,13 +28,48 @@ interface SidebarAdminProps {
 
 export default function SidebarAdmin({ user }: SidebarAdminProps) {
   const { isSidebarOpen, toggleSidebar } = useSidebar()
+  const { isPending, handleSignout } = useSignout()
+  const pathname = usePathname()
+
+  const sidebarLinks = [
+    {
+      href: "/admin",
+      icon: <LayoutDashboard size={20} />,
+      label: "Dashboard",
+    },
+    {
+      href: "/admin/users",
+      icon: <Users size={20} />,
+      label: "Users",
+    },
+    {
+      href: "/admin/products",
+      icon: <ShoppingCart size={20} />,
+      label: "Products",
+    },
+    {
+      href: "/admin/categories",
+      icon: <FolderTree size={20} />,
+      label: "Categories",
+    },
+    {
+      href: "/admin/promotions",
+      icon: <Percent size={20} />,
+      label: "Promotions",
+    },
+    {
+      href: "/admin/orders",
+      icon: <ClipboardList size={20} />,
+      label: "Orders",
+    },
+  ];
 
   return (
     <div>
       {/* Mobile Overlay */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 md:hidden"
+          className="fixed inset-0 bg-foreground/70 backdrop-blur-sm z-40 md:hidden"
           onClick={toggleSidebar}
         />
       )}
@@ -57,7 +106,7 @@ export default function SidebarAdmin({ user }: SidebarAdminProps) {
             <X size={20} />
           </Button>
         </div>
-        
+
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col h-[calc(100vh-128px)] overflow-hidden">
           <ScrollArea className="flex-1">
@@ -86,10 +135,30 @@ export default function SidebarAdmin({ user }: SidebarAdminProps) {
               </div>
 
               {/* Menu */}
-              <div>Menu</div>
-
+              <nav className="space-y-1.5">
+                {sidebarLinks.map((link, index) =>
+                  <SidebarLink
+                    key={index}
+                    href={link.href}
+                    icon={link.icon}
+                    label={link.label}
+                    isActive={pathname === link.href}
+                    onClose={toggleSidebar} />
+                )}
+              </nav>
             </div>
           </ScrollArea>
+        </div>
+        <div className="border-t border-border p-4 mt-auto">
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground cursor-pointer"
+            disabled={isPending}
+            onClick={handleSignout}
+          >
+            <LogOut size={20} />
+            <span>LogOut</span>
+          </Button>
         </div>
       </aside>
     </div>

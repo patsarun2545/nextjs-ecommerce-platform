@@ -3,7 +3,7 @@ import { signoutAction } from "@/features/auths/actions/auths";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-export const useSignout = () => {
+export function useSignout() {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -21,4 +21,4 @@ export const useSignout = () => {
   };
 
   return { isPending, handleSignout };
-};
+}

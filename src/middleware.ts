@@ -10,9 +10,11 @@ const decryptToken = async (token: string): Promise<Payload | null> => {
     const { payload } = await jwtVerify(token, secret);
     return payload as Payload;
   } catch (error) {
+    console.log("Error decrypting jst token:", error);
     return null;
   }
 };
+
 export async function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
   const response = NextResponse.next();
