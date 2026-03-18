@@ -16,6 +16,7 @@ import Form from "next/form"
 import { categoryAction } from "@/features/categories/actions/categories"
 import { useForm } from "@/hooks/use-form"
 import { useEffect } from "react"
+import Modal from "../../../components/shared/modal"
 
 interface EditCategoryModalProps {
   open: boolean
@@ -42,53 +43,39 @@ const EditCategoryModal = ({
   if (!category) return null
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Edit Category</DialogTitle>
-          <DialogDescription>
-            Update your category information.
-          </DialogDescription>
-        </DialogHeader>
+    <Modal
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Edit Category"
+      description="Update your category information."
+    >
+      <form action={formAction} onChange={hideErrors} className="space-y-4">
+        {/* Hidden ID Field */}
+        <input type="hidden" name="category-id" value={category?.id} />
 
-        <Form
-          action={formAction}
-          onChange={hideErrors}
-          className="space-y-4"
-        >
-          {/* Hidden ID Field */}
-          <input
-            type="hidden"
-            name="category-id"
-            value={category.id}
+        <div className="space-y-2">
+          <InputForm
+            label="Category name"
+            id="category-name"
+            placeholder="Enter category name"
+            defaultValue={category?.name}
+            required
           />
 
-          <div className="space-y-2">
-            <InputForm
-              label="Category name"
-              id="category-name"
-              placeholder="Enter category name"
-              defaultValue={category?.name}
-              required
-            />
+          {/* Error Message */}
+          {errors?.name && <ErrorMessage error={errors.name[0]} />}
+        </div>
 
-            {/* Error Message */}
-            {errors.name && (
-              <ErrorMessage error={errors.name[0]} />
-            )}
-          </div>
-
-          <div className="pt-4">
-            <SubmitBtn
-              name="Update Category"
-              icon={Save}
-              className="w-full"
-              pending={isPending}
-            />
-          </div>
-        </Form>
-      </DialogContent>
-    </Dialog>
+        <div className="pt-4">
+          <SubmitBtn
+            name="Update Category"
+            icon={Save}
+            className="w-full"
+            pending={isPending}
+          />
+        </div>
+      </form>
+    </Modal>
   )
 }
 

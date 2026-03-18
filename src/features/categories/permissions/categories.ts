@@ -4,6 +4,6 @@ export const canCreateCategory = (user: UserType) => {
   return user.role === "Admin";
 };
 
-export const canUdateCategory = (user: UserType) => {
+export const canUpdateCategory = (user: UserType) => {
   return user.role === "Admin";
 };

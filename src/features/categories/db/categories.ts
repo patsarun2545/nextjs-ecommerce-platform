@@ -3,8 +3,12 @@ import { cacheLife, cacheTag } from "next/cache";
 import { getCategoryGlobalTag, revalidateCategoryCache } from "./cache";
 import { createCategorySchema } from "@/features/auths/schemas/categories";
 import { authCheck } from "@/features/auths/db/auths";
-import { canCreateCategory, canUdateCategory } from "../permissions/categories";
+import {
+  canCreateCategory,
+  canUpdateCategory,
+} from "../permissions/categories";
 import { redirect } from "next/navigation";
+import { CategoryStatus } from "@prisma/client";
 
 interface CreateCategoryInput {
   name: string;
@@ -153,4 +157,55 @@ export const updateCategory = async (input: UpdateCategoryInput) => {
       message: "Something went wrong. Please try again later",
     };
   }
+};
+
+export const changeCategoryStatus = async (
+  id: string,
+  status: CategoryStatus,
+) => {
+  const user = await authCheck();
+  if (!user || !canUpdateCategory(user)) {
+    redirect("/");
+  }
+
+  try {
+    const existsCategory = await getCategoryById(id);
+
+    if (!existsCategory) {
+      return {
+        message: "Category not found",
+      };
+    }
+
+    if (existsCategory.status === status) {
+      return {
+        message: `Category is already ${status.toLowerCase()}`,
+      };
+    }
+
+    const updatedCategory = await db.category.update({
+      where: { id },
+      data: { status },
+    });
+
+    revalidateCategoryCache(updatedCategory.id);
+
+    return {
+      message: "Category status updated successfully",
+    };
+  } catch (error) {
+    console.error("Error changing category status:", error);
+
+    return {
+      message: "Something went wrong. Please try again later",
+    };
+  }
+};
+
+export const removeCategory = async (id: string) => {
+  return await changeCategoryStatus(id, "Inactive");
+};
+
+export const restoreCategory = async (id: string) => {
+  return await changeCategoryStatus(id, "Active");
 };

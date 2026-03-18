@@ -17,6 +17,9 @@ import { Search, Pencil, Trash2, MoreVertical } from 'lucide-react'
 import { CategoryType } from '@/types/category'
 import EditCategoryModal from './edit-category-modal'
 import { useState, useEffect } from 'react'
+import DeleteCategoryModal from './delete-category-modal'
+import { RefreshCcw } from 'lucide-react'
+import RestoreCategoryModal from './restore-category-modal'
 
 interface CategoryListProps {
   categories: CategoryType[]
@@ -25,22 +28,24 @@ interface CategoryListProps {
 export default function CategoryList({ categories }: CategoryListProps) {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null)
   const [activeTab, setActiveTab] = useState('all')
   const [filteredCategories, setFilteredCategories] = useState<CategoryType[]>(categories)
-
-  console.log(activeTab)
-  console.log(filteredCategories)
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     let result = [...categories]
 
     if (activeTab === 'active') {
       result = result.filter((c) => c.status === 'Active')
-      console.log(categories.map(c => c.status))
     } else if (activeTab === 'inactive') {
       result = result.filter((c) => c.status === 'Inactive')
-      console.log(categories.map(c => c.status))
+    }
+
+    if (searchTerm) {
+      result = result.filter((c) => c.name.toLowerCase().includes(searchTerm.toLocaleLowerCase()))
     }
 
     setFilteredCategories(result)
@@ -53,6 +58,20 @@ export default function CategoryList({ categories }: CategoryListProps) {
 
   const handleTabChang = (value: string) => {
     setActiveTab(value)
+  }
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value)
+  }
+
+  const handleDeleteClick = (category: CategoryType) => {
+    setSelectedCategory(category)
+    setIsDeleteModalOpen(true)
+  }
+
+  const handleRestoreClick = (category: CategoryType) => {
+    setSelectedCategory(category)
+    setIsRestoreModalOpen(true)
   }
 
   return (
@@ -82,6 +101,8 @@ export default function CategoryList({ categories }: CategoryListProps) {
               <Input
                 placeholder='Search categories...'
                 className='pl-8'
+                value={searchTerm}
+                onChange={handleSearch}
               />
             </div>
           </Tabs>
@@ -146,12 +167,25 @@ export default function CategoryList({ categories }: CategoryListProps) {
 
                     {/* Mobile Buttons */}
                     <div className='flex justify-end gap-1 md:hidden'>
-                      <Button variant='ghost' size='icon' className='size-7' onClick={() => handleEditClick(category)}>
-                        <Pencil size={15} />
-                      </Button>
-                      <Button variant='ghost' size='icon' className='size-7'>
-                        <Trash2 size={15} />
-                      </Button>
+                      {category.status === 'Active' ? (
+                        <Button
+                          variant='ghost'
+                          size='icon'
+                          className='size-7'
+                          onClick={() => handleDeleteClick(category)}
+                        >
+                          <Trash2 size={15} />
+                        </Button>
+                      ) : (
+                        <Button
+                          variant='ghost'
+                          size='icon'
+                          className='size-7'
+                          onClick={() => handleRestoreClick(category)}
+                        >
+                          <RefreshCcw size={15} />
+                        </Button>
+                      )}
                     </div>
 
                     {/* Desktop Dropdown */}
@@ -170,20 +204,31 @@ export default function CategoryList({ categories }: CategoryListProps) {
                         <DropdownMenuContent align='end'>
                           <DropdownMenuItem onClick={() => handleEditClick(category)}>
                             <Pencil size={15} />
-                            <span className='ml-2'>Edit</span>
+                            <span>Edit</span>
                           </DropdownMenuItem>
-
                           <DropdownMenuSeparator />
 
-                          <DropdownMenuItem>
-                            <Trash2
-                              size={15}
-                              className='text-destructive'
-                            />
-                            <span className='ml-2 text-destructive'>
-                              Delete
-                            </span>
-                          </DropdownMenuItem>
+                          {category.status === 'Active' ? (
+                            <DropdownMenuItem
+                              onClick={() => handleDeleteClick(category)}
+                            >
+                              <Trash2
+                                size={15}
+                                className="text-destructive"
+                              />
+                              <span className="text-destructive">Delete</span>
+                            </DropdownMenuItem>
+                          ) : (
+                            <DropdownMenuItem
+                              onClick={() => handleRestoreClick(category)}
+                            >
+                              <RefreshCcw
+                                size={15}
+                                className="text-green-600"
+                              />
+                              <span className="text-green-600">Restore</span>
+                            </DropdownMenuItem>
+                          )}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
@@ -204,6 +249,14 @@ export default function CategoryList({ categories }: CategoryListProps) {
         open={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
         category={selectedCategory} />
+      <DeleteCategoryModal
+        open={isDeleteModalOpen}
+        onOpenChange={setIsDeleteModalOpen}
+        category={selectedCategory} />
+      <RestoreCategoryModal
+        open={isRestoreModalOpen}
+        onOpenChange={setIsRestoreModalOpen}
+        category={selectedCategory} />/
     </>
   )
 }
