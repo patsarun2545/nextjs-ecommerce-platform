@@ -1,13 +1,13 @@
 import { useState, useEffect, useActionState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { ActionType, InitialFormState } from "@/types/action";
+import { ActionType, initialFormState } from "@/types/action";
 import { toast } from "sonner";
 
 export function useForm(action: ActionType, route?: string) {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [state, formAction, isPending] = useActionState(
     action,
-    InitialFormState,
+    initialFormState,
   );
   const router = useRouter();
 
@@ -19,6 +19,7 @@ export function useForm(action: ActionType, route?: string) {
     if (state.message) {
       if (state.success) {
         toast.success(state.message);
+        router.refresh();
         if (route) router.push(route);
       } else {
         toast.error(state.message);
@@ -26,13 +27,13 @@ export function useForm(action: ActionType, route?: string) {
     }
   }, [state, router, route]);
 
-  const hideErrors = useCallback(() => setErrors({}), []);
+  const clearErrors = useCallback(() => setErrors({}), []);
 
   return {
     state,
     errors,
     formAction,
     isPending,
-    hideErrors,
+    clearErrors,
   };
 }

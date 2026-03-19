@@ -4,7 +4,7 @@ export interface InitialFormState {
   errors?: Record<string, string[]>;
 }
 
-export const InitialFormState: Readonly<InitialFormState> = {
+export const initialFormState: Readonly<InitialFormState> = {
   success: false,
   message: "",
 };

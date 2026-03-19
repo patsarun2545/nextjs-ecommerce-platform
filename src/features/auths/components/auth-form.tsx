@@ -6,7 +6,7 @@ import InputForm from "@/components/shared/input-form"
 import SubmitBtn from "@/components/shared/submit-btn"
 import AuthFooter from "@/features/auths/components/auth-footer"
 import { useForm } from "@/hooks/use-form"
-import { AuthAction } from '@/features/auths/actions/auths'
+import { authAction } from '@/features/auths/actions/auths'
 import ErrorMessage from "@/components/shared/error-message"
 
 interface AuthFormProps {
@@ -15,7 +15,7 @@ interface AuthFormProps {
 
 export default function AuthForm({ type }: AuthFormProps) {
 
-  const { errors, formAction, isPending, hideError, } = useForm(AuthAction, '/')
+  const { errors, formAction, isPending, clearErrors, } = useForm(authAction, '/')
 
   const renderInput = (label: string, id: string, type = 'text', required = false) => (
     <div className="flex flex-col gap-2">
@@ -25,7 +25,7 @@ export default function AuthForm({ type }: AuthFormProps) {
   )
 
   return (
-    <Form action={formAction} onChange={hideError}>
+    <Form action={formAction} onChange={clearErrors}>
       <CardContent className="flex flex-col gap-4">
         {type === 'signup' && renderInput('ชื่อผู้ใช้', 'name')}
         {renderInput('อีเมล', 'email', 'email', true)}

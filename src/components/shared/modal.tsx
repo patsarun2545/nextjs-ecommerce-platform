@@ -14,13 +14,13 @@ interface ModalProps {
   children: React.ReactNode;
 }
 
-const Modal = ({
+export default function Modal({
   open,
   onOpenChange,
   title,
   description,
   children,
-}: ModalProps) => {
+}: ModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -35,4 +35,3 @@ const Modal = ({
   );
 };
 
-export default Modal;

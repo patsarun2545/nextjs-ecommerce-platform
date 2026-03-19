@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserType } from "@/types/user";
 import Link from "next/link";
-import { useSignout } from "@/hooks/use-signout";
+import { useSignout } from "@/hooks/use-sign-out";
 
 interface HeaderAdminProps {
   user: UserType

@@ -1,10 +1,3 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 import { CategoryType } from "@/types/category"
 import Form from "next/form"
 import { Button } from "@/components/ui/button"
@@ -39,10 +32,9 @@ export default function DeleteCategoryModal({
       open={open}
       onOpenChange={onOpenChange}
       title="Delete Category"
-      description={`Are you sure want to delete the category "${category?.name}"?`}
+      description="Are you sure want to delete the category?"
     >
-      <form action={formAction} className="space-y-4">
-        {/* Hidden ID Field */}
+      <Form action={formAction}>
         <input type="hidden" name="category-id" value={category?.id} />
 
         <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-6">
@@ -54,7 +46,6 @@ export default function DeleteCategoryModal({
           >
             Cancel
           </Button>
-
           <SubmitBtn
             name="Delete"
             icon={Trash2}
@@ -62,7 +53,7 @@ export default function DeleteCategoryModal({
             pending={isPending}
           />
         </div>
-      </form>
+      </Form>
     </Modal>
   )
 }

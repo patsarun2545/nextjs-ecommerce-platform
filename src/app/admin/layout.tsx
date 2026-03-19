@@ -2,7 +2,7 @@ import { authCheck } from "@/features/auths/db/auths";
 import { redirect } from "next/navigation";
 import { SidebarProvider } from "@/providers/SidebarProvider";
 import SidebarAdmin from "@/components/admin-page/sidebar/sidebar";
-import HeaderAdmin from "@/components/admin-page/header/header";
+import HeaderAdmin from "@/components/admin-page/headers/header";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -30,4 +30,4 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
       </div>
     </SidebarProvider>
   );
-};
+}

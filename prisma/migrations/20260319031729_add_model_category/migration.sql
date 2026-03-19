@@ -1,6 +1,3 @@
--- CreateEnum
-CREATE TYPE "CategoryStatus" AS ENUM ('Active', 'Inactive');
-
 -- CreateTable
 CREATE TABLE "Category" (
     "id" TEXT NOT NULL,

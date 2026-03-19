@@ -2,7 +2,10 @@
 CREATE TYPE "UserStatus" AS ENUM ('Active', 'Banned');
 
 -- CreateEnum
-CREATE TYPE "UserRole" AS ENUM ('Customer', 'Amin');
+CREATE TYPE "UserRole" AS ENUM ('Customer', 'Admin');
+
+-- CreateEnum
+CREATE TYPE "CategoryStatus" AS ENUM ('Active', 'Inactive');
 
 -- CreateTable
 CREATE TABLE "User" (

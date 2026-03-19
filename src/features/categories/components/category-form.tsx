@@ -17,14 +17,15 @@ import { categoryAction } from '../actions/categories'
 import ErrorMessage from '@/components/shared/error-message'
 
 export default function CategoryForm() {
-  const { errors, formAction, isPending, hideErrors } = useForm(categoryAction)
+  const { errors, formAction, isPending, clearErrors } = useForm(categoryAction)
   return (
     <Card>
       <CardHeader>
         <CardTitle className='flex items-center gap-2 text-lg sm:text-xl'>
           <Plus size={18} />
-          Add New Category
+          <span>Add new category</span>
         </CardTitle>
+
         <CardDescription className='text-xs sm:text-sm'>
           Create a new category for your products
         </CardDescription>
@@ -32,8 +33,9 @@ export default function CategoryForm() {
 
       <Form
         action={formAction}
-        onChange={hideErrors}
-        className='space-y-4'>
+        onChange={clearErrors}
+        className='space-y-4'
+      >
         <CardContent>
           <div className='space-y-2'>
             <InputForm
@@ -47,7 +49,7 @@ export default function CategoryForm() {
           </div>
         </CardContent>
 
-        <CardFooter className='flex flex-col gap-2'>
+        <CardFooter>
           <SubmitBtn
             name='Add Category'
             icon={Plus}

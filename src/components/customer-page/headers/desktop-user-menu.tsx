@@ -23,53 +23,58 @@ export default function DesktopUserMenu({ user }: DesktopUserMenuProps) {
         <Button
           variant='ghost'
           size='icon'
-          className="size-8 rounded-full">
+          className='size-8 rounded-full'
+        >
           <UserAvatarSmall user={user} />
         </Button>
       </DropdownMenuTrigger>
-      {/* Content Dropdown */}
-      <DropdownMenuContent
-        align="end"
-        sideOffset={4}
-        className="w-56">
 
-        {/* Label */}
-        <DropdownMenuLabel className="flex flex-col items-center gap-3 py-4">
+      <DropdownMenuContent
+        align='end'
+        sideOffset={4} // px
+        className='w-56'
+      >
+        <DropdownMenuLabel className='flex flex-col items-center gap-2'>
           <UserDropdownAvatar user={user} />
           <span>สวัสดี, {user.name || user.email}</span>
         </DropdownMenuLabel>
 
-        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className='cursor-pointer'
+          asChild
+        >
+          <Link href='/profile'>โปรไฟล์ของฉัน</Link>
+        </DropdownMenuItem>
 
-        {/* Item */}
-        <DropdownMenuItem className="cursor-pointer" asChild>
-          <Link href="#">
-            <span>โปรไฟล์ของคุณ</span>
+        <DropdownMenuItem
+          className='cursor-pointer'
+          asChild
+        >
+          <Link href='/cart'>
+            <span>ตะกร้าของฉัน</span>
+            <Badge className='ml-auto'>0</Badge>
           </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem asChild>
-          <Link href="#">
-            <span>ตะกล้าของฉัน</span>
-            <Badge className="ml-auto">
-              0
-            </Badge>
-          </Link>
+        <DropdownMenuItem
+          className='cursor-pointer'
+          asChild
+        >
+          <Link href='/my-orders'>ประวัติการสั่งซื้อ</Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem className="cursor-pointer" asChild>
-          <Link href="#">
-            <span>ประวัติการสั่งซื้อ</span>
-          </Link>
-        </DropdownMenuItem>
         {user.role === 'Admin' && (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer" asChild>
+            <DropdownMenuItem
+              className='cursor-pointer'
+              asChild
+            >
               <Link href='/admin'>หลังบ้าน</Link>
             </DropdownMenuItem>
           </>
         )}
+
         <DropdownMenuSeparator />
         <div>
           <SignoutButton />

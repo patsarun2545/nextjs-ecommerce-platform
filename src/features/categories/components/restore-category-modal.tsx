@@ -14,11 +14,11 @@ interface RestoreCategoryModalProps {
   category: CategoryType | null
 }
 
-const RestoreCategoryModal = ({
+export default function RestoreCategoryModal({
   open,
   onOpenChange,
   category,
-}: RestoreCategoryModalProps) => {
+}: RestoreCategoryModalProps) {
   const { state, formAction, isPending } = useForm(restoreCategoryAction)
 
   useEffect(() => {
@@ -31,36 +31,29 @@ const RestoreCategoryModal = ({
     <Modal
       open={open}
       onOpenChange={onOpenChange}
-      title='Restore Category'
-      description={`Are you sure you want to restore the category "${category?.name}"?`}
+      title="Restore Category"
+      description="Are you sure want to restore the category?"
     >
-      <Form action={formAction} className='space-y-6'>
-        {/* Hidden ID Field */}
-        <input
-          type='hidden'
-          name='category-id'
-          value={category?.id}
-        />
+      <Form action={formAction}>
+        <input type="hidden" name="category-id" value={category?.id} />
 
-        <div className='flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-6'>
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-6">
           <Button
-            type='button'
-            variant='outline'
+            type="button"
+            variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={isPending}
           >
             Cancel
           </Button>
-
           <SubmitBtn
-            name='Restore'
+            name="Restore"
             icon={RefreshCcw}
-            disabled={isPending}
+            className="bg-green-600 hover:bg-green-600/80"
+            pending={isPending}
           />
         </div>
       </Form>
     </Modal>
   )
 }
-
-export default RestoreCategoryModal

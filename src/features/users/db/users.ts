@@ -2,14 +2,13 @@ import { db } from "@/lib/db";
 import { cacheLife, cacheTag } from "next/cache";
 import { getUserIdTag } from "./cache";
 
-export const getUserbyid = async (id: string | null) => {
+export const getUserById = async (id: string) => {
   "use cache";
+  
   cacheLife("hours");
-
-  if (!id) return null;
   cacheTag(getUserIdTag(id));
   try {
-    const user = await db.user.findFirst({
+    const user = await db.user.findUnique({
       where: {
         id,
         status: "Active",
@@ -29,7 +28,7 @@ export const getUserbyid = async (id: string | null) => {
       },
     });
 
-    return user ?? null;
+    return user;
   } catch (error) {
     console.error("Error gettimg user by id:", error);
     return null;

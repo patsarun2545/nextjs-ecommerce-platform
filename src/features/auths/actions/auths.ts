@@ -1,10 +1,10 @@
 "use server";
 
-import { InitialFormState } from "@/types/action";
+import { InitialFormState  } from "@/types/action";
 import { signup, signin, signout } from "@/features/auths/db/auths";
 
-export async function AuthAction(
-  _prevState: InitialFormState,
+export async function authAction(
+  _prevState: InitialFormState ,
   formData: FormData,
 ) {
   const rawData = {

@@ -13,6 +13,7 @@ export function useSignout() {
 
       if (result.success) {
         toast.success(result.message);
+        router.refresh();
         router.push("/auth/signin");
       } else {
         toast.error(result.message);

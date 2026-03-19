@@ -1,8 +1,12 @@
 import { authCheck } from "@/features/auths/db/auths"
 import { redirect } from "next/navigation"
-import HeaderCustomer from "@/components/customer-page/header/header"
+import HeaderCustomer from "@/components/customer-page/headers/header"
 
-export default async function AuthLayout({ children }: { children: React.ReactNode }) {
+interface AuthLayoutProps {
+  children: React.ReactNode
+}
+
+export default async function AuthLayout({ children }: AuthLayoutProps) {
   const user = await authCheck()
 
   if (user) {

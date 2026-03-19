@@ -1,5 +1,5 @@
 import { authCheck } from "@/features/auths/db/auths";
-import HeaderCustomer from "@/components/customer-page/header/header";
+import HeaderCustomer from "@/components/customer-page/headers/header";
 
 interface MainLayoutProps {
   children: React.ReactNode;

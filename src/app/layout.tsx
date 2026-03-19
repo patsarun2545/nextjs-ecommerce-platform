@@ -12,7 +12,11 @@ export const metadata: Metadata = {
     'ร้านค้าออไลน์อันดับ 1'
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+interface RootLayoutProps {
+  children: React.ReactNode
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang='en'>
       <body>

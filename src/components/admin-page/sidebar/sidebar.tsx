@@ -8,7 +8,7 @@ import { ScrollArea } from "../../ui/scroll-area"
 import { Avatar, AvatarImage, AvatarFallback } from "../../ui/avatar"
 import SidebarLink from "./sidebar-link"
 import { usePathname } from "next/navigation"
-import { useSignout } from "@/hooks/use-signout"
+import { useSignout } from "@/hooks/use-sign-out"
 import { cn } from "@/lib/utils"
 import {
   LogOut,

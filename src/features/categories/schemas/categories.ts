@@ -9,7 +9,7 @@ const ERROR_MESSAGES = {
 }
 
 // Main Create Category
-export const createCategorySchema = z.object({
+export const categorySchema = z.object({
   name: z
     .string()
     .min(MIN_NAME_LENGTH, { message: ERROR_MESSAGES.name }),

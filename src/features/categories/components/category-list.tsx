@@ -27,9 +27,9 @@ interface CategoryListProps {
 
 export default function CategoryList({ categories }: CategoryListProps) {
 
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false)
+  const [isEditModal, setIsEditModal] = useState(false)
+  const [isDeleteModal, setIsDeleteModal] = useState(false)
+  const [isRestoreModal, setIsRestoreModal] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null)
   const [activeTab, setActiveTab] = useState('all')
   const [filteredCategories, setFilteredCategories] = useState<CategoryType[]>(categories)
@@ -49,109 +49,87 @@ export default function CategoryList({ categories }: CategoryListProps) {
     }
 
     setFilteredCategories(result)
-  }, [categories, activeTab])
+  }, [categories, activeTab, searchTerm])
 
   const handleEditClick = (category: CategoryType) => {
     setSelectedCategory(category)
-    setIsEditModalOpen(true)
+    setIsEditModal(true)
   }
 
-  const handleTabChang = (value: string) => {
-    setActiveTab(value)
-  }
-
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchTerm = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value)
   }
 
   const handleDeleteClick = (category: CategoryType) => {
     setSelectedCategory(category)
-    setIsDeleteModalOpen(true)
+    setIsDeleteModal(true)
   }
 
   const handleRestoreClick = (category: CategoryType) => {
     setSelectedCategory(category)
-    setIsRestoreModalOpen(true)
+    setIsRestoreModal(true)
   }
+
+  const handleTabActive = (value: string) => {
+    setActiveTab(value);
+  };
 
   return (
     <>
       <Card>
-        {/* Header */}
-        <CardHeader className='pb-4'>
-          <CardTitle className='text-lg sm:text-xl'>
-            Category List
-          </CardTitle>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg sm:text-xl">Category List</CardTitle>
 
-          <Tabs
-            value={activeTab}
-            onValueChange={handleTabChang}>
-            <TabsList className='grid grid-cols-3 mb-4'>
-              <TabsTrigger value='all'>All Categories</TabsTrigger>
-              <TabsTrigger value='active'>Active</TabsTrigger>
-              <TabsTrigger value='inactive'>Inactive</TabsTrigger>
+          <Tabs value={activeTab} onValueChange={handleTabActive}>
+            <TabsList className="grid grid-cols-3 mb-4">
+              <TabsTrigger value="all">All Categories</TabsTrigger>
+              <TabsTrigger value="active">Active</TabsTrigger>
+              <TabsTrigger value="inactive">Inactive</TabsTrigger>
             </TabsList>
 
-            {/* Search */}
-            <div className='relative'>
+            <div className="relative">
               <Search
                 size={16}
-                className='absolute left-2 top-2.5 text-muted-foreground'
+                className="absolute left-2 top-2.5 text-muted-foreground"
               />
               <Input
-                placeholder='Search categories...'
-                className='pl-8'
+                placeholder="Search categories..."
+                className="pl-8"
                 value={searchTerm}
-                onChange={handleSearch}
+                onChange={handleSearchTerm}
               />
             </div>
           </Tabs>
         </CardHeader>
 
-        {/* Content */}
         <CardContent>
-          <div className='border rounded-md overflow-hidden'>
-            {/* Header */}
-            <div className='grid grid-cols-12 bg-muted py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium'>
-              <div className='col-span-1 hidden sm:block'>No.</div>
-              <div className='col-span-6 sm:col-span-5'>Category Name</div>
-              <div className='col-span-2 text-center hidden sm:block'>
+          <div className="border rounded-md overflow-hidden">
+            <div className="grid grid-cols-12 bg-muted py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium">
+              <div className="col-span-1 hidden sm:block">No.</div>
+              <div className="col-span-6 sm:col-span-5">Category name</div>
+              <div className="col-span-2 text-center hidden sm:block">
                 Products
               </div>
-              <div className='col-span-3 sm:col-span-2 text-center'>
-                Status
-              </div>
-              <div className='col-span-3 sm:col-span-2 text-right'>
-                Actions
-              </div>
+              <div className="col-span-3 sm:col-span-2 text-center">Status</div>
+              <div className="col-span-3 sm:col-span-2 text-right">Actions</div>
             </div>
           </div>
 
-          <ScrollArea className='h-[350px] sm:h-[420px]'>
-            {/* Data */}
+          <ScrollArea className="h-[350px] sm:h-[420px]">
             {filteredCategories.length > 0 ? (
               filteredCategories.map((category, index) => (
                 <div
                   key={index}
-                  className='grid grid-cols-12 py-3 px-2 sm:px-4 border-t items-center text-sm hover:bg-gray-50 transition'
+                  className="grid grid-cols-12 py-3 px-2 sm:px-4 border-t items-center hover:bg-gray-50 transition-colors duration-100 text-sm"
                 >
-                  {/* No */}
-                  <div className='col-span-1 hidden sm:block'>
-                    {index + 1}
-                  </div>
-
-                  {/* Name */}
-                  <div className='col-span-6 sm:col-span-5 truncate pr-2'>
+                  <div className="col-span-1 hidden sm:block">{filteredCategories.length - index}</div>
+                  <div className="col-span-6 sm:col-span-5 truncate pr-2">
                     {category.name}
                   </div>
-
-                  {/* Products */}
-                  <div className='col-span-2 text-center hidden sm:block'>
+                  <div className="col-span-2 text-center hidden sm:block">
                     0
                   </div>
-
-                  {/* Status */}
-                  <div className='col-span-3 sm:col-span-2 text-center'>
+                  <div className="col-span-3 sm:col-span-2 text-center">
                     <Badge
                       variant={
                         category.status === "Active" ? "default" : "destructive"
@@ -161,26 +139,31 @@ export default function CategoryList({ categories }: CategoryListProps) {
                       {category.status}
                     </Badge>
                   </div>
-
-                  {/* Actions */}
-                  <div className='col-span-3 sm:col-span-2 text-right'>
-
-                    {/* Mobile Buttons */}
-                    <div className='flex justify-end gap-1 md:hidden'>
-                      {category.status === 'Active' ? (
+                  <div className="col-span-3 sm:col-span-2 text-right">
+                    {/* Mobile Action Buttons */}
+                    <div className="flex justify-end gap-1 md:hidden">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-7"
+                        onClick={() => handleEditClick(category)}
+                      >
+                        <Pencil size={15} />
+                      </Button>
+                      {category.status === "Active" ? (
                         <Button
-                          variant='ghost'
-                          size='icon'
-                          className='size-7'
+                          variant="ghost"
+                          size="icon"
+                          className="size-7"
                           onClick={() => handleDeleteClick(category)}
                         >
                           <Trash2 size={15} />
                         </Button>
                       ) : (
                         <Button
-                          variant='ghost'
-                          size='icon'
-                          className='size-7'
+                          variant="ghost"
+                          size="icon"
+                          className="size-7"
                           onClick={() => handleRestoreClick(category)}
                         >
                           <RefreshCcw size={15} />
@@ -188,75 +171,76 @@ export default function CategoryList({ categories }: CategoryListProps) {
                       )}
                     </div>
 
-                    {/* Desktop Dropdown */}
-                    <div className='hidden md:block'>
+                    {/* Desktop Action Buttons */}
+                    <div className="hidden md:block">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
-                            variant='ghost'
-                            size='icon'
-                            className='size-8'
+                            variant="ghost"
+                            size="icon"
+                            className="size-8"
                           >
                             <MoreVertical size={16} />
                           </Button>
                         </DropdownMenuTrigger>
 
-                        <DropdownMenuContent align='end'>
-                          <DropdownMenuItem onClick={() => handleEditClick(category)}>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => handleEditClick(category)}
+                          >
                             <Pencil size={15} />
                             <span>Edit</span>
                           </DropdownMenuItem>
+
                           <DropdownMenuSeparator />
 
-                          {category.status === 'Active' ? (
+                          {category.status === "Active" ? (
                             <DropdownMenuItem
                               onClick={() => handleDeleteClick(category)}
                             >
-                              <Trash2
-                                size={15}
-                                className="text-destructive"
-                              />
+                              <Trash2 size={15} className="text-destructive" />
                               <span className="text-destructive">Delete</span>
                             </DropdownMenuItem>
                           ) : (
                             <DropdownMenuItem
                               onClick={() => handleRestoreClick(category)}
                             >
-                              <RefreshCcw
-                                size={15}
-                                className="text-green-600"
-                              />
+                              <Trash2 size={15} className="text-green-600" />
                               <span className="text-green-600">Restore</span>
                             </DropdownMenuItem>
                           )}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
-
                   </div>
                 </div>
               ))
             ) : (
-              <div className='py-8 text-center text-muted-foreground'>
+              <div className="py-8 text-center text-muted-foreground">
                 No categories found matching your search
               </div>
             )}
-
           </ScrollArea>
         </CardContent>
       </Card>
+
       <EditCategoryModal
-        open={isEditModalOpen}
-        onOpenChange={setIsEditModalOpen}
-        category={selectedCategory} />
+        open={isEditModal}
+        onOpenChange={setIsEditModal}
+        category={selectedCategory}
+      />
+
       <DeleteCategoryModal
-        open={isDeleteModalOpen}
-        onOpenChange={setIsDeleteModalOpen}
-        category={selectedCategory} />
+        open={isDeleteModal}
+        onOpenChange={setIsDeleteModal}
+        category={selectedCategory}
+      />
+
       <RestoreCategoryModal
-        open={isRestoreModalOpen}
-        onOpenChange={setIsRestoreModalOpen}
-        category={selectedCategory} />/
+        open={isRestoreModal}
+        onOpenChange={setIsRestoreModal}
+        category={selectedCategory}
+      />
     </>
   )
 }

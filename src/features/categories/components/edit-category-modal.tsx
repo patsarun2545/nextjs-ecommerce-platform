@@ -3,13 +3,6 @@
 import InputForm from "@/components/shared/input-form"
 import SubmitBtn from "@/components/shared/submit-btn"
 import ErrorMessage from "@/components/shared/error-message"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 import { CategoryType } from "@/types/category"
 import { Save } from "lucide-react"
 import Form from "next/form"
@@ -29,7 +22,7 @@ const EditCategoryModal = ({
   onOpenChange,
   category,
 }: EditCategoryModalProps) => {
-  const { state, errors, formAction, isPending, hideErrors } =
+  const { state, errors, formAction, isPending, clearErrors } =
     useForm(categoryAction)
 
   useEffect(() => {
@@ -37,20 +30,17 @@ const EditCategoryModal = ({
   }, [state, onOpenChange])
 
   useEffect(() => {
-    if (open) hideErrors()
-  }, [open, hideErrors])
-
-  if (!category) return null
+    if (open) clearErrors()
+  }, [open, clearErrors])
 
   return (
     <Modal
       open={open}
       onOpenChange={onOpenChange}
-      title="Edit Category"
-      description="Update your category information."
+      title="Update Category"
+      description="Update your category information"
     >
-      <form action={formAction} onChange={hideErrors} className="space-y-4">
-        {/* Hidden ID Field */}
+      <Form action={formAction} onChange={clearErrors} className="space-y-4">
         <input type="hidden" name="category-id" value={category?.id} />
 
         <div className="space-y-2">
@@ -58,23 +48,20 @@ const EditCategoryModal = ({
             label="Category name"
             id="category-name"
             placeholder="Enter category name"
-            defaultValue={category?.name}
             required
+            defaultValue={category?.name}
           />
-
           {/* Error Message */}
-          {errors?.name && <ErrorMessage error={errors.name[0]} />}
+          {errors.name && <ErrorMessage error={errors.name[0]} />}
         </div>
 
-        <div className="pt-4">
-          <SubmitBtn
-            name="Update Category"
-            icon={Save}
-            className="w-full"
-            pending={isPending}
-          />
-        </div>
-      </form>
+        <SubmitBtn
+          name="Update Category"
+          icon={Save}
+          className="w-full"
+          pending={isPending}
+        />
+      </Form>
     </Modal>
   )
 }

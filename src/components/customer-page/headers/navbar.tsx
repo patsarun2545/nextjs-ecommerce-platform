@@ -12,22 +12,22 @@ interface NavbarProps {
 
 export default function Navbar({ user }: NavbarProps) {
   return (
-    <nav className="flex items-center gap-3">
+    <nav className='flex items-center gap-3'>
       {/* Mobile Navigation */}
       {user && <CartIcon />}
       <MobileMenu user={user} />
 
       {/* Desktop Navigation */}
-      <div className="hidden md:flex md:items-center md:gap-6">
+      <div className='hidden md:flex md:items-center'>
         <DesktopNavLinks />
-
         {user ? (
           <DesktopUserMenu user={user} />
         ) : (
           <Button
             size='sm'
-            asChild>
-            <Link href={'/auth/signin'}>เข้าสู่ระบบ</Link>
+            asChild
+          >
+            <Link href='/auth/signin'>เข้าสู่ระบบ</Link>
           </Button>
         )}
       </div>
