@@ -6,7 +6,7 @@ interface EditProductPageProps {
   params: Promise<{ id: string }>;
 }
 
-const EditProductPage = async ({ params }: EditProductPageProps) => {
+export default async function EditProductPage({ params }: EditProductPageProps) {
   const { id } = await params;
 
   const [product, categories] = await Promise.all([
@@ -28,4 +28,4 @@ const EditProductPage = async ({ params }: EditProductPageProps) => {
   );
 };
 
-export default EditProductPage;
+

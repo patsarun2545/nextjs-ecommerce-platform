@@ -16,14 +16,14 @@ interface ModalProps {
   className?: string;
 }
 
-const Modal = ({
+export default function Modal({
   open,
   onOpenChange,
   children,
   title,
   description,
   className,
-}: ModalProps) => {
+}: ModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={cn("sm:max-w-md", className)}>
@@ -39,4 +39,4 @@ const Modal = ({
   );
 };
 
-export default Modal;
+

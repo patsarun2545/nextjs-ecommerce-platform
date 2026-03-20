@@ -14,11 +14,11 @@ interface DeleteProductModalProps {
   product: ProductType | null;
 }
 
-const DeleteProductModal = ({
+export default function DeleteProductModal({
   open,
   onOpenChange,
   product,
-}: DeleteProductModalProps) => {
+}: DeleteProductModalProps) {
   const { state, formAction, isPending } = useForm(deleteProductAction);
 
   useEffect(() => {
@@ -56,4 +56,4 @@ const DeleteProductModal = ({
   );
 };
 
-export default DeleteProductModal;
+

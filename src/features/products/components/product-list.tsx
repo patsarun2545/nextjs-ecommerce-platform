@@ -42,7 +42,7 @@ interface ProductListProps {
   products: ProductType[];
 }
 
-const ProductList = ({ products }: ProductListProps) => {
+export default function ProductList({ products }: ProductListProps) {
   const [activeTab, setActiveTab] = useState("all");
   const [filteredProducts, setFillteredProducts] = useState(products);
   const [searchTerm, setSearchTerm] = useState("");
@@ -185,7 +185,7 @@ const ProductList = ({ products }: ProductListProps) => {
                         alt={product.title}
                         src={
                           product.mainImage?.url ||
-                          "/images/no-product-image.webp"
+                          "/images/no-product.png"
                         }
                         width={40}
                         height={40}
@@ -318,4 +318,4 @@ const ProductList = ({ products }: ProductListProps) => {
     </>
   );
 };
-export default ProductList;
+

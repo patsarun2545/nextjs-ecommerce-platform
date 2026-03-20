@@ -36,7 +36,7 @@ interface ProductFormProps {
   product?: ProductType | null;
 }
 
-const ProductForm = ({ categories, product }: ProductFormProps) => {
+export default function ProductForm({ categories, product }: ProductFormProps) {
   // Price State
   const [basePrice, setBasePrice] = useState(
     product ? product.basePrice.toString() : "",
@@ -277,4 +277,4 @@ const ProductForm = ({ categories, product }: ProductFormProps) => {
     </Card>
   );
 };
-export default ProductForm;
+

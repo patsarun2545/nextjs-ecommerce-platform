@@ -14,11 +14,11 @@ interface RestoreProductModalProps {
   product: ProductType | null;
 }
 
-const RestoreProductModal = ({
+export default function RestoreProductModal({
   open,
   onOpenChange,
   product,
-}: RestoreProductModalProps) => {
+}: RestoreProductModalProps) {
   const { state, formAction, isPending } = useForm(restoreProductAction);
 
   useEffect(() => {
@@ -51,4 +51,4 @@ const RestoreProductModal = ({
   );
 };
 
-export default RestoreProductModal;
+

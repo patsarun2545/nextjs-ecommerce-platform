@@ -18,10 +18,10 @@ interface ProductImageUploadProps {
   existingImages?: ProductImage[];
 }
 
-const ProductImageUpload = ({
+export default function ProductImageUpload({
   onImageChange,
   existingImages = [],
-}: ProductImageUploadProps) => {
+}: ProductImageUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [selectedFile, setSelectedFile] = useState<File[]>([]);
@@ -288,4 +288,4 @@ const ProductImageUpload = ({
   );
 };
 
-export default ProductImageUpload;
+

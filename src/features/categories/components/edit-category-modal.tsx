@@ -17,11 +17,11 @@ interface EditCategoryModalProps {
   category: CategoryType | null
 }
 
-const EditCategoryModal = ({
+export default function EditCategoryModal({
   open,
   onOpenChange,
   category,
-}: EditCategoryModalProps) => {
+}: EditCategoryModalProps) {
   const { state, errors, formAction, isPending, clearErrors } =
     useForm(categoryAction)
 
@@ -66,4 +66,3 @@ const EditCategoryModal = ({
   )
 }
 
-export default EditCategoryModal

@@ -33,11 +33,11 @@ interface ProductDetailModalProps {
   product: ProductType | null;
 }
 
-const ProductDetailModal = ({
+export default function ProductDetailModal({
   open,
   onOpenChange,
   product,
-}: ProductDetailModalProps) => {
+}: ProductDetailModalProps)  {
   if (!product) return null;
 
   const formattedDate = dayjs(product.createdAt).fromNow();
@@ -106,7 +106,7 @@ const ProductDetailModal = ({
                       alt={product.title}
                       src={
                         product.mainImage?.url ||
-                        "/images/no-product-image.webp"
+                        "/images/no-product.png"
                       }
                       fill
                       className="object-cover transition-transform group-hover:scale-105"
@@ -390,4 +390,4 @@ const ProductDetailModal = ({
   );
 };
 
-export default ProductDetailModal;
+
