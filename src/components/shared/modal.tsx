@@ -5,27 +5,31 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 interface ModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  children: React.ReactNode;
   title: string;
   description: string;
-  children: React.ReactNode;
+  className?: string;
 }
 
-export default function Modal({
+const Modal = ({
   open,
   onOpenChange,
+  children,
   title,
   description,
-  children,
-}: ModalProps) {
+  className,
+}: ModalProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className={cn("sm:max-w-md", className)}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
+
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
@@ -35,3 +39,4 @@ export default function Modal({
   );
 };
 
+export default Modal;

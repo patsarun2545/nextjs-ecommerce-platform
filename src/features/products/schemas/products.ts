@@ -15,7 +15,7 @@ const ERROR_MESSAGE = {
 };
 
 // Create product schema
-export const createProductSchema = z.object({
+export const productSchema = z.object({
   title: z.string().min(MIN_TITLE_LENGTH, { message: ERROR_MESSAGE.title }),
 
   description: z

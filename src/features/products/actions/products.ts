@@ -1,7 +1,11 @@
 "use server";
 
 import { InitialFormState } from "@/types/action";
-import { createProduct } from "../db/products";
+import {
+  changeProductStatus,
+  createProduct,
+  updateProduct,
+} from "../db/products";
 import { uploadToImageKit } from "@/lib/imageKit";
 
 export const productAction = async (
@@ -9,6 +13,7 @@ export const productAction = async (
   formData: FormData,
 ) => {
   const rawData = {
+    id: formData.get("product-id") as string,
     title: formData.get("title") as string,
     description: formData.get("description") as string,
     categoryId: formData.get("category-id") as string,
@@ -18,6 +23,7 @@ export const productAction = async (
     stock: formData.get("stock") as string,
     images: formData.getAll("images") as File[],
     mainImageIndex: formData.get("main-image-index") as string,
+    deletedImageIds: formData.get("deleted-image-ids") as string,
   };
 
   const processedData = {
@@ -29,6 +35,9 @@ export const productAction = async (
     mainImageIndex: rawData.mainImageIndex
       ? parseInt(rawData.mainImageIndex)
       : 0,
+    deletedImageIds: rawData.deletedImageIds
+      ? (JSON.parse(rawData.deletedImageIds) as string[])
+      : [],
   };
 
   const uploadedImages = [];
@@ -43,10 +52,15 @@ export const productAction = async (
     }
   }
 
-  const result = await createProduct({
-    ...processedData,
-    images: uploadedImages,
-  });
+  const result = processedData.id
+    ? await updateProduct({
+        ...processedData,
+        images: uploadedImages,
+      })
+    : await createProduct({
+        ...processedData,
+        images: uploadedImages,
+      });
 
   return result && result.message
     ? {
@@ -56,6 +70,46 @@ export const productAction = async (
       }
     : {
         success: true,
-        message: "Product created successfully",
+        message: processedData.id
+          ? "Product updated successfully"
+          : "Product created successfully",
+      };
+};
+
+export const deleteProductAction = async (
+  _prevState: InitialFormState,
+  formData: FormData,
+) => {
+  const id = formData.get("product-id") as string;
+
+  const result = await changeProductStatus(id, "Inactive");
+
+  return result && result.message
+    ? {
+        success: false,
+        message: result.message,
+      }
+    : {
+        success: true,
+        message: "Product deleted successfully",
+      };
+};
+
+export const restoreProductAction = async (
+  _prevState: InitialFormState,
+  formData: FormData,
+) => {
+  const id = formData.get("product-id") as string;
+
+  const result = await changeProductStatus(id, "Active");
+
+  return result && result.message
+    ? {
+        success: false,
+        message: result.message,
+      }
+    : {
+        success: true,
+        message: "Product restored successfully",
       };
 };
