@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { ProductImage } from "@prisma/client";
 import { ImagePlus, Plus, Star, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, startTransition } from "react";
 
 interface ProductImageUploadProps {
   onImageChange: (
@@ -39,16 +39,20 @@ export default function ProductImageUpload({
 
   useEffect(() => {
     if (existingImagesState.length > 0 && !initialMainImageSet) {
-      // หา index ของรูปภาพหลัก
       const mainIndex = existingImagesState.findIndex((image) => image.isMain);
       if (mainIndex >= 0) {
-        setMainImageIndex(mainIndex);
-        setInitialMainImageSet(true);
+        startTransition(() => {
+          setMainImageIndex(mainIndex);
+          setInitialMainImageSet(true);
+        });
       }
     }
+  }, [existingImagesState, initialMainImageSet]);
 
+
+  useEffect(() => {
     notifyToParent();
-  }, [existingImagesState, notifyToParent, initialMainImageSet]);
+  }, [notifyToParent]);
 
   const triggerFileInput = () => {
     if (fileInputRef.current) {

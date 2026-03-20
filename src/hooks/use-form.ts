@@ -1,4 +1,10 @@
-import { useState, useEffect, useActionState, useCallback } from "react";
+import {
+  useState,
+  useEffect,
+  useActionState,
+  useCallback,
+  startTransition,
+} from "react";
 import { useRouter } from "next/navigation";
 import { ActionType, initialFormState } from "@/types/action";
 import { toast } from "sonner";
@@ -14,7 +20,11 @@ export function useForm(action: ActionType, route?: string) {
   useEffect(() => {
     if (!state) return;
 
-    if (state.errors) setErrors(state.errors);
+    if (state.errors) {
+      startTransition(() => {
+        setErrors(state.errors ?? {});
+      });
+    }
 
     if (state.message) {
       if (state.success) {

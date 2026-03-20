@@ -34,7 +34,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import DeleteProductModal from "./delete-product-modal";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import RestoreProductModal from "./restore-product-modal";
 import ProductDetailModal from "./product-detail-modal";
 
@@ -44,7 +44,6 @@ interface ProductListProps {
 
 export default function ProductList({ products }: ProductListProps) {
   const [activeTab, setActiveTab] = useState("all");
-  const [filteredProducts, setFillteredProducts] = useState(products);
   const [searchTerm, setSearchTerm] = useState("");
 
   // Modal State
@@ -55,24 +54,22 @@ export default function ProductList({ products }: ProductListProps) {
     null,
   );
 
-  useEffect(() => {
-    let result = [...products];
-    if (activeTab === "active") {
-      result = result.filter((p) => p.status === "Active");
-    } else if (activeTab === "inactive") {
-      result = result.filter((p) => p.status === "Inactive");
-    } else if (activeTab === "low-stock") {
-      result = result.filter((p) => p.stock <= p.lowStock);
+  const filteredProducts = useMemo(() => {
+    let result = [...products]
+    if (activeTab === 'active') {
+      result = result.filter((p) => p.status === 'Active')
+    } else if (activeTab === 'inactive') {
+      result = result.filter((p) => p.status === 'Inactive')
+    } else if (activeTab === 'low-stock') {
+      result = result.filter((p) => p.stock <= p.lowStock)
     }
-
     if (searchTerm) {
       result = result.filter((p) =>
-        p.title.toLowerCase().includes(searchTerm.toLowerCase()),
-      );
+        p.title.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     }
-
-    setFillteredProducts(result);
-  }, [products, activeTab, searchTerm]);
+    return result
+  }, [products, activeTab, searchTerm])
 
   const hadleTabChange = (value: string) => {
     setActiveTab(value);

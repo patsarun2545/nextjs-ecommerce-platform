@@ -21,6 +21,9 @@ npx prisma generate
 npx prisma studio
 npx prisma migrate reset
 
+npx next build
+npx eslint src
+
 สร้าง lib > db.ts
     import { PrismaClient } from "@prisma/client";
     const globalForPrisma = global as unknown as { prisma: PrismaClient };

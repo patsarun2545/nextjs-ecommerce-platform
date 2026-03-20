@@ -16,7 +16,7 @@ import {
 import { Search, Pencil, Trash2, MoreVertical } from 'lucide-react'
 import { CategoryType } from '@/types/category'
 import EditCategoryModal from './edit-category-modal'
-import { useState, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import DeleteCategoryModal from './delete-category-modal'
 import { RefreshCcw } from 'lucide-react'
 import RestoreCategoryModal from './restore-category-modal'
@@ -32,23 +32,19 @@ export default function CategoryList({ categories }: CategoryListProps) {
   const [isRestoreModal, setIsRestoreModal] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null)
   const [activeTab, setActiveTab] = useState('all')
-  const [filteredCategories, setFilteredCategories] = useState<CategoryType[]>(categories)
   const [searchTerm, setSearchTerm] = useState('')
 
-  useEffect(() => {
+  const filteredCategories = useMemo(() => {
     let result = [...categories]
-
     if (activeTab === 'active') {
       result = result.filter((c) => c.status === 'Active')
     } else if (activeTab === 'inactive') {
       result = result.filter((c) => c.status === 'Inactive')
     }
-
     if (searchTerm) {
-      result = result.filter((c) => c.name.toLowerCase().includes(searchTerm.toLocaleLowerCase()))
+      result = result.filter((c) => c.name.toLowerCase().includes(searchTerm.toLowerCase()))
     }
-
-    setFilteredCategories(result)
+    return result
   }, [categories, activeTab, searchTerm])
 
   const handleEditClick = (category: CategoryType) => {
