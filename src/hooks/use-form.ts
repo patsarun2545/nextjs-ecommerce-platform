@@ -19,8 +19,12 @@ export function useForm(action: ActionType, route?: string) {
     if (state.message) {
       if (state.success) {
         toast.success(state.message);
-        router.refresh();
-        if (route) router.push(route);
+        if (route) {
+          router.push(route);
+          router.refresh();
+        } else {
+          router.refresh();
+        }
       } else {
         toast.error(state.message);
       }
