@@ -2,6 +2,7 @@ import CartItems from "@/features/carts/components/cart-items";
 import EmptyCart from "@/features/carts/components/empty-cart";
 import { getUserCart } from "@/features/carts/db/carts";
 import { headers } from "next/headers";
+import CartSummary from "@/features/carts/components/cart-summary";
 
 export default async function CartPage() {
   const head = await headers();
@@ -21,7 +22,7 @@ export default async function CartPage() {
           </div>
 
           <div className="lg:col-span-1">
-            <div>Cart Summary</div>
+            <CartSummary cart={cart} />
           </div>
         </div>
       )}

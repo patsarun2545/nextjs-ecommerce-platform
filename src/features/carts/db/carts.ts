@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
-import { cacheLife, cacheTag } from "next/cache";
-import { getCartTag, revalidateCartCache } from "./cache";
+import { revalidateCartCache } from "./cache";
 import { db } from "@/lib/db";
 import { authCheck } from "@/features/auths/db/auths";
 import { canUpdateUserCart } from "../permissions/carts";

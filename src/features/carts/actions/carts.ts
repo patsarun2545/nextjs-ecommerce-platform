@@ -1,6 +1,11 @@
 "use server";
 
-import { addToCart, removeFromCart, updateCartItem } from "../db/carts";
+import {
+  addToCart,
+  removeFromCart,
+  updateCartItem,
+  clearCart,
+} from "../db/carts";
 
 export const addToCartAction = async (formData: FormData) => {
   const data = {
@@ -46,6 +51,22 @@ export const removeFromCartAction = async (cartItemId: string) => {
     return {
       success: false,
       message: result.message,
+    };
+  }
+};
+
+export const clearCartAction = async () => {
+  const result = await clearCart();
+
+  if (result && result.message) {
+    return {
+      success: false,
+      message: result.message,
+    };
+  } else {
+    return {
+      success: true,
+      message: "ล้างตะกร้าเรียบร้อยแล้ว",
     };
   }
 };

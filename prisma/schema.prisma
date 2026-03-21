@@ -34,6 +34,14 @@ enum ProductStatus {
   Inactive
 }
 
+enum OrderStatus {
+  Pending
+  Paid
+  Shipped
+  Delivered
+  Cancelled
+}
+
 model User {
   id        String     @id @default(uuid())
   name      String?
@@ -48,6 +56,7 @@ model User {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   cart      Cart[]
+  orders    Order[]
 }
 
 model Category {
@@ -73,9 +82,10 @@ model Product {
   updatedAt   DateTime      @updatedAt
 
   categoryId String
-  images     ProductImage[]
   category   Category       @relation(fields: [categoryId], references: [id])
+  images     ProductImage[]
   cartItems  CartItem[]
+  orderItems OrderItem[]
 }
 
 model ProductImage {
@@ -112,3 +122,38 @@ model CartItem {
   product   Product @relation(fields: [productId], references: [id])
 }
 
+model Order {
+  id             String      @id @default(uuid())
+  orderNumber    String
+  totalAmount    Float
+  status         OrderStatus @default(Pending)
+  paymentImage   String?
+  paymentAt      DateTime?
+  address        String?
+  phone          String?
+  note           String?
+  shippingFee    Float       @default(0)
+  trackingNumber String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  customerId String
+  customer   User        @relation(fields: [customerId], references: [id])
+  items      OrderItem[]
+}
+
+model OrderItem {
+  id           String   @id @default(uuid())
+  quantity     Int
+  price        Float
+  totalPirce   Float
+  productTitle String
+  productImage String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+}
