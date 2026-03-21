@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  // output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -41,12 +41,13 @@ model User {
   password  String
   status    UserStatus @default(Active)
   role      UserRole   @default(Customer)
-  pictureTd String?
+  pictureId String?
   picture   String?
   address   String?
-  tle       String?
-  createAt  DateTime   @default(now())
-  updateAt  DateTime   @updatedAt
+  tel       String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  cart      Cart[]
 }
 
 model Category {
@@ -74,6 +75,7 @@ model Product {
   categoryId String
   images     ProductImage[]
   category   Category       @relation(fields: [categoryId], references: [id])
+  cartItems  CartItem[]
 }
 
 model ProductImage {
@@ -87,3 +89,26 @@ model ProductImage {
   productId String
   product   Product @relation(fields: [productId], references: [id])
 }
+
+model Cart {
+  id        String   @id @default(uuid())
+  cartTotal Float    @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orderedById String
+  orderedBy   User       @relation(fields: [orderedById], references: [id])
+  products    CartItem[]
+}
+
+model CartItem {
+  id    String @id @default(uuid())
+  count Int    @default(1)
+  price Float
+
+  cartId    String
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+}
+

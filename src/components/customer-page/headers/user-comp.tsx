@@ -72,7 +72,7 @@ export const UserAvatar = ({ user }: UserCompProps) => (
         {/* Picture */}
         <Image
           alt={user.name || 'Profile'}
-          src={user.picture || '/images/no-user-image.webp'}
+          src={user.picture || '/images/no-user.png'}
           width={128}
           height={128}
           priority

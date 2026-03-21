@@ -1,4 +1,4 @@
-import { UserType } from "@/types/user";
+import { UserType } from '@/types/user'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,16 +6,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { SignoutButton, UserAvatarSmall } from "./user-comp";
-import { UserDropdownAvatar } from "./user-comp";
-import { Badge } from "@/components/ui/badge";
+} from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { Badge } from '@/components/ui/badge'
+import { SignoutButton, UserAvatarSmall, UserDropdownAvatar } from './user-comp'
 
 interface DesktopUserMenuProps {
   user: UserType
 }
+
 export default function DesktopUserMenu({ user }: DesktopUserMenuProps) {
   return (
     <DropdownMenu>

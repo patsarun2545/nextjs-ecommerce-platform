@@ -4,7 +4,7 @@ import { getUserIdTag } from "./cache";
 
 export const getUserById = async (id: string) => {
   "use cache";
-  
+
   cacheLife("hours");
   cacheTag(getUserIdTag(id));
   try {
@@ -20,11 +20,11 @@ export const getUserById = async (id: string) => {
         picture: true,
         role: true,
         status: true,
-        pictureTd: true,
+        pictureId: true,
         address: true,
-        tle: true,
-        createAt: true,
-        updateAt: true,
+        tel: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
 
