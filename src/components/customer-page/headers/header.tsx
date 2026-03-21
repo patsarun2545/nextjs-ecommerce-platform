@@ -13,7 +13,7 @@ export default function HeaderCustomer({ user }: HeaderCustomerProps) {
       {/* Icon */}
       <Link href='/' className='flex items-center gap-2 text-primary'>
         <ShoppingBagIcon size={28} />
-        <h2 className='text-xl font-bold'>Kob Store</h2>
+        <h2 className='text-xl font-bold'>Tle Store</h2>
       </Link>
 
       {/* Menu */}

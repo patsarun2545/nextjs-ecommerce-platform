@@ -15,7 +15,7 @@ export default function Hero() {
           <div className="max-w-xl">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 rounded-full border border-primary/60">
               <Sparkle size={14} />
-              <span>ยินดีต้อนรับสู้เว็บไซต์ Kob Store</span>
+              <span>ยินดีต้อนรับสู้เว็บไซต์ Tle Store</span>
             </div>
 
             <h1 className="text-4xl md:text-6xl font-bold">

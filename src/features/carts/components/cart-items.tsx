@@ -84,31 +84,26 @@ export default function CartItems({ cart }: CartItemsProps) {
     },
   );
 
-  const handleUpdateQty = async (itemId: string, newCount: number) => {
-    startTransition(() => {
+  const handleUpdateQty = (itemId: string, newCount: number) => {
+    startTransition(async () => {
       updateOpCart({ type: "update", itemId, newCount });
+
+      const formData = new FormData();
+      formData.append("cart-item-id", itemId);
+      formData.append("new-count", newCount.toString());
+
+      const result = await updateCartItemAction(formData);
+      if (result?.message) toast.error(result.message);
     });
-
-    const formData = new FormData();
-    formData.append("cart-item-id", itemId);
-    formData.append("new-count", newCount.toString());
-
-    const result = await updateCartItemAction(formData);
-
-    if (result && result.message) {
-      toast.error(result.message);
-    }
   };
 
-  const handleRemoveItem = async (itemId: string) => {
-    startTransition(() => {
+  const handleRemoveItem = (itemId: string) => {
+    startTransition(async () => {
       updateOpCart({ type: "remove", itemId });
-    });
 
-    const result = await removeFromCartAction(itemId);
-    if (result && result.message) {
-      toast.error(result.message);
-    }
+      const result = await removeFromCartAction(itemId);
+      if (result?.message) toast.error(result.message);
+    });
   };
 
   return (

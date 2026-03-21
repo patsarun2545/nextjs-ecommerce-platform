@@ -5,7 +5,7 @@ import { Kanit } from "next/font/google";
 
 export const metadata: Metadata = {
   title: {
-    default: "Kob Store | E-Commerce Workshop",
+    default: "Tle Store | E-Commerce Workshop",
     template: "%s | E-Commerce Workshop",
   },
   description:

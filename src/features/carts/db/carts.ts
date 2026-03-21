@@ -16,14 +16,9 @@ interface UpdateCartInput {
 }
 
 export const getUserCart = async (userId: string | null) => {
-  "use cache";
-
   if (!userId) {
     redirect("/auth/signin");
   }
-
-  cacheLife("hours");
-  cacheTag(getCartTag(userId));
 
   try {
     const cart = await db.cart.findFirst({
@@ -77,14 +72,9 @@ export const getUserCart = async (userId: string | null) => {
 };
 
 export const getCartItemCount = async (userId: string | null) => {
-  "use cache";
-
   if (!userId) {
     redirect("/auth/signin");
   }
-
-  cacheLife("hours");
-  cacheTag(getCartTag(userId));
 
   try {
     const cart = await db.cart.findFirst({
