@@ -16,8 +16,7 @@ interface CartSummaryProps {
 }
 
 export default function CartSummary({ cart }: CartSummaryProps) {
-  // eslint-disable-next-line
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const [opCart, updateOpCart] = useOptimistic(
     cart,
     (state, action: "clear") => {

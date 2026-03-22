@@ -1,4 +1,4 @@
-import { UserType } from '@/types/user'
+import { UserType } from "@/types/user";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,71 +6,60 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import { Badge } from '@/components/ui/badge'
-import { SignoutButton, UserAvatarSmall, UserDropdownAvatar } from './user-comp'
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import {
+  SignoutButton,
+  UserAvatarSmall,
+  UserDropdownAvatar,
+} from "./user-comp";
 
 interface DesktopUserMenuProps {
-  user: UserType
+  user: UserType;
+  itemCount: number;
 }
 
-export default function DesktopUserMenu({ user }: DesktopUserMenuProps) {
+export default function DesktopUserMenu({ user, itemCount }: DesktopUserMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant='ghost'
-          size='icon'
-          className='size-8 rounded-full'
-        >
+        <Button variant="ghost" size="icon" className="size-8 rounded-full">
           <UserAvatarSmall user={user} />
         </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
-        align='end'
+        align="end"
         sideOffset={4} // px
-        className='w-56'
+        className="w-56"
       >
-        <DropdownMenuLabel className='flex flex-col items-center gap-2'>
+        <DropdownMenuLabel className="flex flex-col items-center gap-2">
           <UserDropdownAvatar user={user} />
           <span>สวัสดี, {user.name || user.email}</span>
         </DropdownMenuLabel>
 
-        <DropdownMenuItem
-          className='cursor-pointer'
-          asChild
-        >
-          <Link href='/profile'>โปรไฟล์ของฉัน</Link>
+        <DropdownMenuItem className="cursor-pointer" asChild>
+          <Link href="/profile">โปรไฟล์ของฉัน</Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem
-          className='cursor-pointer'
-          asChild
-        >
-          <Link href='/cart'>
+        <DropdownMenuItem className="cursor-pointer" asChild>
+          <Link href="/cart">
             <span>ตะกร้าของฉัน</span>
-            <Badge className='ml-auto'>0</Badge>
+            <Badge className="ml-auto">{itemCount}</Badge>
           </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem
-          className='cursor-pointer'
-          asChild
-        >
-          <Link href='/my-orders'>ประวัติการสั่งซื้อ</Link>
+        <DropdownMenuItem className="cursor-pointer" asChild>
+          <Link href="/my-orders">ประวัติการสั่งซื้อ</Link>
         </DropdownMenuItem>
 
-        {user.role === 'Admin' && (
+        {user.role === "Admin" && (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className='cursor-pointer'
-              asChild
-            >
-              <Link href='/admin'>หลังบ้าน</Link>
+            <DropdownMenuItem className="cursor-pointer" asChild>
+              <Link href="/admin">หลังบ้าน</Link>
             </DropdownMenuItem>
           </>
         )}
@@ -81,5 +70,6 @@ export default function DesktopUserMenu({ user }: DesktopUserMenuProps) {
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
-}
+  );
+};
+

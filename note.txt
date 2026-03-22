@@ -1,5 +1,5 @@
 day 11
-page 1301
+page 1505
 
 npx create-next-app@latest . --ts --tailwind --eslint --app --src-dir --import-alias "@/*" --yes
 --shadcn
