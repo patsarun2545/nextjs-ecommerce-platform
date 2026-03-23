@@ -7,7 +7,7 @@ import Form from "next/form";
 import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
-import { updatePaymentAction } from "../actions/orders";
+import { updatePaymentAction } from "../../../features/orders/actions/orders";
 import { useForm } from "@/hooks/use-form";
 
 interface PaymentFormModalProps {

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { authCheck } from "@/features/auths/db/auths";
-import OrderDetail from "@/features/orders/components/order-detail";
+import OrderDetail from "@/components/customer-page/orders/order-detail";
 import { getOrderById } from "@/features/orders/db/orders";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -32,7 +32,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
         <Button variant="outline" asChild>
           <Link href="/my-orders">
             <ArrowLeft size={16} />
-            <span>กลับไปหน้ารายการคำสั่งซื้อ</span>
+            <span>กลับไปหน้าประวัติการสั่งซื้อ</span>
           </Link>
         </Button>
       </div>

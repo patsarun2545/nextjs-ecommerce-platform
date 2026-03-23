@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { UserType } from "@/types/user";
 import { ShoppingBag } from "lucide-react";
 import Form from "next/form";
-import { checkoutAction } from "../actions/orders";
+import { checkoutAction } from "../../../features/orders/actions/orders";
 import { useForm } from "@/hooks/use-form";
 import ErrorMessage from "@/components/shared/error-message";
 

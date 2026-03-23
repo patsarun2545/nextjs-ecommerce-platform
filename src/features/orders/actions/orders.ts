@@ -94,3 +94,7 @@ export const updateOrderStatusAction = async (
         message: "อัพเดตสถานะคำสั่งซื้อสำเร็จ",
       };
 };
+
+export const cancelOrderAction = async (orderId: string) => {
+  return await cancelOrderStatus(orderId);
+};

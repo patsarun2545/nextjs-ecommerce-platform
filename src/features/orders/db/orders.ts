@@ -436,3 +436,47 @@ export const updateOrderStatus = async (input: UpdateOrderStatus) => {
     };
   }
 };
+
+export const getMyOrders = async (userId: string) => {
+  "use cache";
+
+  if (!userId) redirect("/auth/signin");
+
+  cacheLife("minutes");
+  cacheTag(getOrderGlobalTag());
+
+  try {
+    const orders = await db.order.findMany({
+      where: { customerId: userId },
+      orderBy: { createdAt: "desc" },
+      include: {
+        items: {
+          include: {
+            product: {
+              include: { images: true },
+            },
+          },
+        },
+      },
+    });
+
+    return orders.map((order) => ({
+      ...order,
+      createdAtFormatted: formatDate(order.createdAt),
+      paymentAtFormatted: order.paymentAt ? formatDate(order.paymentAt) : null,
+      totalItems: order.items.reduce((sum, item) => sum + item.quantity, 0),
+      items: order.items.map((item) => ({
+        ...item,
+        product: {
+          ...item.product,
+          mainImage: item.product.images.find((img) => img.isMain) ?? null,
+          lowStock: 5,
+          sku: item.productId.substring(0, 8).toUpperCase(),
+        },
+      })),
+    }));
+  } catch (error) {
+    console.error("Error getting my orders:", error);
+    return [];
+  }
+};

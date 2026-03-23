@@ -3,7 +3,7 @@ import SubmitBtn from "@/components/shared/submit-btn";
 import { Button } from "@/components/ui/button";
 import { Ban } from "lucide-react";
 import Form from "next/form";
-import { cancelOrderStatusAction } from "../actions/orders";
+import { cancelOrderStatusAction } from "../../../features/orders/actions/orders";
 import { useForm } from "@/hooks/use-form";
 
 interface CancelOrderModalProps {
