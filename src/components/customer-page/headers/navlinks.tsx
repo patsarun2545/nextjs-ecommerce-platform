@@ -12,33 +12,29 @@ const NAV_LINKS = [
 export const MobileNavLinks = () => (
   <div className='flex flex-col gap-2'>
     {NAV_LINKS.map((link, index) => (
-      <SheetClose
-        key={index}
-        asChild
-      >
-        <Button
-          variant='secondary'
-          size='lg'
-          asChild
+      <SheetClose key={index} asChild>
+        <Link
+          href={link.href}
+          className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100 transition-colors duration-150"
         >
-          <Link href={link.href}>{link.title}</Link>
-        </Button>
+          <span className="size-1.5 rounded-full bg-blue-400" />
+          {link.title}
+        </Link>
       </SheetClose>
     ))}
   </div>
 )
 
 export const DesktopNavLinks = () => (
-  <div className='flex items-center gap-1'>
+  <div className='flex items-center gap-0.5'>
     {NAV_LINKS.map((link, index) => (
-      <Button
+      <Link
         key={index}
-        variant='ghost'
-        size='sm'
-        asChild
+        href={link.href}
+        className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-blue-700 hover:bg-blue-50 transition-colors duration-150"
       >
-        <Link href={link.href}>{link.title}</Link>
-      </Button>
+        {link.title}
+      </Link>
     ))}
   </div>
 )

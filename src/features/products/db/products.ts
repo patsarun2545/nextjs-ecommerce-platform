@@ -407,3 +407,98 @@ export const changeProductStatus = async (
     };
   }
 };
+
+export const getProductsFiltered = async (params?: {
+  q?: string;
+  category?: string;
+  sort?: string;
+  priceRange?: string;
+  status?: string;
+}) => {
+  "use cache";
+
+  cacheLife("hours");
+  cacheTag(getProductGlobalTag());
+
+  try {
+    const where: any = {
+      status: "Active",
+    };
+
+    // Search
+    if (params?.q) {
+      where.title = {
+        contains: params.q,
+        mode: "insensitive",
+      };
+    }
+
+    // Category
+    if (params?.category && params.category !== "ทั้งหมด") {
+      where.category = {
+        name: params.category,
+        status: "Active",
+      };
+    }
+
+    // Price range
+    if (params?.priceRange) {
+      const [min, max] = params.priceRange.split("-").map(Number);
+      if (max) {
+        where.price = { gte: min, lte: max };
+      } else {
+        where.price = { gte: min };
+      }
+    }
+
+    // Stock status
+    if (params?.status === "พร้อมส่ง") {
+      where.stock = { gt: 5 };
+    } else if (params?.status === "เหลือน้อย") {
+      where.stock = { gt: 0, lte: 5 };
+    }
+
+    // Sort
+    let orderBy: any = { createdAt: "desc" };
+    if (params?.sort === "price_asc") orderBy = { price: "asc" };
+    if (params?.sort === "price_desc") orderBy = { price: "desc" };
+    if (params?.sort === "popular") orderBy = { sold: "desc" };
+
+    const products = await db.product.findMany({
+      where,
+      orderBy,
+      include: {
+        category: { select: { id: true, name: true, status: true } },
+        images: true,
+      },
+    });
+
+    return products.map((product) => {
+      const mainImage = product.images.find((image) => image.isMain);
+      return {
+        ...product,
+        lowStock: 5,
+        sku: product.id.substring(0, 8).toUpperCase(),
+        mainImage,
+      };
+    });
+  } catch (error) {
+    console.error("Error getting filtered products:", error);
+    return [];
+  }
+};
+
+export const getCategories = async () => {
+  "use cache";
+  cacheLife("hours");
+
+  try {
+    return await db.category.findMany({
+      where: { status: "Active" },
+      orderBy: { name: "asc" },
+      select: { id: true, name: true },
+    });
+  } catch {
+    return [];
+  }
+};

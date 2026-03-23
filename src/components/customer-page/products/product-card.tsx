@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import AddToCartButton from "@/features/carts/components/add-to-cart-button";
 import { formatPrice } from "@/lib/formatPrice";
@@ -18,87 +17,81 @@ export default function ProductCard({ product }: ProductCardProps) {
       : 0;
 
   return (
-    <Card className="group overflow-hidden transition-all duration-300 hover:border-primary/50 hover:shadow-md">
-      <Link href={`/products/${product.id}`}>
-        <div className="relative pt-[100%] overflow-hidden bg-muted-foreground">
-          {discount > 0 && (
-            <Badge className="absolute top-2 left-2 z-10 px-2 py-1">
-              -{Math.round(discount)}%
-            </Badge>
-          )}
+    <div className="group flex flex-col rounded-2xl border border-slate-100 bg-white overflow-hidden hover:border-blue-200 hover:shadow-xl hover:shadow-blue-100/50 transition-all duration-300">
+      {/* Image */}
+      <Link href={`/products/${product.id}`} className="relative block pt-[100%] bg-slate-50 overflow-hidden">
+        {discount > 0 && (
+          <span className="absolute top-2.5 left-2.5 z-10 px-2.5 py-1 rounded-lg bg-blue-600 text-white text-xs font-bold shadow-md">
+            -{Math.round(discount)}%
+          </span>
+        )}
 
-          <div className="absolute inset-0 size-full transition-transform duration-500 group-hover:scale-105">
-            <Image
-              alt={product.title}
-              src={product.mainImage?.url || "/images/no-product.png"}
-              fill
-              className="object-cover"
-            />
-          </div>
-
-          {product.stock <= 0 && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10">
-              <Badge variant="destructive" className="text=-sm px-3 py-1">
-                สินค้าหมด
-              </Badge>
-            </div>
-          )}
+        <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-105">
+          <Image
+            alt={product.title}
+            src={product.mainImage?.url || "/images/no-product.png"}
+            fill
+            className="object-cover"
+          />
         </div>
+
+        {product.stock <= 0 && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white/70 backdrop-blur-sm z-10">
+            <span className="px-3 py-1.5 rounded-lg bg-slate-800/80 text-white text-xs font-semibold">
+              สินค้าหมด
+            </span>
+          </div>
+        )}
       </Link>
 
-      <CardContent className="p-4">
-        <div className="space-y-2">
-          <Link href={`/products/${product.id}`}>
-            <h3 className="font-medium line-clamp-2 min-h-[18px] group-hover:text-primary transition-colors duration-200">
-              {product.title}
-            </h3>
-          </Link>
+      {/* Content */}
+      <div className="flex flex-col flex-1 p-4 gap-3">
+        <Link href={`/products/${product.id}`}>
+          <h3 className="text-sm font-semibold text-slate-800 line-clamp-2 leading-snug min-h-[36px] group-hover:text-blue-700 transition-colors duration-200">
+            {product.title}
+          </h3>
+        </Link>
 
-          <div className="flex justify-between items-baseline">
-            <div className="flex flex-col">
-              <span className="font-medium text-lg">
-                {formatPrice(product.price)}
-              </span>
-              {product.basePrice > product.price && (
-                <span className="text-sm line-through text-muted-foreground">
-                  {formatPrice(product.basePrice)}
-                </span>
-              )}
-            </div>
-
-            {product.stock > 0 ? (
-              <Badge
-                variant="outline"
-                className={cn(
-                  "transition-colors",
-                  product.stock <= product.lowStock
-                    ? "text-amber-500 border-amber-500"
-                    : "text-green-600 border-green-500",
-                )}
-              >
-                {product.stock <= product.lowStock ? "เหลือน้อย" : "พร้อมส่ง"}
-              </Badge>
-            ) : (
-              <Badge
-                variant="outline"
-                className="text-destructive border-destructive"
-              >
-                สินค้าหมด
-              </Badge>
+        {/* Price & Stock */}
+        <div className="flex items-end justify-between mt-auto">
+          <div>
+            <p className="text-lg font-extrabold text-slate-900 leading-none">
+              {formatPrice(product.price)}
+            </p>
+            {product.basePrice > product.price && (
+              <p className="text-xs line-through text-slate-400 mt-0.5">
+                {formatPrice(product.basePrice)}
+              </p>
             )}
           </div>
-        </div>
-      </CardContent>
 
-      <CardFooter className="p-3 gap-2">
+          {product.stock > 0 ? (
+            <span
+              className={cn(
+                "px-2 py-1 rounded-lg text-[10px] font-bold border",
+                product.stock <= product.lowStock
+                  ? "bg-amber-50 text-amber-600 border-amber-200"
+                  : "bg-green-50 text-green-600 border-green-200"
+              )}
+            >
+              {product.stock <= product.lowStock ? "เหลือน้อย" : "พร้อมส่ง"}
+            </span>
+          ) : (
+            <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-red-50 text-red-500 border border-red-200">
+              หมด
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="px-4 pb-4">
         <AddToCartButton
           productId={product.id}
           stock={product.stock}
-          className="w-full gap-1"
+          className="w-full gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md shadow-blue-100 border-0 transition-colors duration-150"
         />
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
-};
-
-
+}

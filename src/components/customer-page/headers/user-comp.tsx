@@ -1,37 +1,37 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { SheetClose } from '@/components/ui/sheet'
 import { useSignout } from '@/hooks/use-sign-out'
 import { UserType } from '@/types/user'
-import { Card, CardContent } from '@/components/ui/card'
 import Image from 'next/image'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { LogIn, UserPlus, LogOut } from 'lucide-react'
 
 interface UserCompProps {
   user: UserType
 }
 
 export const AuthButtons = () => (
-  <div className='flex justify-center gap-3'>
-    <Button
-      size='lg'
-      asChild
-    >
-      <SheetClose asChild>
-        <Link href='/auth/signup'>ลงทะเบียน</Link>
-      </SheetClose>
-    </Button>
-    <Button
-      variant='outline'
-      size='lg'
-      asChild
-    >
-      <SheetClose asChild>
-        <Link href='/auth/signin'>เข้าสู่ระบบ</Link>
-      </SheetClose>
-    </Button>
+  <div className='flex flex-col gap-3 px-4'>
+    <SheetClose asChild>
+      <Link
+        href='/auth/signup'
+        className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 active:bg-blue-800 transition-colors duration-150 shadow-md shadow-blue-200"
+      >
+        <UserPlus size={16} />
+        ลงทะเบียน
+      </Link>
+    </SheetClose>
+    <SheetClose asChild>
+      <Link
+        href='/auth/signin'
+        className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-blue-700 font-semibold hover:bg-blue-50 hover:border-blue-300 transition-colors duration-150"
+      >
+        <LogIn size={16} />
+        เข้าสู่ระบบ
+      </Link>
+    </SheetClose>
   </div>
 )
 
@@ -41,58 +41,56 @@ export const SignoutButton = ({ isMobile = false }) => {
   if (isMobile) {
     return (
       <SheetClose asChild>
-        <Button
-          variant='destructive'
-          size='lg'
+        <button
           disabled={isPending}
           onClick={handleSignout}
+          className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl bg-red-50 text-red-600 font-semibold border border-red-100 hover:bg-red-100 transition-colors duration-150 disabled:opacity-50"
         >
+          <LogOut size={16} />
           ออกจากระบบ
-        </Button>
+        </button>
       </SheetClose>
     )
   }
 
   return (
-    <Button
-      variant='destructive'
-      className='w-full mt-4'
+    <button
       disabled={isPending}
       onClick={handleSignout}
+      className="flex items-center justify-center gap-2 w-full px-3 py-2.5 mt-3 rounded-lg bg-red-50 text-red-600 text-sm font-medium border border-red-100 hover:bg-red-100 transition-colors duration-150 disabled:opacity-50"
     >
+      <LogOut size={14} />
       ออกจากระบบ
-    </Button>
+    </button>
   )
 }
 
 export const UserAvatar = ({ user }: UserCompProps) => (
   <div className='px-4'>
-    <Card className='border-primary/50'>
-      <CardContent className='flex flex-col items-center gap-3'>
-        {/* Picture */}
+    <div className='flex flex-col items-center gap-3 p-5 rounded-2xl bg-gradient-to-b from-blue-50 to-white border border-blue-100'>
+      <div className="relative">
         <Image
           alt={user.name || 'Profile'}
           src={user.picture || '/images/no-user.png'}
-          width={128}
-          height={128}
+          width={80}
+          height={80}
           priority
-          className='rounded-full border-2 border-primary object-cover'
+          className='rounded-full border-4 border-white shadow-lg shadow-blue-100 object-cover'
         />
-
-        {/* Name & Email */}
-        <h2 className='text-xl font-semibold'>{user.name || user.email}</h2>
-      </CardContent>
-    </Card>
+        <span className="absolute bottom-0 right-0 size-4 rounded-full bg-green-400 border-2 border-white" />
+      </div>
+      <div className="text-center">
+        <p className='text-base font-bold text-slate-800'>{user.name || user.email}</p>
+        {user.name && <p className='text-xs text-slate-500 mt-0.5'>{user.email}</p>}
+      </div>
+    </div>
   </div>
 )
 
 export const UserAvatarSmall = ({ user }: UserCompProps) => (
-  <Avatar className='border-2 border-primary'>
-    <AvatarImage
-      src={user.picture || undefined}
-      alt={user.name || 'User'}
-    />
-    <AvatarFallback className='bg-primary text-primary-foreground'>
+  <Avatar className='border-2 border-blue-200 shadow-sm'>
+    <AvatarImage src={user.picture || undefined} alt={user.name || 'User'} />
+    <AvatarFallback className='bg-gradient-to-br from-blue-600 to-blue-500 text-white text-xs font-bold'>
       {user.name
         ? user.name.slice(0, 2).toUpperCase()
         : user.email.slice(0, 2).toUpperCase()}
@@ -101,12 +99,9 @@ export const UserAvatarSmall = ({ user }: UserCompProps) => (
 )
 
 export const UserDropdownAvatar = ({ user }: UserCompProps) => (
-  <Avatar className='size-16 border-2 border-primary'>
-    <AvatarImage
-      src={user.picture || undefined}
-      alt={user.name || 'User'}
-    />
-    <AvatarFallback className='text-lg'>
+  <Avatar className='size-16 border-4 border-blue-100 shadow-md'>
+    <AvatarImage src={user.picture || undefined} alt={user.name || 'User'} />
+    <AvatarFallback className='text-lg bg-gradient-to-br from-blue-600 to-blue-500 text-white font-bold'>
       {user.name
         ? user.name.slice(0, 2).toUpperCase()
         : user.email.slice(0, 2).toUpperCase()}

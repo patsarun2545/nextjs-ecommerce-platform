@@ -1,87 +1,101 @@
-import { Button } from "@/components/ui/button";
-import { ArrowRight, ShoppingBag, Sparkle } from "lucide-react";
+import { ArrowRight, ShoppingBag, Sparkles, Shield, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Hero() {
   return (
-    <div className="relative w-full overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-muted-foreground via-muted to-primary/80 opacity-25" />
+    <div className="relative w-full overflow-hidden bg-white">
+      {/* Background pattern */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(37,99,235,0.12),transparent)]" />
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMxZDRlZDgiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0di00aC0ydjRoLTR2MmgxMHYtMmgtNHptMC0zMFYwaDJWNGgzdjJoLTVWNHptLTEyIDB2NGgtMlYySDkuMzc1QzguMDYyIDIgNyAzLjA2MiA3IDQuMzc1djQyLjI1QzcgNDcuOTM4IDguMDYyIDQ5IDkuMzc1IDQ5SDM2di0ySDkuMzc1QzkuMTY3IDQ3IDkgNDYuODMzIDkgNDYuNjI1VjQuMzc1QzkgNC4xNjcgOS4xNjcgNCA5LjM3NSA0SDI0VjB6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-40" />
 
-      <div className="container mx-auto relative px-4 py-16 md:py-24 lg:py-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <div className="container mx-auto relative px-4 py-10 md:py-14 lg:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="max-w-xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 rounded-full border border-primary/60">
-              <Sparkle size={14} />
-              <span>ยินดีต้อนรับสู้เว็บไซต์ Tle Store</span>
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 mb-5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-sm font-medium">
+              <Sparkles size={14} className="text-blue-500" />
+              <span>ยินดีต้อนรับสู่ Tle Store</span>
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-bold">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight text-slate-900">
               ช็อปสินค้าไอที
-              <span className="block mt-2 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              <span className="block mt-2 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-400 bg-clip-text text-transparent">
                 ราคาคุ้มค่า
               </span>
             </h1>
 
-            <p className="mt-6 text-lg text-muted-foreground">
+            <p className="mt-6 text-lg text-slate-500 leading-relaxed">
               ร้านค้าออนไลน์อันดับ 1 สำหรับสินค้าไอทีครบวงจร
               พร้อมบริการจัดส่งเร็วและราคาที่คุ้มค่า
             </p>
 
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <Button className="group shadow-lg shadow-primary/20" asChild>
-                <Link href="/products">
-                  <ShoppingBag size={20} />
-                  <span>ช็อปเลย</span>
-                  <ArrowRight
-                    size={16}
-                    className="opacity-70 transition-transform group-hover:translate-x-1"
-                  />
-                </Link>
-              </Button>
-              <Button
-                variant="outline"
-                className="border-primary/30 hover:border-primary/5 transition-colors"
-                asChild
-              >
-                <Link href="/about">เกี่ยวกับเรา</Link>
-              </Button>
+            {/* Feature pills */}
+            <div className="flex flex-wrap gap-2 mt-5">
+              {['รับประกัน 1 ปี', 'จัดส่งรวดเร็ว', 'ลดสูงสุด 50%'].map((feat) => (
+                <span key={feat} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-white border border-blue-100 text-slate-600 shadow-sm">
+                  <span className="size-1.5 rounded-full bg-blue-500" />
+                  {feat}
+                </span>
+              ))}
             </div>
+
+            <div className="mt-7 flex flex-col sm:flex-row gap-3">
+              <Link
+                href="/products"
+                className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 active:bg-blue-800 transition-colors duration-150 shadow-lg shadow-blue-200 group"
+              >
+                <ShoppingBag size={18} />
+                <span>ช็อปเลย</span>
+                <ArrowRight size={15} className="transition-transform duration-200 group-hover:translate-x-1" />
+              </Link>
+              <Link
+                href="/about"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border-2 border-blue-100 text-slate-700 font-semibold text-sm hover:border-blue-300 hover:bg-blue-50 transition-colors duration-150"
+              >
+                เกี่ยวกับเรา
+              </Link>
+            </div>
+
+
           </div>
 
           {/* Right Content */}
-          <div className="hidden md:block relative">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="size-[400px] lg:size-[500px] rounded-full bg-primary/10" />
-              <div className="absolute size-[320px] lg:size-[400px] rounded-full border-2 border-primary/20" />
+          <div className="hidden md:flex items-center justify-center relative">
+            {/* Decorative rings */}
+            <div className="absolute size-[420px] rounded-full bg-gradient-to-br from-blue-100 to-blue-50" />
+            <div className="absolute size-[340px] rounded-full border-2 border-blue-200/60 border-dashed animate-[spin_30s_linear_infinite]" />
+            <div className="absolute size-[260px] rounded-full border border-blue-300/40" />
+
+            {/* Product image */}
+            <div className="relative z-10 size-[360px] drop-shadow-2xl">
+              <Image
+                alt="Tech Gadgets"
+                src="/images/banner.png"
+                fill
+                className="object-contain hover:scale-105 transition-transform duration-700 ease-out"
+              />
             </div>
 
-            <div className="relative z-10 flex items-center">
-              <div className="relative size-[400px]">
-                <Image
-                  alt="Tech Gadgets"
-                  src="/images/banner.png"
-                  fill
-                  className="object-cover rounded-lg scale-110 hover:scale-105 hover:shadow-primary hover:shadow-md transition-all duration-700"
-                />
+            {/* Floating badges */}
+            <div className="absolute top-8 right-0 flex items-center gap-2 px-4 py-2.5 bg-white rounded-2xl shadow-lg border border-blue-50 z-20">
+              <div className="size-8 rounded-full bg-blue-100 flex items-center justify-center">
+                <Shield size={14} className="text-blue-600" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-slate-800">รับประกัน 1 ปีเต็ม</p>
+                <p className="text-[10px] text-slate-500">ทุกสินค้า</p>
+              </div>
+            </div>
 
-                <div className="absolute -top-5 -right-10 p-3 bg-card rounded-lg shadow-lg border border-border/70">
-                  <div className="flex items-center gap-2">
-                    <span className="size-3 rounded-full bg-blue-500" />
-                    <span className="text-xs font-medium">
-                      รับประกัน 1 ปีเต็ม
-                    </span>
-                  </div>
-                </div>
-
-                <div className="absolute -bottom-5 -left-10 p-3 bg-card rounded-lg shadow-lg border border-border/70">
-                  <div className="flex items-center gap-2">
-                    <span className="size-3 rounded-full bg-green-500" />
-                    <span className="text-xs font-medium">ลดสูงสุด 50%</span>
-                  </div>
-                </div>
+            <div className="absolute bottom-8 left-0 flex items-center gap-2 px-4 py-2.5 bg-white rounded-2xl shadow-lg border border-blue-50 z-20">
+              <div className="size-8 rounded-full bg-green-100 flex items-center justify-center">
+                <Zap size={14} className="text-green-600" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-slate-800">ลดสูงสุด 50%</p>
+                <p className="text-[10px] text-slate-500">ราคาพิเศษวันนี้</p>
               </div>
             </div>
           </div>
@@ -89,6 +103,4 @@ export default function Hero() {
       </div>
     </div>
   );
-};
-
-
+}

@@ -1,16 +1,8 @@
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { authCheck } from "@/features/auths/db/auths";
 import AdminOrderList from "@/features/orders/components/admin-order-list";
 import { getAllOrders } from "@/features/orders/db/orders";
-import { OrderStatus } from "@prisma/client";
-import Link from "next/link";
 import { redirect } from "next/navigation";
-
-interface AdminOrderPageProps {
-  searchParams: Promise<{ status?: string }>;
-}
 
 export default async function AdminOrderPage() {
   const user = await authCheck();
