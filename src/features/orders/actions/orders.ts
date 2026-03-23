@@ -72,7 +72,10 @@ export const cancelOrderStatusAction = async (
       };
 };
 
-export const updateOrderStatusAction = async (formData: FormData) => {
+export const updateOrderStatusAction = async (
+  _prevState: InitialFormState,
+  formData: FormData,
+) => {
   const data = {
     orderId: formData.get("order-id") as string,
     status: formData.get("status") as string,

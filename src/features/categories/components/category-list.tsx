@@ -109,114 +109,114 @@ export default function CategoryList({ categories }: CategoryListProps) {
               <div className="col-span-3 sm:col-span-2 text-center">Status</div>
               <div className="col-span-3 sm:col-span-2 text-right">Actions</div>
             </div>
-          </div>
-
-          <ScrollArea className="h-[350px] sm:h-[420px]">
-            {filteredCategories.length > 0 ? (
-              filteredCategories.map((category, index) => (
-                <div
-                  key={index}
-                  className="grid grid-cols-12 py-3 px-2 sm:px-4 border-t items-center hover:bg-gray-50 transition-colors duration-100 text-sm"
-                >
-                  <div className="col-span-1 hidden sm:block">{filteredCategories.length - index}</div>
-                  <div className="col-span-6 sm:col-span-5 truncate pr-2">
-                    {category.name}
-                  </div>
-                  <div className="col-span-2 text-center hidden sm:block">
-                    0
-                  </div>
-                  <div className="col-span-3 sm:col-span-2 text-center">
-                    <Badge
-                      variant={
-                        category.status === "Active" ? "default" : "destructive"
-                      }
-                      className="px-1 sm:px-2"
-                    >
-                      {category.status}
-                    </Badge>
-                  </div>
-                  <div className="col-span-3 sm:col-span-2 text-right">
-                    {/* Mobile Action Buttons */}
-                    <div className="flex justify-end gap-1 md:hidden">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="size-7"
-                        onClick={() => handleEditClick(category)}
-                      >
-                        <Pencil size={15} />
-                      </Button>
-                      {category.status === "Active" ? (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-7"
-                          onClick={() => handleDeleteClick(category)}
-                        >
-                          <Trash2 size={15} />
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-7"
-                          onClick={() => handleRestoreClick(category)}
-                        >
-                          <RefreshCcw size={15} />
-                        </Button>
-                      )}
+            <ScrollArea className="h-[350px] sm:h-[420px]">
+              {filteredCategories.length > 0 ? (
+                filteredCategories.map((category, index) => (
+                  <div
+                    key={index}
+                    className="grid grid-cols-12 py-3 px-2 sm:px-4 border-t items-center hover:bg-gray-50 transition-colors duration-100 text-sm"
+                  >
+                    <div className="col-span-1 hidden sm:block">{filteredCategories.length - index}</div>
+                    <div className="col-span-6 sm:col-span-5 truncate pr-2">
+                      {category.name}
                     </div>
-
-                    {/* Desktop Action Buttons */}
-                    <div className="hidden md:block">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
+                    <div className="col-span-2 text-center hidden sm:block">
+                      0
+                    </div>
+                    <div className="col-span-3 sm:col-span-2 text-center">
+                      <Badge
+                        variant={
+                          category.status === "Active" ? "default" : "destructive"
+                        }
+                        className="px-1 sm:px-2"
+                      >
+                        {category.status}
+                      </Badge>
+                    </div>
+                    <div className="col-span-3 sm:col-span-2 text-right">
+                      {/* Mobile Action Buttons */}
+                      <div className="flex justify-end gap-1 md:hidden">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-7"
+                          onClick={() => handleEditClick(category)}
+                        >
+                          <Pencil size={15} />
+                        </Button>
+                        {category.status === "Active" ? (
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="size-8"
+                            className="size-7"
+                            onClick={() => handleDeleteClick(category)}
                           >
-                            <MoreVertical size={16} />
+                            <Trash2 size={15} />
                           </Button>
-                        </DropdownMenuTrigger>
-
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() => handleEditClick(category)}
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-7"
+                            onClick={() => handleRestoreClick(category)}
                           >
-                            <Pencil size={15} />
-                            <span>Edit</span>
-                          </DropdownMenuItem>
+                            <RefreshCcw size={15} />
+                          </Button>
+                        )}
+                      </div>
 
-                          <DropdownMenuSeparator />
+                      {/* Desktop Action Buttons */}
+                      <div className="hidden md:block">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="size-8"
+                            >
+                              <MoreVertical size={16} />
+                            </Button>
+                          </DropdownMenuTrigger>
 
-                          {category.status === "Active" ? (
+                          <DropdownMenuContent align="end">
                             <DropdownMenuItem
-                              onClick={() => handleDeleteClick(category)}
+                              onClick={() => handleEditClick(category)}
                             >
-                              <Trash2 size={15} className="text-destructive" />
-                              <span className="text-destructive">Delete</span>
+                              <Pencil size={15} />
+                              <span>Edit</span>
                             </DropdownMenuItem>
-                          ) : (
-                            <DropdownMenuItem
-                              onClick={() => handleRestoreClick(category)}
-                            >
-                              <Trash2 size={15} className="text-green-600" />
-                              <span className="text-green-600">Restore</span>
-                            </DropdownMenuItem>
-                          )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+
+                            <DropdownMenuSeparator />
+
+                            {category.status === "Active" ? (
+                              <DropdownMenuItem
+                                onClick={() => handleDeleteClick(category)}
+                              >
+                                <Trash2 size={15} className="text-destructive" />
+                                <span className="text-destructive">Delete</span>
+                              </DropdownMenuItem>
+                            ) : (
+                              <DropdownMenuItem
+                                onClick={() => handleRestoreClick(category)}
+                              >
+                                <RefreshCcw size={15} className="text-green-600" />
+                                <span className="text-green-600">Restore</span>
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="py-8 text-center text-muted-foreground">
+                  No categories found matching your search
                 </div>
-              ))
-            ) : (
-              <div className="py-8 text-center text-muted-foreground">
-                No categories found matching your search
-              </div>
-            )}
-          </ScrollArea>
+              )}
+            </ScrollArea>
+          </div>
+
         </CardContent>
       </Card>
 

@@ -44,7 +44,12 @@ export default function RestoreProductModal({
           >
             Cancel
           </Button>
-          <SubmitBtn name="Restore" icon={RefreshCcw} pending={isPending} />
+          <SubmitBtn
+            name="Restore"
+            icon={RefreshCcw}
+            className="bg-green-600 hover:bg-green-600/80"
+            pending={isPending}
+          />
         </div>
       </Form>
     </Modal>

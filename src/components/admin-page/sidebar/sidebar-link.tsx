@@ -15,16 +15,20 @@ export default function SidebarLink({ href, icon, label, isActive, onClose }: Si
     <Button
       variant={isActive ? 'secondary' : 'ghost'}
       onClick={onClose}
-      asChild>
-      <Link href={href}
+      asChild
+    >
+      <Link
+        href={href}
         className={cn(
           'w-full justify-start gap-3 px-3',
           isActive
-            ? 'font-semibold bg-secondary text-secondary-foreground'
+            ? 'font-semibold'
             : 'text-muted-foreground hover:text-foreground'
-        )}>
+        )}
+      >
         {icon}
-        <span>{label}</span></Link>
+        <span>{label}</span>
+      </Link>
     </Button>
   )
 }
