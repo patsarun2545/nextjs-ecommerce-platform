@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { ProductType } from "@/types/product";
 import Link from "next/link";
+import Image from "next/image";
 
 const SORT_OPTIONS = [
   { label: "ล่าสุด", value: "newest" },
@@ -34,6 +35,108 @@ interface ProductsClientProps {
     category?: string; sort?: string; q?: string; price?: string; status?: string;
   };
 }
+
+// ── ย้ายออกมาข้างนอก component หลัก แล้วรับ props แทน ──────────────────────
+interface SidebarContentProps {
+  categories: string[];
+  activeCategory: string;
+  activePrice: string | undefined;
+  activeStatus: string | undefined;
+  onNavigate: (updates: Record<string, string | undefined>) => void;
+}
+
+function SidebarContent({
+  categories,
+  activeCategory,
+  activePrice,
+  activeStatus,
+  onNavigate,
+}: SidebarContentProps) {
+  return (
+    <div className="space-y-3">
+      {/* Categories */}
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="px-4 py-3 border-b border-slate-100 bg-slate-50">
+          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">หมวดหมู่</p>
+        </div>
+        <ul className="p-2 space-y-0.5">
+          {categories.map((cat) => {
+            const isActive = activeCategory === cat;
+            return (
+              <li key={cat}>
+                <button
+                  onClick={() => onNavigate({ category: cat })}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all duration-100 ${isActive
+                    ? "bg-blue-600 text-white font-semibold"
+                    : "text-slate-600 hover:bg-blue-50 hover:text-blue-700"
+                    }`}
+                >
+                  {cat}
+                  {isActive && <ChevronRight size={12} />}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      {/* Price */}
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="px-4 py-3 border-b border-slate-100 bg-slate-50">
+          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">ช่วงราคา</p>
+        </div>
+        <ul className="p-2 space-y-0.5">
+          {PRICE_RANGES.map((range) => {
+            const isActive = activePrice === range.value;
+            return (
+              <li key={range.value}>
+                <button
+                  onClick={() => onNavigate({ price: isActive ? undefined : range.value })}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-100 text-left ${isActive ? "bg-blue-50 text-blue-700 font-semibold" : "text-slate-600 hover:bg-slate-50"
+                    }`}
+                >
+                  <span className={`size-3.5 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${isActive ? "border-blue-600 bg-blue-600" : "border-slate-300"
+                    }`}>
+                    {isActive && <svg viewBox="0 0 8 6" className="size-2"><path d="M1 3l2 2 4-4" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+                  </span>
+                  {range.label}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      {/* Stock */}
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="px-4 py-3 border-b border-slate-100 bg-slate-50">
+          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">สถานะ</p>
+        </div>
+        <ul className="p-2 space-y-0.5">
+          {STOCK_STATUSES.map((s) => {
+            const isActive = activeStatus === s;
+            return (
+              <li key={s}>
+                <button
+                  onClick={() => onNavigate({ status: isActive ? undefined : s })}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-100 text-left ${isActive ? "bg-blue-50 text-blue-700 font-semibold" : "text-slate-600 hover:bg-slate-50"
+                    }`}
+                >
+                  <span className={`size-3.5 rounded border-2 flex items-center justify-center shrink-0 ${isActive ? "border-blue-600 bg-blue-600" : "border-slate-300"
+                    }`}>
+                    {isActive && <svg viewBox="0 0 8 6" className="size-2"><path d="M1 3l2 2 4-4" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+                  </span>
+                  {s}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
+  );
+}
+// ────────────────────────────────────────────────────────────────────────────
 
 export default function ProductsClient({ products, categories, searchParams }: ProductsClientProps) {
   const router = useRouter();
@@ -71,89 +174,14 @@ export default function ProductsClient({ products, categories, searchParams }: P
     searchParams?.price || searchParams?.status
   );
 
-  const SidebarContent = () => (
-    <div className="space-y-3">
-      {/* Categories */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <div className="px-4 py-3 border-b border-slate-100 bg-slate-50">
-          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">หมวดหมู่</p>
-        </div>
-        <ul className="p-2 space-y-0.5">
-          {categories.map((cat) => {
-            const isActive = activeCategory === cat;
-            return (
-              <li key={cat}>
-                <button
-                  onClick={() => navigate({ category: cat })}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all duration-100 ${isActive
-                      ? "bg-blue-600 text-white font-semibold"
-                      : "text-slate-600 hover:bg-blue-50 hover:text-blue-700"
-                    }`}
-                >
-                  {cat}
-                  {isActive && <ChevronRight size={12} />}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-
-      {/* Price */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <div className="px-4 py-3 border-b border-slate-100 bg-slate-50">
-          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">ช่วงราคา</p>
-        </div>
-        <ul className="p-2 space-y-0.5">
-          {PRICE_RANGES.map((range) => {
-            const isActive = activePrice === range.value;
-            return (
-              <li key={range.value}>
-                <button
-                  onClick={() => navigate({ price: isActive ? undefined : range.value })}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-100 text-left ${isActive ? "bg-blue-50 text-blue-700 font-semibold" : "text-slate-600 hover:bg-slate-50"
-                    }`}
-                >
-                  <span className={`size-3.5 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${isActive ? "border-blue-600 bg-blue-600" : "border-slate-300"
-                    }`}>
-                    {isActive && <svg viewBox="0 0 8 6" className="size-2"><path d="M1 3l2 2 4-4" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>}
-                  </span>
-                  {range.label}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-
-      {/* Stock */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <div className="px-4 py-3 border-b border-slate-100 bg-slate-50">
-          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">สถานะ</p>
-        </div>
-        <ul className="p-2 space-y-0.5">
-          {STOCK_STATUSES.map((s) => {
-            const isActive = activeStatus === s;
-            return (
-              <li key={s}>
-                <button
-                  onClick={() => navigate({ status: isActive ? undefined : s })}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-100 text-left ${isActive ? "bg-blue-50 text-blue-700 font-semibold" : "text-slate-600 hover:bg-slate-50"
-                    }`}
-                >
-                  <span className={`size-3.5 rounded border-2 flex items-center justify-center shrink-0 ${isActive ? "border-blue-600 bg-blue-600" : "border-slate-300"
-                    }`}>
-                    {isActive && <svg viewBox="0 0 8 6" className="size-2"><path d="M1 3l2 2 4-4" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>}
-                  </span>
-                  {s}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </div>
-  );
+  // props ที่ส่งให้ SidebarContent
+  const sidebarProps: SidebarContentProps = {
+    categories,
+    activeCategory,
+    activePrice,
+    activeStatus,
+    onNavigate: navigate,
+  };
 
   return (
     <main className={`min-h-screen bg-slate-50 transition-opacity duration-150 ${isPending ? "opacity-50 pointer-events-none" : ""}`}>
@@ -216,7 +244,7 @@ export default function ProductsClient({ products, categories, searchParams }: P
         <div className="flex gap-5">
           {/* Sidebar */}
           <aside className="hidden lg:block w-48 shrink-0">
-            <SidebarContent />
+            <SidebarContent {...sidebarProps} />
           </aside>
 
           {/* Main */}
@@ -286,7 +314,7 @@ export default function ProductsClient({ products, categories, searchParams }: P
                 <X size={13} className="text-slate-500" />
               </button>
             </div>
-            <div className="p-3 flex-1"><SidebarContent /></div>
+            <div className="p-3 flex-1"><SidebarContent {...sidebarProps} /></div>
           </div>
         </div>
       )}
@@ -312,7 +340,15 @@ function ListCard({ product }: { product: ProductType }) {
       <div className="relative size-20 shrink-0 rounded-lg overflow-hidden bg-slate-100 border border-slate-100">
         {discount > 0 && <span className="absolute top-1 left-1 z-10 px-1.5 py-0.5 rounded bg-blue-600 text-white text-[10px] font-bold">-{discount}%</span>}
         {product.mainImage?.url
-          ? <img src={product.mainImage.url} alt={product.title} className="size-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          ? (
+            <Image
+              src={product.mainImage.url}
+              alt={product.title}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              sizes="80px"
+            />
+          )
           : <div className="size-full bg-gradient-to-br from-blue-50 to-slate-100" />}
       </div>
       <div className="flex flex-1 flex-col justify-between min-w-0">
@@ -326,8 +362,8 @@ function ListCard({ product }: { product: ProductType }) {
             {product.basePrice > product.price && <span className="text-xs line-through text-slate-400">฿{product.basePrice.toLocaleString()}</span>}
           </div>
           <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${product.stock <= 0 ? "bg-red-50 text-red-500 border-red-100"
-              : product.stock <= 5 ? "bg-amber-50 text-amber-600 border-amber-100"
-                : "bg-green-50 text-green-600 border-green-100"}`}>
+            : product.stock <= 5 ? "bg-amber-50 text-amber-600 border-amber-100"
+              : "bg-green-50 text-green-600 border-green-100"}`}>
             {product.stock <= 0 ? "หมด" : product.stock <= 5 ? "เหลือน้อย" : "พร้อมส่ง"}
           </span>
         </div>

@@ -10,7 +10,7 @@ import { authCheck } from "@/features/auths/db/auths";
 import { canCreateProduct, canUpdateProduct } from "../permissions/products";
 import { redirect } from "next/navigation";
 import { deleteFromImageKit } from "@/lib/imageKit";
-import { ProductStatus } from "@prisma/client";
+import { Prisma, ProductStatus } from "@prisma/client";
 
 interface CreateProductInput {
   title: string;
@@ -421,7 +421,8 @@ export const getProductsFiltered = async (params?: {
   cacheTag(getProductGlobalTag());
 
   try {
-    const where: any = {
+    // ── แก้: ใช้ Prisma.ProductWhereInput แทน any ───────────────────────────
+    const where: Prisma.ProductWhereInput = {
       status: "Active",
     };
 
@@ -458,11 +459,12 @@ export const getProductsFiltered = async (params?: {
       where.stock = { gt: 0, lte: 5 };
     }
 
-    // Sort
-    let orderBy: any = { createdAt: "desc" };
+    // ── แก้: ใช้ Prisma.ProductOrderByWithRelationInput แทน any ─────────────
+    let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: "desc" };
     if (params?.sort === "price_asc") orderBy = { price: "asc" };
     if (params?.sort === "price_desc") orderBy = { price: "desc" };
     if (params?.sort === "popular") orderBy = { sold: "desc" };
+    // ────────────────────────────────────────────────────────────────────────
 
     const products = await db.product.findMany({
       where,

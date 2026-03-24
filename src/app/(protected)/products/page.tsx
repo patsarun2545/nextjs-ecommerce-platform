@@ -1,5 +1,4 @@
 import { getProductsFiltered, getCategories } from "@/features/products/db/products";
-import ProductCard from "@/components/customer-page/products/product-card";
 import ProductsClient from "@/components/customer-page/products/products-client";
 
 interface ProductsPageProps {

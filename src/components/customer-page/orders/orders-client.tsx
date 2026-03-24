@@ -7,6 +7,7 @@ import {
   ShoppingBag, ChevronRight, Package, Truck, CheckCircle2,
   XCircle, Clock, CreditCard, Search, X, Hash,
 } from "lucide-react";
+import Image from "next/image";
 
 type OrderStatus = "Pending" | "Paid" | "Shipped" | "Delivered" | "Cancelled";
 
@@ -212,7 +213,7 @@ function OrderCard({ order }: { order: Order }) {
           {preview.map((item) => (
             <div key={item.id} className="size-14 rounded-lg border-2 border-white bg-slate-100 overflow-hidden shadow-sm">
               {item.productImage
-                ? <img src={item.productImage} alt={item.productTitle} className="size-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                ? <Image src={item.productImage} alt={item.productTitle} className="size-full object-cover group-hover:scale-105 transition-transform duration-300" />
                 : <div className="size-full bg-gradient-to-br from-blue-50 to-slate-100 flex items-center justify-center">
                     <Package size={14} className="text-slate-300" />
                   </div>

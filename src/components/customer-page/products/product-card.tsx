@@ -1,4 +1,3 @@
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import AddToCartButton from "@/features/carts/components/add-to-cart-button";
 import { formatPrice } from "@/lib/formatPrice";
 import { cn } from "@/lib/utils";

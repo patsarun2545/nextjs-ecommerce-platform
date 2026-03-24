@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useTransition, useEffect } from "react";
+import { useState, useTransition } from "react";
 import { OrderStatus } from "@prisma/client";
 
 type DashboardStats = {
@@ -97,11 +97,10 @@ const orderStatusRows = (stats: DashboardStats) => [
 export default function DashboardClient({ stats }: DashboardClientProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
 
-  useEffect(() => {
-    setLastRefreshed(new Date());
-  }, []);
+  // ── แก้: กำหนด initial value ตรงๆ แทนการใช้ useEffect ────────────────────
+  const [lastRefreshed, setLastRefreshed] = useState<Date>(() => new Date());
+  // ────────────────────────────────────────────────────────────────────────────
 
   const handleRefresh = () => {
     startTransition(() => {
@@ -151,7 +150,7 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
       {/* Refresh bar */}
       <div className="flex items-center justify-between">
         <p className="text-xs text-muted-foreground">
-          {lastRefreshed ? `Last refreshed: ${lastRefreshed.toLocaleTimeString()}` : ""}
+          {`Last refreshed: ${lastRefreshed.toLocaleTimeString()}`}
         </p>
         <Button
           size="sm"
@@ -175,7 +174,7 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-0">
-            {stats.stalePendingOrders.map((order, i, arr) => (
+            {stats.stalePendingOrders.map((order, idx, arr) => (
               <div key={order.id}>
                 <div className="flex items-center justify-between py-2.5">
                   <div className="flex flex-col gap-0.5">
@@ -195,7 +194,7 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
                     </Button>
                   </div>
                 </div>
-                {i < arr.length - 1 && <Separator />}
+                {idx < arr.length - 1 && <Separator />}
               </div>
             ))}
             {stats.stalePendingCount > 5 && (
@@ -212,8 +211,8 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {statCards.map((card, i) => (
-          <Card key={i}>
+        {statCards.map((card, idx) => (
+          <Card key={idx}>
             <CardContent className="pt-5 flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-sm text-muted-foreground">{card.title}</p>
@@ -253,7 +252,7 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
                 <div className="col-span-1 text-right">View</div>
               </div>
               {stats.recentOrders.length > 0 ? (
-                stats.recentOrders.map((order, i) => (
+                stats.recentOrders.map((order) => (
                   <div
                     key={order.id}
                     className="grid grid-cols-12 py-3 px-4 border-t items-center text-sm hover:bg-gray-50 transition-colors duration-100"
@@ -299,8 +298,8 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
               <CardTitle className="text-base">Order Status</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-0">
-              {orderStatusRows(stats).map((row, i, arr) => (
-                <div key={i}>
+              {orderStatusRows(stats).map((row, idx, arr) => (
+                <div key={idx}>
                   <div className="flex items-center justify-between py-2.5">
                     <div className={`flex items-center gap-2 text-sm ${row.color}`}>
                       {row.icon}
@@ -308,7 +307,7 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
                     </div>
                     <span className="text-sm font-semibold">{row.count}</span>
                   </div>
-                  {i < arr.length - 1 && <Separator />}
+                  {idx < arr.length - 1 && <Separator />}
                 </div>
               ))}
             </CardContent>
@@ -326,7 +325,7 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-0">
-                {stats.lowStockProducts.map((product, i, arr) => (
+                {stats.lowStockProducts.map((product, idx, arr) => (
                   <div key={product.id}>
                     <div className="flex items-center justify-between py-2.5">
                       <span className="text-sm truncate pr-2">{product.title}</span>
@@ -340,7 +339,7 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
                         {product.stock === 0 ? "Out" : `${product.stock} left`}
                       </Badge>
                     </div>
-                    {i < arr.length - 1 && <Separator />}
+                    {idx < arr.length - 1 && <Separator />}
                   </div>
                 ))}
               </CardContent>
@@ -359,16 +358,16 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
             </CardHeader>
             <CardContent className="flex flex-col gap-0">
               {stats.topProducts.length > 0 ? (
-                stats.topProducts.map((product, i, arr) => (
+                stats.topProducts.map((product, idx, arr) => (
                   <div key={product.id}>
                     <div className="flex items-center justify-between py-2.5 gap-2">
                       <div className="flex items-center gap-2 min-w-0">
-                        <span className="text-xs text-muted-foreground w-4 flex-shrink-0">{i + 1}</span>
+                        <span className="text-xs text-muted-foreground w-4 flex-shrink-0">{idx + 1}</span>
                         <span className="text-sm truncate">{product.title}</span>
                       </div>
                       <span className="text-xs text-muted-foreground flex-shrink-0">{product.sold} sold</span>
                     </div>
-                    {i < arr.length - 1 && <Separator />}
+                    {idx < arr.length - 1 && <Separator />}
                   </div>
                 ))
               ) : (

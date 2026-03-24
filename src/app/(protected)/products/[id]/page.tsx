@@ -3,7 +3,7 @@ import { getProductById, getFeatureProducts } from "@/features/products/db/produ
 import { notFound } from "next/navigation";
 import ProductDetailClient from "@/components/customer-page/products/products-detail-client";
 import ProductCard from "@/components/customer-page/products/product-card";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import Link from "next/link";
 
 interface ProductDetailPageProps {
