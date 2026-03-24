@@ -235,6 +235,7 @@ export const getAllOrders = async (userId: string, status?: OrderStatus) => {
   try {
     const orders = await db.order.findMany({
       where: status ? { status } : {},
+      orderBy: { createdAt: "desc" },
       include: {
         customer: true,
         items: {

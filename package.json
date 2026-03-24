@@ -23,6 +23,7 @@
     "radix-ui": "^1.4.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "recharts": "^3.8.0",
     "resend": "^6.9.4",
     "shadcn": "^4.0.6",
     "sharp": "^0.34.5",

@@ -1,5 +1,5 @@
-export default function AminPage() {
-  return (
-    <div>AminPage</div>
-  )
+import { redirect } from "next/navigation";
+
+export default function AdminPage() {
+  redirect("/admin/dashboard");
 }
