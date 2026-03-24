@@ -1,4 +1,3 @@
-// app/my-orders/page.tsx
 import { authCheck } from "@/features/auths/db/auths";
 import { getMyOrders } from "@/features/orders/db/orders";
 import { redirect } from "next/navigation";

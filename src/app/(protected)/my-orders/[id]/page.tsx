@@ -5,6 +5,11 @@ import { getOrderById } from "@/features/orders/db/orders";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "รายละเอียดคำสั่งซื้อ",
+};
 
 interface OrderDetailPageProps {
   params: Promise<{ id: string }>;
@@ -13,12 +18,12 @@ interface OrderDetailPageProps {
 export default async function OrderDetailPage({ params }: OrderDetailPageProps) {
   const user = await authCheck();
   if (!user) {
-    redirect("/");
+    redirect("/auth/signin");
   }
 
   const { id } = await params;
 
-  const order = await getOrderById(user.id, id);
+  const order = await getOrderById(id);
 
   if (!order) {
     redirect("/my-orders");
@@ -31,8 +36,8 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
 
         <Button variant="outline" asChild>
           <Link href="/my-orders">
-            <ArrowLeft size={16} />
-            <span>กลับไปหน้าประวัติการสั่งซื้อ</span>
+            <ArrowLeft size={16} aria-hidden="true" />
+            <span>กลับหน้าประวัติการสั่งซื้อ</span>
           </Link>
         </Button>
       </div>
@@ -40,6 +45,4 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
       <OrderDetail order={order} />
     </div>
   );
-};
-
-
+}

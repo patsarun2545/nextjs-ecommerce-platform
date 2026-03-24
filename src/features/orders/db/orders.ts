@@ -164,70 +164,8 @@ export const createOrder = async (input: CheckoutInput) => {
   }
 };
 
-export const getOrderById = async (userId: string, orderId: string) => {
+export const getAllOrders = async (status?: OrderStatus) => {
   "use cache";
-
-  if (!userId) {
-    redirect("/auth/signin");
-  }
-
-  cacheLife("minutes");
-  cacheTag(getOrderIdTag(orderId));
-
-  try {
-    const order = await db.order.findUnique({
-      where: { id: orderId },
-      include: {
-        customer: true,
-        items: {
-          include: {
-            product: {
-              include: {
-                category: true,
-                images: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-    if (!order) {
-      return null;
-    }
-
-    const items = order.items.map((item) => {
-      const mainImage = item.product.images.find((image) => image.isMain);
-
-      return {
-        ...item,
-        product: {
-          ...item.product,
-          mainImage,
-          lowStock: 5,
-          sku: item.product.id.substring(0, 8).toUpperCase(),
-        },
-      };
-    });
-
-    return {
-      ...order,
-      items,
-      createdAtFormatted: formatDate(order.createdAt),
-      paymentAtFormatted: order.paymentAt ? formatDate(order.paymentAt) : null,
-    };
-  } catch (error) {
-    console.error(`Error getting order ${orderId}:`, error);
-    return null;
-  }
-};
-
-export const getAllOrders = async (userId: string, status?: OrderStatus) => {
-  "use cache";
-
-  if (!userId) {
-    redirect("/auth/signin");
-  }
 
   cacheLife("minutes");
   cacheTag(getOrderGlobalTag());
@@ -251,34 +189,76 @@ export const getAllOrders = async (userId: string, status?: OrderStatus) => {
       },
     });
 
-    const orderDetails = orders.map((order) => {
-      return {
-        ...order,
-        items: order.items.map((item) => {
-          const mainImage = item.product.images.find((image) => image.isMain);
-
-          return {
-            ...item,
-            product: {
-              ...item.product,
-              lowStock: 5,
-              sku: item.productId.substring(0, 8).toUpperCase(),
-              mainImage,
-            },
-          };
-        }),
-        createdAtFormatted: formatDate(order.createdAt),
-        paymentAtFormatted: order.paymentAt
-          ? formatDate(order.paymentAt)
-          : null,
-        totalItems: order.items.reduce((sum, item) => sum + item.quantity, 0),
-      };
-    });
-
-    return orderDetails;
+    return orders.map((order) => ({
+      ...order,
+      items: order.items.map((item) => {
+        const mainImage = item.product.images.find((image) => image.isMain);
+        return {
+          ...item,
+          product: {
+            ...item.product,
+            lowStock: 5,
+            sku: item.productId.substring(0, 8).toUpperCase(),
+            mainImage,
+          },
+        };
+      }),
+      createdAtFormatted: formatDate(order.createdAt),
+      paymentAtFormatted: order.paymentAt ? formatDate(order.paymentAt) : null,
+      totalItems: order.items.reduce((sum, item) => sum + item.quantity, 0),
+    }));
   } catch (error) {
     console.error("Error getting all orders:", error);
     return [];
+  }
+};
+
+export const getOrderById = async (orderId: string) => {
+  "use cache";
+
+  cacheLife("minutes");
+  cacheTag(getOrderIdTag(orderId));
+
+  try {
+    const order = await db.order.findUnique({
+      where: { id: orderId },
+      include: {
+        customer: true,
+        items: {
+          include: {
+            product: {
+              include: {
+                category: true,
+                images: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!order) return null;
+
+    return {
+      ...order,
+      items: order.items.map((item) => {
+        const mainImage = item.product.images.find((image) => image.isMain);
+        return {
+          ...item,
+          product: {
+            ...item.product,
+            mainImage,
+            lowStock: 5,
+            sku: item.product.id.substring(0, 8).toUpperCase(),
+          },
+        };
+      }),
+      createdAtFormatted: formatDate(order.createdAt),
+      paymentAtFormatted: order.paymentAt ? formatDate(order.paymentAt) : null,
+    };
+  } catch (error) {
+    console.error(`Error getting order ${orderId}:`, error);
+    return null;
   }
 };
 

@@ -1,5 +1,10 @@
 import { getProductsFiltered, getCategories } from "@/features/products/db/products";
 import ProductsClient from "@/components/customer-page/products/products-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "สินค้าทั้งหมด",
+};
 
 interface ProductsPageProps {
   searchParams?: Promise<{

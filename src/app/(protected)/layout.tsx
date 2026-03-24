@@ -1,9 +1,10 @@
 import HeaderCustomer from "@/components/customer-page/headers/header";
 import { authCheck } from "@/features/auths/db/auths";
 import { redirect } from "next/navigation";
+import type { ReactNode } from "react";
 
 interface MainLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export default async function ProtectedLayout({ children }: MainLayoutProps) {
@@ -19,5 +20,4 @@ export default async function ProtectedLayout({ children }: MainLayoutProps) {
       <main className="pt-16">{children}</main>
     </div>
   );
-};
-
+}

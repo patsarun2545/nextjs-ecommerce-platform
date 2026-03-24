@@ -6,7 +6,11 @@ import { redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import type { Metadata } from "next";
 
+export const metadata: Metadata = {
+  title: "ชำระเงิน",
+};
 
 export default async function CheckoutPage() {
   const user = await authCheck();
@@ -17,7 +21,7 @@ export default async function CheckoutPage() {
 
   const cart = await getUserCart(user.id);
 
-  if (!cart || cart.products.length === 0) {
+  if (!cart || cart.items.length === 0) {
     redirect("/cart");
   }
 
@@ -28,8 +32,8 @@ export default async function CheckoutPage() {
 
         <Button variant="outline" asChild>
           <Link href="/cart">
-            <ArrowLeft size={16} />
-            <span>กลับไปหน้าตะกล้าสินค้า</span>
+            <ArrowLeft size={16} aria-hidden="true" />
+            <span>กลับหน้าตะกร้าสินค้า</span>
           </Link>
         </Button>
       </div>
@@ -44,6 +48,4 @@ export default async function CheckoutPage() {
       </div>
     </div>
   );
-};
-
-
+}

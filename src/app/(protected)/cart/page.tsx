@@ -1,17 +1,38 @@
 import CartItems from "@/features/carts/components/cart-items";
 import EmptyCart from "@/features/carts/components/empty-cart";
 import { getUserCart } from "@/features/carts/db/carts";
-import { headers } from "next/headers";
+import { authCheck } from "@/features/auths/db/auths";
+import { redirect } from "next/navigation";
 import CartSummary from "@/features/carts/components/cart-summary";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "ตะกร้าของฉัน",
+};
 
 export default async function CartPage() {
-  const head = await headers();
-  const userId = head.get("x-user-id");
-  const cart = await getUserCart(userId);
+  const user = await authCheck();
+  if (!user) {
+    redirect("/auth/signin");
+  }
+
+  const cart = await getUserCart(user.id);
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">ตะกร้าของฉัน</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold">ตะกร้าของฉัน</h1>
+
+        <Button variant="outline" asChild>
+          <Link href="/products">
+            <ArrowLeft size={16} aria-hidden="true" />
+            <span>กลับหน้าสินค้า</span>
+          </Link>
+        </Button>
+      </div>
 
       {!cart || cart.items.length === 0 ? (
         <EmptyCart />
@@ -20,7 +41,6 @@ export default async function CartPage() {
           <div className="lg:col-span-2">
             <CartItems cart={cart} />
           </div>
-
           <div className="lg:col-span-1">
             <CartSummary cart={cart} />
           </div>
@@ -28,5 +48,4 @@ export default async function CartPage() {
       )}
     </div>
   );
-};
-
+}
