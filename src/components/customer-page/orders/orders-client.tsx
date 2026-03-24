@@ -21,27 +21,27 @@ interface Order {
 }
 
 const STATUS_CONFIG: Record<OrderStatus, { label: string; icon: React.ElementType; cls: string; step: number }> = {
-  Pending:   { label: "รอชำระเงิน",  icon: Clock,        cls: "text-amber-600 bg-amber-50 border-amber-200",   step: 0 },
-  Paid:      { label: "ชำระแล้ว",    icon: CreditCard,   cls: "text-blue-600 bg-blue-50 border-blue-200",       step: 1 },
-  Shipped:   { label: "จัดส่งแล้ว",  icon: Truck,        cls: "text-indigo-600 bg-indigo-50 border-indigo-200", step: 2 },
-  Delivered: { label: "ได้รับแล้ว",  icon: CheckCircle2, cls: "text-green-600 bg-green-50 border-green-200",    step: 3 },
-  Cancelled: { label: "ยกเลิกแล้ว", icon: XCircle,      cls: "text-red-500 bg-red-50 border-red-200",          step: -1 },
+  Pending: { label: "รอชำระเงิน", icon: Clock, cls: "text-amber-600 bg-amber-50 border-amber-200", step: 0 },
+  Paid: { label: "ชำระแล้ว", icon: CreditCard, cls: "text-blue-600 bg-blue-50 border-blue-200", step: 1 },
+  Shipped: { label: "จัดส่งแล้ว", icon: Truck, cls: "text-indigo-600 bg-indigo-50 border-indigo-200", step: 2 },
+  Delivered: { label: "ได้รับแล้ว", icon: CheckCircle2, cls: "text-green-600 bg-green-50 border-green-200", step: 3 },
+  Cancelled: { label: "ยกเลิกแล้ว", icon: XCircle, cls: "text-red-500 bg-red-50 border-red-200", step: -1 },
 };
 
 const STATUS_FILTERS = [
-  { label: "ทั้งหมด",     value: "all" },
-  { label: "รอชำระ",      value: "Pending" },
-  { label: "ชำระแล้ว",   value: "Paid" },
+  { label: "ทั้งหมด", value: "all" },
+  { label: "รอชำระ", value: "Pending" },
+  { label: "ชำระแล้ว", value: "Paid" },
   { label: "จัดส่งแล้ว", value: "Shipped" },
   { label: "ได้รับแล้ว", value: "Delivered" },
-  { label: "ยกเลิก",     value: "Cancelled" },
+  { label: "ยกเลิก", value: "Cancelled" },
 ];
 
 const STEPS = [
-  { label: "รอชำระ",     icon: Clock },
-  { label: "ชำระแล้ว",  icon: CreditCard },
-  { label: "จัดส่ง",    icon: Truck },
-  { label: "ได้รับแล้ว",icon: CheckCircle2 },
+  { label: "รอชำระ", icon: Clock },
+  { label: "ชำระแล้ว", icon: CreditCard },
+  { label: "จัดส่ง", icon: Truck },
+  { label: "ได้รับแล้ว", icon: CheckCircle2 },
 ];
 
 const fmt = (n: number) =>
@@ -114,17 +114,15 @@ export default function MyOrdersClient({ orders }: { orders: Order[] }) {
                 <button
                   key={f.value}
                   onClick={() => setActiveStatus(f.value)}
-                  className={`shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 ${
-                    isActive
-                      ? "bg-blue-600 text-white shadow-md shadow-blue-200"
-                      : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
-                  }`}
+                  className={`shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 ${isActive
+                    ? "bg-blue-600 text-white shadow-md shadow-blue-200"
+                    : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                    }`}
                 >
                   {f.label}
                   {count > 0 && (
-                    <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
-                      isActive ? "bg-white/25 text-white" : "bg-slate-200 text-slate-500"
-                    }`}>{count}</span>
+                    <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${isActive ? "bg-white/25 text-white" : "bg-slate-200 text-slate-500"
+                      }`}>{count}</span>
                   )}
                 </button>
               );
@@ -213,10 +211,14 @@ function OrderCard({ order }: { order: Order }) {
           {preview.map((item) => (
             <div key={item.id} className="size-14 rounded-lg border-2 border-white bg-slate-100 overflow-hidden shadow-sm">
               {item.productImage
-                ? <Image src={item.productImage} alt={item.productTitle} className="size-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                ? <Image src={item.productImage}
+                  width={80}
+                  height={80}
+                  alt={item.productTitle}
+                  className="size-full object-cover group-hover:scale-105 transition-transform duration-300" />
                 : <div className="size-full bg-gradient-to-br from-blue-50 to-slate-100 flex items-center justify-center">
-                    <Package size={14} className="text-slate-300" />
-                  </div>
+                  <Package size={14} className="text-slate-300" />
+                </div>
               }
             </div>
           ))}
@@ -260,21 +262,18 @@ function OrderCard({ order }: { order: Order }) {
               return (
                 <div key={i} className="flex items-center flex-1 last:flex-none">
                   <div className="flex flex-col items-center gap-1 min-w-0">
-                    <div className={`size-6 rounded-full flex items-center justify-center border-2 transition-all ${
-                      active ? "border-blue-600 bg-blue-600 shadow-sm shadow-blue-300"
-                      : done  ? "border-blue-300 bg-blue-50"
-                      : "border-slate-200 bg-white"
-                    }`}>
+                    <div className={`size-6 rounded-full flex items-center justify-center border-2 transition-all ${active ? "border-blue-600 bg-blue-600 shadow-sm shadow-blue-300"
+                      : done ? "border-blue-300 bg-blue-50"
+                        : "border-slate-200 bg-white"
+                      }`}>
                       <StepIcon size={11} className={active ? "text-white" : done ? "text-blue-400" : "text-slate-300"} />
                     </div>
-                    <span className={`text-[9px] font-semibold leading-none text-center ${
-                      active ? "text-blue-600" : done ? "text-blue-400" : "text-slate-300"
-                    }`}>{step.label}</span>
+                    <span className={`text-[9px] font-semibold leading-none text-center ${active ? "text-blue-600" : done ? "text-blue-400" : "text-slate-300"
+                      }`}>{step.label}</span>
                   </div>
                   {i < STEPS.length - 1 && (
-                    <div className={`h-0.5 flex-1 mx-1 mb-3 rounded-full transition-colors ${
-                      done && i < currentStep ? "bg-blue-300" : "bg-slate-200"
-                    }`} />
+                    <div className={`h-0.5 flex-1 mx-1 mb-3 rounded-full transition-colors ${done && i < currentStep ? "bg-blue-300" : "bg-slate-200"
+                      }`} />
                   )}
                 </div>
               );

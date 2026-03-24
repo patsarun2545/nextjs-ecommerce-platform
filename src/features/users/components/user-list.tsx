@@ -31,7 +31,7 @@ export default function UserList({ users }: UserListProps) {
   const filteredUsers = useMemo(() => {
     if (!searchTerm) return users;
     const lower = searchTerm.toLowerCase();
-    return users.filter(
+    return users.filter( 
       (u) =>
         u.name?.toLowerCase().includes(lower) ||
         u.email.toLowerCase().includes(lower)

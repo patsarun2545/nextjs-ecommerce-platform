@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { authCheck } from "@/features/auths/db/auths";
 import UserOrderDetail from "@/features/users/components/user-order-detail";
 import { getUserWithOrders } from "@/features/users/db/users";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Pencil } from "lucide-react";
 import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
 
@@ -36,12 +36,21 @@ export default async function AdminUserDetailPage({ params }: AdminUserDetailPag
           </p>
         </div>
 
-        <Button variant="outline" asChild>
-          <Link href="/admin/users">
-            <ArrowLeft size={16} />
-            <span>Back to Users</span>
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button asChild>
+            <Link href={`/admin/users/${id}/edit`}>
+              <Pencil size={16} />
+              <span>Edit</span>
+            </Link>
+          </Button>
+
+          <Button variant="outline" asChild>
+            <Link href="/admin/users">
+              <ArrowLeft size={16} />
+              <span>Back to Users</span>
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <UserOrderDetail user={targetUser} />
