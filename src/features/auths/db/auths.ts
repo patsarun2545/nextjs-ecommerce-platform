@@ -22,7 +22,7 @@ const generateJwtToken = async (userId: string) => {
   const secret = new TextEncoder().encode(process.env.JWT_SECRET_KEY)
   return await new SignJWT({ id: userId })
     .setProtectedHeader({ alg: 'HS256' })
-    .setIssuedAt() // iat: ms
+    .setIssuedAt() 
     .setExpirationTime('30d')
     .sign(secret)
 }

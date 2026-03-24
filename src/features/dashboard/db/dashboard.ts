@@ -102,7 +102,6 @@ export const getDashboardStats = async () => {
         select: { id: true, title: true, sold: true, price: true },
       }),
 
-      // Stale pending orders (แสดงแค่ 5 รายการล่าสุด)
       db.order.findMany({
         where: {
           status: "Pending",
@@ -115,7 +114,6 @@ export const getDashboardStats = async () => {
         },
       }),
 
-      // Count จริงทั้งหมด (ไม่ถูก take: 5 จำกัด)
       db.order.count({
         where: {
           status: "Pending",

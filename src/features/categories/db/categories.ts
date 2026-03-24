@@ -57,7 +57,6 @@ export const createCategory = async (input: CreateCategoryInput) => {
       };
     }
 
-    // Check category already exists from database
     const category = await db.category.findFirst({
       where: {
         name: data.name,
@@ -70,7 +69,6 @@ export const createCategory = async (input: CreateCategoryInput) => {
       };
     }
 
-    // Create new category
     const newCategory = await db.category.create({
       data: {
         name: data.name,
@@ -102,7 +100,6 @@ export const updateCategory = async (input: UpdateCategoryInput) => {
       };
     }
 
-    // Check if category exists
     const existsingCategory = await db.category.findUnique({
       where: {
         id: input.id,
@@ -115,7 +112,6 @@ export const updateCategory = async (input: UpdateCategoryInput) => {
       };
     }
 
-    // Check if another category with the same name exists
     const duplicateCategory = await db.category.findFirst({
       where: {
         name: data.name,
@@ -131,7 +127,6 @@ export const updateCategory = async (input: UpdateCategoryInput) => {
       };
     }
 
-    // Update category
     const updatedCategory = await db.category.update({
       where: {
         id: input.id,
@@ -161,7 +156,6 @@ export const changeCategoryStatus = async (
   }
 
   try {
-    // Check if category exists
     const existsCategory = await db.category.findUnique({
       where: { id },
     });
@@ -172,17 +166,15 @@ export const changeCategoryStatus = async (
       };
     }
 
-    // if status is already
     if (existsCategory.status === status) {
       return {
         message: `Category is already ${status.toLowerCase()}`,
       };
     }
 
-    // Update status
     const updatedCategory = await db.category.update({
-      where: { id }, // id: id
-      data: { status }, // status: status
+      where: { id },
+      data: { status },
     });
 
     revalidateCategoryCache(updatedCategory.id);

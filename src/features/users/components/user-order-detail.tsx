@@ -3,17 +3,11 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatPrice } from "@/lib/formatPrice";
 import { getStatusColor } from "@/lib/utils";
 import formatDate from "@/lib/formatDate";
@@ -23,12 +17,13 @@ import {
   Phone,
   ShoppingBag,
   Eye,
-  User,
   Calendar,
   Package,
+  Search,
 } from "lucide-react";
 import Link from "next/link";
 import { OrderStatus } from "@prisma/client";
+import { useState, useMemo } from "react";
 
 type OrderItem = {
   id: string;
@@ -67,173 +62,234 @@ interface UserOrderDetailProps {
   user: UserWithOrders;
 }
 
+const STATUS_TABS = ["all", "pending", "paid", "shipped", "delivered", "cancelled"] as const;
+
 export default function UserOrderDetail({ user }: UserOrderDetailProps) {
+  const [activeTab, setActiveTab] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+
   const totalSpent = user.orders
     .filter((o) => o.status !== "Cancelled")
     .reduce((sum, o) => sum + o.totalAmount, 0);
 
+  const cancelledCount = user.orders.filter(
+    (o) => o.status === "Cancelled"
+  ).length;
+
+  const filteredOrders = useMemo(() => {
+    let result = [...user.orders];
+
+    if (activeTab !== "all") {
+      result = result.filter(
+        (o) => o.status.toLowerCase() === activeTab.toLowerCase()
+      );
+    }
+
+    if (searchTerm) {
+      result = result.filter((o) =>
+        o.orderNumber.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    return result;
+  }, [user.orders, activeTab, searchTerm]);
+
+  const infoFields = [
+    { icon: <Mail size={13} />, label: "Email", value: user.email },
+    {
+      icon: <Phone size={13} />,
+      label: "Phone",
+      value: user.tel ?? "Not provided",
+    },
+    {
+      icon: <MapPin size={13} />,
+      label: "Address",
+      value: user.address ?? "Not provided",
+    },
+    {
+      icon: <Calendar size={13} />,
+      label: "Joined",
+      value: formatDate(user.createdAt),
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
-      {/* Left */}
-      <div className="flex flex-col gap-6">
-
-        {/* Profile */}
+      {/* Left — Profile card */}
+      <div className="flex flex-col gap-4">
         <Card>
-          <CardHeader className="border-b pb-4">
-            <CardTitle className="text-lg">User Profile</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-5 flex flex-col items-center gap-3">
-            <Avatar className="size-16">
-              <AvatarImage src={user.picture ?? undefined} />
-              <AvatarFallback className="text-xl">
-                {(user.name ?? user.email).charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="text-center">
-              <p className="font-semibold">{user.name ?? "—"}</p>
-              <p className="text-sm text-muted-foreground">{user.email}</p>
-            </div>
-            <div className="flex gap-2">
-              <Badge variant={user.role === "Admin" ? "default" : "secondary"}>
-                {user.role}
-              </Badge>
-              <Badge
-                className={
-                  user.status === "Active"
-                    ? "bg-green-100 text-green-700 hover:bg-green-100"
-                    : "bg-red-100 text-red-700 hover:bg-red-100"
-                }
-              >
-                {user.status}
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Information */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center gap-2">
-              <div className="size-7 rounded-md bg-blue-50 flex items-center justify-center">
-                <User size={14} className="text-blue-600" />
+          <CardContent className="pt-5 pb-5">
+            <div className="flex items-center gap-3 mb-4">
+              <Avatar className="size-12 shrink-0">
+                <AvatarImage src={user.picture ?? undefined} />
+                <AvatarFallback className="text-base">
+                  {(user.name ?? user.email).charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="min-w-0">
+                <p className="font-semibold text-sm leading-snug truncate">
+                  {user.name ?? "—"}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {user.email}
+                </p>
+                <div className="flex gap-1.5 mt-1.5 flex-wrap">
+                  <Badge
+                    variant={user.role === "Admin" ? "default" : "secondary"}
+                    className="text-xs px-2 py-0"
+                  >
+                    {user.role}
+                  </Badge>
+                  <Badge
+                    className={`text-xs px-2 py-0 ${
+                      user.status === "Active"
+                        ? "bg-green-100 text-green-700 hover:bg-green-100"
+                        : "bg-red-100 text-red-700 hover:bg-red-100"
+                    }`}
+                  >
+                    {user.status}
+                  </Badge>
+                </div>
               </div>
-              Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-0">
-            {[
-              { icon: <Mail size={13} />, label: "Email", value: user.email },
-              { icon: <Phone size={13} />, label: "Phone", value: user.tel ?? "Not provided" },
-              { icon: <MapPin size={13} />, label: "Address", value: user.address ?? "Not provided" },
-              { icon: <Calendar size={13} />, label: "Joined", value: formatDate(user.createdAt) },
-            ].map((field, i, arr) => (
-              <div key={i}>
-                <div className="flex items-start gap-3 py-3">
-                  <span className="text-muted-foreground mt-0.5">{field.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-muted-foreground mb-0.5">{field.label}</p>
-                    <p className="text-sm font-medium break-words">{field.value}</p>
+            </div>
+
+            <Separator className="mb-4" />
+
+            <div className="flex flex-col gap-2.5">
+              {infoFields.map((field, i) => (
+                <div key={i} className="flex items-start gap-2.5">
+                  <span className="text-muted-foreground mt-0.5 shrink-0">
+                    {field.icon}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[11px] text-muted-foreground leading-none mb-0.5">
+                      {field.label}
+                    </p>
+                    <p className="text-sm font-medium break-words leading-snug">
+                      {field.value}
+                    </p>
                   </div>
                 </div>
-                {i < arr.length - 1 && <Separator />}
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+              ))}
+            </div>
 
-        {/* Order Summary */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Order Summary</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-3">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Total Orders</span>
-              <span>{user.orders.length}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Cancelled</span>
-              <span>{user.orders.filter((o) => o.status === "Cancelled").length}</span>
-            </div>
-            <Separator />
-            <div className="flex justify-between font-bold text-base">
-              <span>Total Spent</span>
-              <span>{formatPrice(totalSpent)}</span>
+            <Separator className="my-4" />
+
+            {/* Stats row */}
+            <div className="grid grid-cols-3 gap-2 text-center">
+              {[
+                { value: user.orders.length, label: "Orders" },
+                { value: cancelledCount, label: "Cancelled" },
+                { value: formatPrice(totalSpent), label: "Spent" },
+              ].map((stat, i) => (
+                <div key={i} className="rounded-lg bg-muted/50 py-2 px-1">
+                  <p className="text-sm font-semibold leading-snug truncate">
+                    {stat.value}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Right */}
+      {/* Right — Order History */}
       <div className="lg:col-span-2">
         <Card>
-          <CardHeader className="border-b pb-4">
-            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+          <CardHeader className="pb-4">
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 mb-3">
               <CardTitle className="text-lg">Order History</CardTitle>
-              <Badge variant="secondary">
+              <Badge variant="secondary" className="w-fit">
                 <Package size={13} className="mr-1" />
                 {user.orders.length} orders
               </Badge>
             </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            {user.orders.length === 0 ? (
-              <div className="py-16 text-center text-muted-foreground">
-                <ShoppingBag size={36} className="mx-auto mb-3 opacity-30" />
-                <p className="text-sm">No orders yet</p>
+
+            {/* Tabs */}
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="grid grid-cols-6 mb-3">
+                {STATUS_TABS.map((tab) => (
+                  <TabsTrigger key={tab} value={tab} className="capitalize text-xs">
+                    {tab === "all" ? "All" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+
+              {/* Search */}
+              <div className="relative">
+                <Search
+                  size={14}
+                  className="absolute left-2.5 top-2.5 text-muted-foreground"
+                />
+                <Input
+                  placeholder="Search by order number..."
+                  className="pl-8 h-9 text-sm"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
               </div>
-            ) : (
-              <>
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-muted/50">
-                      <TableHead className="pl-4">Order #</TableHead>
-                      <TableHead className="hidden sm:table-cell">Date</TableHead>
-                      <TableHead className="hidden sm:table-cell text-center">Items</TableHead>
-                      <TableHead className="text-right">Amount</TableHead>
-                      <TableHead className="text-center">Status</TableHead>
-                      <TableHead className="text-right pr-4">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                </Table>
-                <ScrollArea className="h-[480px]">
-                  <Table>
-                    <TableBody>
-                      {user.orders.map((order, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="pl-4 font-medium text-sm">
-                            {order.orderNumber}
-                          </TableCell>
-                          <TableCell className="hidden sm:table-cell text-muted-foreground text-sm">
-                            {formatDate(order.createdAt)}
-                          </TableCell>
-                          <TableCell className="hidden sm:table-cell text-center text-sm">
-                            {order.totalItems}
-                          </TableCell>
-                          <TableCell className="text-right font-medium text-sm">
-                            {formatPrice(order.totalAmount)}
-                          </TableCell>
-                          <TableCell className="text-center">
-                            <Badge className={getStatusColor(order.status)}>
-                              {order.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-right pr-4">
-                            <Button size="sm" variant="outline" asChild>
-                              <Link href={`/admin/orders/${order.id}`}>
-                                <Eye size={14} />
-                                <span className="hidden sm:inline">View</span>
-                              </Link>
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </ScrollArea>
-              </>
-            )}
+            </Tabs>
+          </CardHeader>
+
+          <CardContent className="pt-0">
+            <div className="border rounded-md overflow-hidden">
+              {/* Table header */}
+              <div className="grid grid-cols-12 bg-muted py-3 px-4 text-xs font-medium text-muted-foreground">
+                <div className="col-span-4 sm:col-span-3">Order #</div>
+                <div className="col-span-3 hidden sm:block">Date</div>
+                <div className="col-span-1 hidden sm:block text-center">Items</div>
+                <div className="col-span-2 hidden sm:block text-right pr-2">Amount</div>
+                <div className="col-span-5 sm:col-span-2 text-center">Status</div>
+                <div className="col-span-3 sm:col-span-1 text-right">Actions</div>
+              </div>
+
+              {/* Rows */}
+              <ScrollArea className="h-[380px]">
+                {filteredOrders.length > 0 ? (
+                  filteredOrders.map((order, index) => (
+                    <div
+                      key={index}
+                      className="grid grid-cols-12 py-3 px-4 border-t items-center hover:bg-muted/30 transition-colors duration-100 text-sm"
+                    >
+                      <div className="col-span-4 sm:col-span-3 font-medium truncate pr-2">
+                        {order.orderNumber}
+                      </div>
+                      <div className="col-span-3 hidden sm:block text-muted-foreground truncate pr-2">
+                        {formatDate(order.createdAt)}
+                      </div>
+                      <div className="col-span-1 hidden sm:block text-center text-muted-foreground">
+                        {order.totalItems}
+                      </div>
+                      <div className="col-span-2 hidden sm:block text-right font-medium pr-2">
+                        {formatPrice(order.totalAmount)}
+                      </div>
+                      <div className="col-span-5 sm:col-span-2 text-center">
+                        <Badge className={getStatusColor(order.status)}>
+                          {order.status}
+                        </Badge>
+                      </div>
+                      <div className="col-span-3 sm:col-span-1 text-right">
+                        <Button size="sm" variant="outline" asChild>
+                          <Link href={`/admin/orders/${order.id}`}>
+                            <Eye size={14} />
+                            <span className="hidden sm:inline ml-1">View</span>
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="py-16 text-center text-muted-foreground">
+                    <ShoppingBag size={36} className="mx-auto mb-3 opacity-30" />
+                    <p className="text-sm">No orders found</p>
+                  </div>
+                )}
+              </ScrollArea>
+            </div>
           </CardContent>
         </Card>
       </div>

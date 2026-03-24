@@ -30,7 +30,6 @@ export default function PaymentFormModal({
 
     if (!file) return;
 
-    // 5MB
     if (file.size > 5 * 1024 * 1024) {
       toast.error("ไฟล์มีขนาดใหญ่เกินไป (ไม่เกิน 5MB)");
       return;

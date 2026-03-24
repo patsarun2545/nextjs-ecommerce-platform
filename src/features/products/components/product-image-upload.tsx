@@ -64,11 +64,9 @@ export default function ProductImageUpload({
     const files = Array.from(event.target.files || []);
     if (files.length === 0) return;
 
-    // Filter only image files
     const imageFiles = files.filter((file) => file.type.startsWith("image/"));
     if (imageFiles.length === 0) return;
 
-    // Create preview URLs
     const newPreviewUrls = imageFiles.map((file) => URL.createObjectURL(file));
     setPreviewUrls((prev) => [...prev, ...newPreviewUrls]);
     setSelectedFile((prev) => [...prev, ...imageFiles]);
@@ -81,7 +79,6 @@ export default function ProductImageUpload({
       setMainImageIndex(0);
     }
 
-    // Reset Input
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }

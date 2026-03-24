@@ -1,6 +1,5 @@
 "use client";
 
-// app/products/[id]/product-detail-client.tsx
 import { useState } from "react";
 import AddToCartButton from "@/features/carts/components/add-to-cart-button";
 import { formatPrice } from "@/lib/formatPrice";

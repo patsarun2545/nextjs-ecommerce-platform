@@ -88,9 +88,7 @@ export const getProductById = async (id: string) => {
       return null;
     }
 
-    // หารูปภาพหลักของสินค้า
     const mainImage = product.images.find((image) => image.isMain);
-    // หา index ของรูปภาพหลัก
     const mainImageIndex = mainImage
       ? product.images.findIndex((image) => image.isMain)
       : 0;
@@ -167,7 +165,6 @@ export const createProduct = async (input: CreateProductInput) => {
       };
     }
 
-    // Check if category exists
     const category = await db.category.findUnique({
       where: {
         id: data.categoryId,
@@ -181,7 +178,6 @@ export const createProduct = async (input: CreateProductInput) => {
       };
     }
 
-    // Create new product
     const newProduct = await db.$transaction(async (prisma) => {
       const product = await prisma.product.create({
         data: {
@@ -280,7 +276,6 @@ export const updateProduct = async (
     }
 
     const updatedProduct = await db.$transaction(async (prisma) => {
-      // 1. อัพเดทข้อมูลสินค้า
       const product = await prisma.product.update({
         where: { id: input.id },
         data: {
@@ -294,7 +289,6 @@ export const updateProduct = async (
         },
       });
 
-      // 2. ลบรูปภาพที่ถูกกเลือกให้ลบจากฐานข้อมูล
       if (input.deletedImageIds && input.deletedImageIds.length > 0) {
         await prisma.productImage.deleteMany({
           where: {
@@ -306,7 +300,6 @@ export const updateProduct = async (
         });
       }
 
-      // 3. เซ็ต isMain ให้เป็น false ทั้งหมด
       await prisma.productImage.updateMany({
         where: {
           productId: product.id,
@@ -316,7 +309,6 @@ export const updateProduct = async (
         },
       });
 
-      // 4. เพิ่มรูปภาพใหม่เข้าไป
       if (input.images && input.images.length > 0) {
         await Promise.all(
           input.images.map((image) => {
@@ -332,7 +324,6 @@ export const updateProduct = async (
         );
       }
 
-      // 5. ค้นหารูปทั้งหมดและตั้งค่าภาพหลัก
       const allImages = await prisma.productImage.findMany({
         where: {
           productId: product.id,
@@ -421,12 +412,10 @@ export const getProductsFiltered = async (params?: {
   cacheTag(getProductGlobalTag());
 
   try {
-    // ── แก้: ใช้ Prisma.ProductWhereInput แทน any ───────────────────────────
     const where: Prisma.ProductWhereInput = {
       status: "Active",
     };
 
-    // Search
     if (params?.q) {
       where.title = {
         contains: params.q,
@@ -434,7 +423,6 @@ export const getProductsFiltered = async (params?: {
       };
     }
 
-    // Category
     if (params?.category && params.category !== "ทั้งหมด") {
       where.category = {
         name: params.category,
@@ -442,7 +430,6 @@ export const getProductsFiltered = async (params?: {
       };
     }
 
-    // Price range
     if (params?.priceRange) {
       const [min, max] = params.priceRange.split("-").map(Number);
       if (max) {
@@ -452,19 +439,16 @@ export const getProductsFiltered = async (params?: {
       }
     }
 
-    // Stock status
     if (params?.status === "พร้อมส่ง") {
       where.stock = { gt: 5 };
     } else if (params?.status === "เหลือน้อย") {
       where.stock = { gt: 0, lte: 5 };
     }
 
-    // ── แก้: ใช้ Prisma.ProductOrderByWithRelationInput แทน any ─────────────
     let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: "desc" };
     if (params?.sort === "price_asc") orderBy = { price: "asc" };
     if (params?.sort === "price_desc") orderBy = { price: "desc" };
     if (params?.sort === "popular") orderBy = { sold: "desc" };
-    // ────────────────────────────────────────────────────────────────────────
 
     const products = await db.product.findMany({
       where,

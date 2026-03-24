@@ -1,10 +1,8 @@
 import { z } from "zod";
 
-// Define Constants
 const MIN_TITLE_LENGTH = 3;
 const MIN_DESC_LENGTH = 10;
 
-// Define Error Message
 const ERROR_MESSAGE = {
   title: `Product title must be at least ${MIN_TITLE_LENGTH} characters`,
   description: `Description must be at least ${MIN_DESC_LENGTH} characters`,
@@ -14,7 +12,6 @@ const ERROR_MESSAGE = {
   stock: "Stock price must be a positive number",
 };
 
-// Create product schema
 export const productSchema = z.object({
   title: z.string().min(MIN_TITLE_LENGTH, { message: ERROR_MESSAGE.title }),
 

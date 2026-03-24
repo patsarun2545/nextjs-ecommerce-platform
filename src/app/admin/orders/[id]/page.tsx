@@ -12,7 +12,7 @@ interface AdminOrderDetailPageProps {
 
 export default async function AdminOrderDetailPage({ params }: AdminOrderDetailPageProps) {
   const { id } = await params
-  const order = await getOrderById(id)  // ไม่ต้องส่ง userId แล้ว
+  const order = await getOrderById(id)
   if (!order) redirect("/admin/orders")
 
   return (
@@ -21,12 +21,21 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
         title={`Order #${order.orderNumber}`}
         description={`Created on ${order.createdAtFormatted}`}
         actions={
-          <Button variant="outline" asChild>
-            <Link href="/admin/orders">
-              <ArrowLeft size={16} />
-              Back to Orders
-            </Link>
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" asChild>
+              <Link href="/admin/orders">
+                <ArrowLeft size={16} />
+                Back to Orders
+              </Link>
+            </Button>
+
+            <Button variant="outline" asChild>
+              <Link href={`/admin/users/${order.customerId}`}>
+                <ArrowLeft size={16} />
+                Back to User Orders
+              </Link>
+            </Button>
+          </div>
         }
       />
       <AdminOrderDetail order={order} />

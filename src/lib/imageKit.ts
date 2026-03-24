@@ -15,14 +15,12 @@ export const uploadToImageKit = async (file: File, label: string) => {
       };
     }
 
-    // Check File Size
     if (file.size > 5 * 1024 * 1024) {
       return {
         message: "File size exceeds 5MB limit",
       };
     }
 
-    // Read File Buffer
     const buffer = await file.arrayBuffer();
 
     const processedImageBuffer = await sharp(Buffer.from(buffer))

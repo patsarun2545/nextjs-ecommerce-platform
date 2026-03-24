@@ -1,6 +1,5 @@
 "use client";
 
-// app/my-orders/my-orders-client.tsx
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -178,7 +177,6 @@ export default function MyOrdersClient({ orders }: { orders: Order[] }) {
   );
 }
 
-// ── Order Card ─────────────────────────────────────────────────────────
 function OrderCard({ order }: { order: Order }) {
   const cfg = STATUS_CONFIG[order.status];
   const Icon = cfg.icon;

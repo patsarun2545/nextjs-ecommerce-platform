@@ -19,7 +19,6 @@ const isValidEmailDomain = (email: string) => {
   return VALID_DOMAINS.includes(domain);
 };
 
-// ── Admin: แก้ไข User ────────────────────────────────────────────────────────
 export const adminUpdateUserSchema = z.object({
   name: z.string().min(3, { message: "ชื่อต้องมีอย่างน้อย 3 ตัวอักษร" }).optional().or(z.literal("")),
   email: z
@@ -42,7 +41,6 @@ export const adminResetPasswordSchema = z
     path: ["confirmPassword"],
   });
 
-// ── User: แก้ไขข้อมูลตัวเอง ────────────────────────────────────────────────
 export const userUpdateProfileSchema = z.object({
   name: z.string().min(3, { message: "ชื่อต้องมีอย่างน้อย 3 ตัวอักษร" }).optional().or(z.literal("")),
   tel: z.string().max(20).optional().or(z.literal("")),

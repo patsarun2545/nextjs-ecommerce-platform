@@ -79,7 +79,6 @@ export const createOrder = async (input: CheckoutInput) => {
 
     const totalAmount = cart.cartTotal + shippingFee;
 
-    // สร้างคำสั่งซื้อใหม่
     const newOrder = await db.$transaction(async (prisma) => {
       const order = await prisma.order.create({
         data: {

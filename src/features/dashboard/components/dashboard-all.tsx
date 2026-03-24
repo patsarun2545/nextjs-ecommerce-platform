@@ -98,9 +98,7 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  // ── แก้: กำหนด initial value ตรงๆ แทนการใช้ useEffect ────────────────────
   const [lastRefreshed, setLastRefreshed] = useState<Date>(() => new Date());
-  // ────────────────────────────────────────────────────────────────────────────
 
   const handleRefresh = () => {
     startTransition(() => {

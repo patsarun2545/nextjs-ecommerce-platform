@@ -1,4 +1,3 @@
-// // 2 อันนี้คำนวนไม่ได้
 
 "use client";
 
@@ -37,7 +36,6 @@ interface ProductFormProps {
 }
 
 export default function ProductForm({ categories, product }: ProductFormProps) {
-  // Price State
   const [basePrice, setBasePrice] = useState(
     product ? product.basePrice.toString() : "",
   );
@@ -45,7 +43,6 @@ export default function ProductForm({ categories, product }: ProductFormProps) {
     product ? product.price.toString() : "",
   );
 
-  // Image State
   const [productImages, setProductImages] = useState<File[]>([]);
   const [mainImageIndex, setMainImageIndex] = useState(0);
   const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);

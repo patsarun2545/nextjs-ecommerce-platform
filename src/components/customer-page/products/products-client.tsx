@@ -36,7 +36,6 @@ interface ProductsClientProps {
   };
 }
 
-// ── ย้ายออกมาข้างนอก component หลัก แล้วรับ props แทน ──────────────────────
 interface SidebarContentProps {
   categories: string[];
   activeCategory: string;
@@ -136,7 +135,6 @@ function SidebarContent({
     </div>
   );
 }
-// ────────────────────────────────────────────────────────────────────────────
 
 export default function ProductsClient({ products, categories, searchParams }: ProductsClientProps) {
   const router = useRouter();
@@ -174,7 +172,6 @@ export default function ProductsClient({ products, categories, searchParams }: P
     searchParams?.price || searchParams?.status
   );
 
-  // props ที่ส่งให้ SidebarContent
   const sidebarProps: SidebarContentProps = {
     categories,
     activeCategory,

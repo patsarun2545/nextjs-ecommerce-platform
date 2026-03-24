@@ -13,7 +13,6 @@ import {
   userChangePasswordSchema,
 } from "@/features/users/schemas/users";
 
-// ── Admin Actions ────────────────────────────────────────────────────────────
 
 export async function adminUpdateUserAction(
   _prevState: InitialFormState,
@@ -45,7 +44,6 @@ export async function adminUpdateUserAction(
     };
   }
 
-  // Check duplicate email
   const existing = await db.user.findFirst({
     where: { email: data.email, NOT: { id: userId } },
   });
@@ -107,7 +105,6 @@ export async function adminResetPasswordAction(
   return { success: true, message: "รีเซ็ตรหัสผ่านสำเร็จ" };
 }
 
-// ── User Self-Edit Actions ───────────────────────────────────────────────────
 
 export async function userUpdateProfileAction(
   _prevState: InitialFormState,
@@ -165,7 +162,6 @@ export async function userUpdateEmailAction(
     };
   }
 
-  // Verify current password
   const user = await db.user.findUnique({ where: { id: me.id } });
   if (!user) return { success: false, message: "ไม่พบข้อมูลผู้ใช้" };
 
@@ -178,7 +174,6 @@ export async function userUpdateEmailAction(
     };
   }
 
-  // Check duplicate email
   const existing = await db.user.findFirst({
     where: { email: data.email, NOT: { id: me.id } },
   });

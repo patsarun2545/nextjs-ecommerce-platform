@@ -1,14 +1,11 @@
 import { z } from 'zod'
 
-// Define Constants
 const MIN_NAME_LENGTH = 2
 
-// Define Error Message
 const ERROR_MESSAGES = {
   name: `Category name must be at least ${MIN_NAME_LENGTH} characters`,
 }
 
-// Main Create Category
 export const categorySchema = z.object({
   name: z
     .string()
