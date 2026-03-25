@@ -50,8 +50,8 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
   const stockInfo =
     product.stock <= 0 ? { label: "สินค้าหมด", cls: "text-red-600 bg-red-50 border-red-200" }
-    : product.stock <= product.lowStock ? { label: `เหลือ ${product.stock} ชิ้น`, cls: "text-amber-600 bg-amber-50 border-amber-200" }
-    : { label: "พร้อมส่ง", cls: "text-green-700 bg-green-50 border-green-200" };
+      : product.stock <= product.lowStock ? { label: `เหลือ ${product.stock} ชิ้น`, cls: "text-amber-600 bg-amber-50 border-amber-200" }
+        : { label: "พร้อมส่ง", cls: "text-green-700 bg-green-50 border-green-200" };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 xl:gap-12">
@@ -133,7 +133,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
           <h1 className="text-2xl font-bold text-slate-900 leading-snug">{product.title}</h1>
           <div className="flex items-center gap-2.5 mt-2">
             <div className="flex items-center gap-0.5">
-              {[1,2,3,4,5].map(s => (
+              {[1, 2, 3, 4, 5].map(s => (
                 <Star key={s} size={12} className={s <= 4 ? "fill-amber-400 text-amber-400" : "fill-slate-200 text-slate-200"} />
               ))}
             </div>
@@ -193,6 +193,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
               <AddToCartButton
                 productId={product.id}
                 stock={product.stock}
+                quantity={qty}
                 className="flex-1 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md shadow-blue-200 border-0 transition-colors"
               />
               <button onClick={handleShare}
@@ -209,8 +210,8 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         <div className="grid grid-cols-3 gap-2.5">
           {[
             { icon: ShieldCheck, label: "รับประกัน", sub: "1 ปีเต็ม", bg: "bg-blue-50 text-blue-600" },
-            { icon: Truck,       label: "จัดส่ง",    sub: "รวดเร็ว",  bg: "bg-indigo-50 text-indigo-600" },
-            { icon: RotateCcw,   label: "คืนสินค้า", sub: "7 วัน",    bg: "bg-violet-50 text-violet-600" },
+            { icon: Truck, label: "จัดส่ง", sub: "รวดเร็ว", bg: "bg-indigo-50 text-indigo-600" },
+            { icon: RotateCcw, label: "คืนสินค้า", sub: "7 วัน", bg: "bg-violet-50 text-violet-600" },
           ].map(({ icon: Icon, label, sub, bg }) => (
             <div key={label} className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white border border-slate-200 text-center">
               <div className={cn("size-8 rounded-lg flex items-center justify-center", bg)}>

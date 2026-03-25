@@ -19,9 +19,9 @@ export default async function ProfileEditPage() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">แก้ไขโปรไฟล์</h1>
         <Button variant="outline" asChild>
-          <Link href="/profile">
+          <Link href="/products">
             <ArrowLeft size={16} aria-hidden="true" />
-            <span>กลับหน้าโปรไฟล์</span>
+            <span>กลับหน้าสินค้า</span>
           </Link>
         </Button>
       </div>

@@ -9,6 +9,7 @@ import { toast } from "sonner";
 interface AddToCartBButtonProps {
   productId: string;
   stock: number;
+  quantity?: number;
   className?: string;
   children?: React.ReactNode;
 }
@@ -16,6 +17,7 @@ interface AddToCartBButtonProps {
 export default function AddToCartButton({
   productId,
   stock,
+  quantity = 1,
   className,
   children,
 }: AddToCartBButtonProps) {
@@ -25,7 +27,7 @@ export default function AddToCartButton({
     startTransition(async () => {
       const formData = new FormData();
       formData.append("product-id", productId);
-      formData.append("count", "1");
+      formData.append("count", quantity.toString());
 
       const result = await addToCartAction(formData);
 

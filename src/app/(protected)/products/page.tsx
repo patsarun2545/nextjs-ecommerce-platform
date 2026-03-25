@@ -1,5 +1,5 @@
 import { getProductsFiltered, getCategories } from "@/features/products/db/products";
-import ProductsClient from "@/components/customer-page/products/products-client";
+import ProductsClient from "@/components/customer-page/products/sidebar-content";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

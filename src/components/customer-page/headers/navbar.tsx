@@ -19,7 +19,7 @@ export default async function Navbar({ user }: NavbarProps) {
     <nav className="flex items-center gap-2">
       {/* Mobile */}
       {user && <CartIcon itemCount={itemCount} />}
-      <MobileMenu user={user} />
+      <MobileMenu user={user} itemCount={itemCount} />
 
       {/* Desktop */}
       <div className="hidden md:flex md:items-center gap-1">

@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import { useSidebar } from "@/providers/SidebarProvider"
-import { Button } from "../../ui/button"
 import { UserType } from "@/types/user"
 import { ScrollArea } from "../../ui/scroll-area"
 import { Avatar, AvatarImage, AvatarFallback } from "../../ui/avatar"
@@ -16,10 +15,8 @@ import {
   Users,
   ShoppingCart,
   FolderTree,
-  Percent,
   ClipboardList,
-} from "lucide-react";
-
+} from "lucide-react"
 
 interface SidebarAdminProps {
   user: UserType
@@ -31,137 +28,102 @@ export default function SidebarAdmin({ user }: SidebarAdminProps) {
   const pathname = usePathname()
 
   const sidebarLinks = [
-    {
-      href: "/admin",
-      icon: <LayoutDashboard size={20} />,
-      label: "Dashboard",
-    },
-    {
-      href: "/admin/users",
-      icon: <Users size={20} />,
-      label: "Users",
-    },
-    {
-      href: "/admin/products",
-      icon: <ShoppingCart size={20} />,
-      label: "Products",
-    },
-    {
-      href: "/admin/categories",
-      icon: <FolderTree size={20} />,
-      label: "Categories",
-    },
-    {
-      href: "/admin/promotions",
-      icon: <Percent size={20} />,
-      label: "Promotions",
-    },
-    {
-      href: "/admin/orders",
-      icon: <ClipboardList size={20} />,
-      label: "Orders",
-    },
-  ];
+    { href: "/admin", icon: <LayoutDashboard size={18} />, label: "Dashboard" },
+    { href: "/admin/users", icon: <Users size={18} />, label: "Users" },
+    { href: "/admin/products", icon: <ShoppingCart size={18} />, label: "Products" },
+    { href: "/admin/categories", icon: <FolderTree size={18} />, label: "Categories" },
+    { href: "/admin/orders", icon: <ClipboardList size={18} />, label: "Orders" },
+  ]
 
   return (
     <div>
-      {/* Mobile Overlay */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-foreground/70 backdrop-blur-sm z-40 md:hidden"
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 md:hidden"
           onClick={toggleSidebar}
         />
       )}
 
-      {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-40 h-svh bg-card w-64 border-r border-border flex flex-col transition-transform duration-200
-        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
+        className={`fixed top-0 left-0 z-40 h-svh w-[240px] flex flex-col transition-transform duration-300 ease-in-out
+        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+        bg-white border-r border-slate-200`}
       >
-        {/* Header */}
-        <div className="flex h-16 items-center justify-between px-4 border-b border-border">
-
-          {/* Logo */}
-          <Link
-            href="/admin"
-            className="flex items-center gap-2"
-          >
-            <div className="rounded-md bg-primary p-1">
-              <div className="size-6 text-primary-foreground font-bold flex items-center justify-center">
-                A
-              </div>
+        {/* Header / Logo */}
+        <div className="flex h-16 items-center justify-between px-5 border-b border-slate-100">
+          <Link href="/admin" className="flex items-center gap-2.5">
+            <div className="flex items-center justify-center w-7 h-7 rounded-md bg-blue-600">
+              <span className="text-xs font-black text-white">A</span>
             </div>
-
-            <span className="text-xl font-bold">
-              Admin
+            <span className="text-[15px] font-bold text-slate-800 tracking-tight">
+              AdminPanel
             </span>
           </Link>
 
-          <Button
-            variant='ghost'
-            size='icon'
+          <button
             onClick={toggleSidebar}
-            className="md:hidden">
-            <X size={20} />
-          </Button>
+            className="md:hidden flex items-center justify-center w-7 h-7 rounded-md hover:bg-slate-100 text-slate-400 transition-colors"
+          >
+            <X size={15} />
+          </button>
         </div>
 
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col h-[calc(100vh-128px)] overflow-hidden">
+        {/* Nav */}
+        <div className="flex-1 overflow-hidden flex flex-col">
           <ScrollArea className="flex-1">
-            <div className="p-4">
+            <div className="px-3 py-4">
 
-              {/* Profile Box */}
-              <div className="mb-6 flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                <Avatar className="size-10">
-                  <AvatarImage
-                    src={user.picture || undefined}
-                    alt={user.name || "User"}
-                  />
-                  <AvatarFallback className="bg-primary text-primary-foreground">
-                    {user.name?.charAt(0) || "U"}
+              {/* User profile */}
+              <div className="mb-5 p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-3">
+                <Avatar className="size-8">
+                  <AvatarImage src={user.picture || undefined} alt={user.name || "User"} />
+                  <AvatarFallback className="bg-blue-600 text-white text-xs font-semibold">
+                    {user.name?.charAt(0).toUpperCase() || "U"}
                   </AvatarFallback>
                 </Avatar>
-
-                <div className="space-y-1">
-                  <p className="text-sm font-medium leading-none">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-slate-800 truncate leading-tight">
                     {user.name || "User"}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-[11px] text-slate-400 truncate mt-0.5">
                     {user.email}
                   </p>
                 </div>
               </div>
 
-              {/* Menu */}
-              <nav className="space-y-1.5">
-                {sidebarLinks.map((link, index) =>
+              {/* Label */}
+              <p className="text-[10px] font-semibold tracking-[0.12em] uppercase text-slate-400 px-2 mb-1.5">
+                Menu
+              </p>
+
+              <nav className="space-y-0.5">
+                {sidebarLinks.map((link, index) => (
                   <SidebarLink
                     key={index}
                     href={link.href}
                     icon={link.icon}
                     label={link.label}
                     isActive={pathname === link.href}
-                    onClose={toggleSidebar} />
-                )}
+                    onClose={toggleSidebar}
+                  />
+                ))}
               </nav>
             </div>
           </ScrollArea>
         </div>
-        <div className="border-t border-border p-4 mt-auto">
-          <Button
-            variant="ghost"
-            className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground cursor-pointer"
-            disabled={isPending}
+
+        {/* Logout */}
+        <div className="px-3 py-4 border-t border-slate-100">
+          <button
             onClick={handleSignout}
+            disabled={isPending}
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all duration-150 disabled:opacity-40"
           >
-            <LogOut size={20} />
-            <span>LogOut</span>
-          </Button>
+            <LogOut size={16} />
+            <span>{isPending ? "Logging out…" : "Log Out"}</span>
+          </button>
         </div>
       </aside>
     </div>
   )
 }
-
-

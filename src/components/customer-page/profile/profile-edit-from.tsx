@@ -15,7 +15,14 @@ import {
   userUpdateEmailAction,
   userChangePasswordAction,
 } from "@/features/users/actions/users";
-import { Save, Mail, KeyRound, User } from "lucide-react";
+import {
+  Save,
+  Mail,
+  KeyRound,
+  User,
+  Phone,
+  MapPin,
+} from "lucide-react";
 import { UserType } from "@/types/user";
 
 interface ProfileEditFormProps {
@@ -44,31 +51,80 @@ export default function ProfileEditForm({ user }: ProfileEditFormProps) {
     clearErrors: clearPwErrors,
   } = useForm(userChangePasswordAction);
 
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  const infoFields = [
+    { icon: <Mail size={13} />, label: "อีเมล", value: user.email },
+    {
+      icon: <Phone size={13} />,
+      label: "เบอร์โทรศัพท์",
+      value: user.tel ?? "ยังไม่ได้ระบุ",
+    },
+    {
+      icon: <MapPin size={13} />,
+      label: "ที่อยู่จัดส่ง",
+      value: user.address ?? "ยังไม่ได้ระบุ",
+    },
+  ];
 
-      {/* Left: Profile card */}
-      <div>
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+
+      {/* Left — Profile card (mirrors user-edit-form) */}
+      <div className="flex flex-col gap-4">
         <Card>
-          <CardContent className="pt-6 flex flex-col items-center gap-4">
-            <Avatar className="size-20">
-              <AvatarImage src={user.picture ?? undefined} />
-              <AvatarFallback className="text-2xl">
-                {(user.name ?? user.email).charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="text-center">
-              <p className="font-semibold text-lg">{user.name ?? "—"}</p>
-              <p className="text-sm text-muted-foreground">{user.email}</p>
+          <CardContent className="pt-5 pb-5">
+
+            {/* Avatar + name + badge */}
+            <div className="flex items-center gap-3 mb-4">
+              <Avatar className="size-12 shrink-0">
+                <AvatarImage src={user.picture ?? undefined} />
+                <AvatarFallback className="text-base">
+                  {(user.name ?? user.email).charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="min-w-0">
+                <p className="font-semibold text-sm leading-snug truncate">
+                  {user.name ?? "—"}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {user.email}
+                </p>
+                <div className="flex gap-1.5 mt-1.5">
+                  <Badge
+                    variant={user.role === "Admin" ? "default" : "secondary"}
+                    className="text-xs px-2 py-0"
+                  >
+                    {user.role}
+                  </Badge>
+                </div>
+              </div>
             </div>
-            <Badge variant={user.role === "Admin" ? "default" : "secondary"}>
-              {user.role}
-            </Badge>
+
+            <Separator className="mb-4" />
+
+            {/* Info fields */}
+            <div className="flex flex-col gap-2.5">
+              {infoFields.map((field, i) => (
+                <div key={i} className="flex items-start gap-2.5">
+                  <span className="text-muted-foreground mt-0.5 shrink-0">
+                    {field.icon}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[11px] text-muted-foreground leading-none mb-0.5">
+                      {field.label}
+                    </p>
+                    <p className="text-sm font-medium break-words leading-snug">
+                      {field.value}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
           </CardContent>
         </Card>
       </div>
 
-      {/* Right: Forms */}
+      {/* Right — Edit forms (2-col span) */}
       <div className="lg:col-span-2 flex flex-col gap-6">
 
         {/* Profile info */}
@@ -83,24 +139,30 @@ export default function ProfileEditForm({ user }: ProfileEditFormProps) {
           </CardHeader>
           <Form action={profileFormAction} onChange={clearProfileErrors}>
             <CardContent className="flex flex-col gap-4 pt-5">
-              <div className="flex flex-col gap-2">
-                <InputForm
-                  label="ชื่อผู้ใช้"
-                  id="name"
-                  defaultValue={user.name ?? ""}
-                  placeholder="ชื่อผู้ใช้"
-                />
-                {profileErrors?.name && <ErrorMessage error={profileErrors.name[0]} />}
-              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <InputForm
+                    label="ชื่อผู้ใช้"
+                    id="name"
+                    defaultValue={user.name ?? ""}
+                    placeholder="ชื่อผู้ใช้"
+                  />
+                  {profileErrors?.name && (
+                    <ErrorMessage error={profileErrors.name[0]} />
+                  )}
+                </div>
 
-              <div className="flex flex-col gap-2">
-                <InputForm
-                  label="เบอร์โทรศัพท์"
-                  id="tel"
-                  defaultValue={user.tel ?? ""}
-                  placeholder="0812345678"
-                />
-                {profileErrors?.tel && <ErrorMessage error={profileErrors.tel[0]} />}
+                <div className="flex flex-col gap-2">
+                  <InputForm
+                    label="เบอร์โทรศัพท์"
+                    id="tel"
+                    defaultValue={user.tel ?? ""}
+                    placeholder="0812345678"
+                  />
+                  {profileErrors?.tel && (
+                    <ErrorMessage error={profileErrors.tel[0]} />
+                  )}
+                </div>
               </div>
 
               <div className="flex flex-col gap-2">
@@ -113,10 +175,12 @@ export default function ProfileEditForm({ user }: ProfileEditFormProps) {
                   rows={3}
                   className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
                 />
-                {profileErrors?.address && <ErrorMessage error={profileErrors.address[0]} />}
+                {profileErrors?.address && (
+                  <ErrorMessage error={profileErrors.address[0]} />
+                )}
               </div>
 
-              <div className="flex justify-end pt-2">
+              <div className="flex justify-end pt-1">
                 <SubmitBtn
                   name="บันทึกข้อมูล"
                   icon={Save}
@@ -198,7 +262,9 @@ export default function ProfileEditForm({ user }: ProfileEditFormProps) {
                   placeholder="••••••••"
                   required
                 />
-                {pwErrors?.currentPassword && <ErrorMessage error={pwErrors.currentPassword[0]} />}
+                {pwErrors?.currentPassword && (
+                  <ErrorMessage error={pwErrors.currentPassword[0]} />
+                )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -210,7 +276,9 @@ export default function ProfileEditForm({ user }: ProfileEditFormProps) {
                     placeholder="••••••••"
                     required
                   />
-                  {pwErrors?.newPassword && <ErrorMessage error={pwErrors.newPassword[0]} />}
+                  {pwErrors?.newPassword && (
+                    <ErrorMessage error={pwErrors.newPassword[0]} />
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -221,7 +289,9 @@ export default function ProfileEditForm({ user }: ProfileEditFormProps) {
                     placeholder="••••••••"
                     required
                   />
-                  {pwErrors?.confirmPassword && <ErrorMessage error={pwErrors.confirmPassword[0]} />}
+                  {pwErrors?.confirmPassword && (
+                    <ErrorMessage error={pwErrors.confirmPassword[0]} />
+                  )}
                 </div>
               </div>
 
@@ -238,6 +308,7 @@ export default function ProfileEditForm({ user }: ProfileEditFormProps) {
             </CardContent>
           </Form>
         </Card>
+
       </div>
     </div>
   );

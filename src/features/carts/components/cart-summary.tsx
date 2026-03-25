@@ -58,14 +58,14 @@ export default function CartSummary({ cart }: CartSummaryProps) {
 
       <div className="flex justify-between text-muted-foreground">
         <span>ค่าจัดส่ง</span>
-        <span>ฟรี</span>
+        <span>50</span>
       </div>
 
       <Separator />
 
       <div className="flex justify-between font-semibold text-lg">
         <span>ทั้งหมด</span>
-        <span>{formatPrice(opCart.cartTotal)}</span>
+        <span>{formatPrice(opCart.cartTotal + 50)}</span>
       </div>
 
       <div className="pt-4 space-y-2">

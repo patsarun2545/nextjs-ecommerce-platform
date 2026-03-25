@@ -1,26 +1,28 @@
 import { SheetClose } from '@/components/ui/sheet'
 import Link from 'next/link'
+import { Home, Package } from "lucide-react"
 
 const NAV_LINKS = [
-  { title: 'หน้าหลัก', href: '/' },
-  { title: 'สินค้าทั้งหมด', href: '/products' },
-  { title: 'เกี่ยวกับ', href: '/about' },
-  { title: 'ติดต่อเรา', href: '/contact' },
+  { title: 'หน้าหลัก', href: '/', icon: Home },
+  { title: 'สินค้าทั้งหมด', href: '/products', icon: Package },
 ]
 
 export const MobileNavLinks = () => (
-  <div className='flex flex-col gap-2'>
-    {NAV_LINKS.map((link, index) => (
-      <SheetClose key={index} asChild>
-        <Link
-          href={link.href}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100 transition-colors duration-150"
-        >
-          <span className="size-1.5 rounded-full bg-blue-400" />
-          {link.title}
-        </Link>
-      </SheetClose>
-    ))}
+  <div className='flex flex-col gap-1.5'>
+    {NAV_LINKS.map((link, index) => {
+      const Icon = link.icon
+      return (
+        <SheetClose key={index} asChild>
+          <Link
+            href={link.href}
+            className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-50 hover:bg-blue-50 hover:text-blue-700 transition-colors duration-150"
+          >
+            <Icon size={16} className="text-blue-500 shrink-0" />
+            <span className="text-sm font-medium text-slate-700">{link.title}</span>
+          </Link>
+        </SheetClose>
+      )
+    })}
   </div>
 )
 

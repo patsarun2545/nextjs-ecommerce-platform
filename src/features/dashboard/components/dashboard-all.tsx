@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { OrderStatus } from "@prisma/client";
 
 type DashboardStats = {
@@ -98,7 +98,11 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const [lastRefreshed, setLastRefreshed] = useState<Date>(() => new Date());
+  const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
+
+  useEffect(() => {
+    setLastRefreshed(new Date());
+  }, []);
 
   const handleRefresh = () => {
     startTransition(() => {
@@ -148,7 +152,7 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
       {/* Refresh bar */}
       <div className="flex items-center justify-between">
         <p className="text-xs text-muted-foreground">
-          {`Last refreshed: ${lastRefreshed.toLocaleTimeString()}`}
+          {lastRefreshed ? `Last refreshed: ${lastRefreshed.toLocaleTimeString()}` : "Loading..."}
         </p>
         <Button
           size="sm"
@@ -242,10 +246,10 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
               </div>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="grid grid-cols-12 bg-muted/50 py-2.5 px-4 text-xs font-medium">
-                <div className="col-span-3">Order #</div>
+              <div className="grid grid-cols-10 sm:grid-cols-12 bg-muted/50 py-2.5 px-4 text-xs font-medium">
+                <div className="col-span-4 sm:col-span-3">Order #</div>
                 <div className="col-span-4 hidden sm:block">Customer</div>
-                <div className="col-span-2 text-right">Amount</div>
+                <div className="col-span-3 sm:col-span-2 text-right">Amount</div>
                 <div className="col-span-2 text-center">Status</div>
                 <div className="col-span-1 text-right">View</div>
               </div>
@@ -253,15 +257,15 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
                 stats.recentOrders.map((order) => (
                   <div
                     key={order.id}
-                    className="grid grid-cols-12 py-3 px-4 border-t items-center text-sm hover:bg-gray-50 transition-colors duration-100"
+                    className="grid grid-cols-10 sm:grid-cols-12 py-3 px-4 border-t items-center text-sm hover:bg-gray-50 transition-colors duration-100"
                   >
-                    <div className="col-span-3 font-medium truncate pr-2 text-xs sm:text-sm">
+                    <div className="col-span-4 sm:col-span-3 font-medium truncate pr-2 text-xs sm:text-sm">
                       {order.orderNumber}
                     </div>
                     <div className="col-span-4 hidden sm:block text-muted-foreground truncate pr-2">
                       {order.customerName}
                     </div>
-                    <div className="col-span-2 text-right font-medium text-xs sm:text-sm">
+                    <div className="col-span-3 sm:col-span-2 text-right font-medium text-xs sm:text-sm">
                       {formatPrice(order.totalAmount)}
                     </div>
                     <div className="col-span-2 flex justify-center">

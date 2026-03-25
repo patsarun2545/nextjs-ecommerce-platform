@@ -91,7 +91,7 @@ export default function ProductList({ products }: ProductListProps) {
             </Button>
           </div>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-2">
             <TabsList className="grid grid-cols-4 mb-4">
               <TabsTrigger value="all">All</TabsTrigger>
               <TabsTrigger value="active">Active</TabsTrigger>
