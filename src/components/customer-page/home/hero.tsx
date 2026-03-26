@@ -9,7 +9,7 @@ export default function Hero() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(37,99,235,0.12),transparent)]" />
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMxZDRlZDgiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0di00aC0ydjRoLTR2MmgxMHYtMmgtNHptMC0zMFYwaDJWNGgzdjJoLTVWNHptLTEyIDB2NGgtMlYySDkuMzc1QzguMDYyIDIgNyAzLjA2MiA3IDQuMzc1djQyLjI1QzcgNDcuOTM4IDguMDYyIDQ5IDkuMzc1IDQ5SDM2di0ySDkuMzc1QzkuMTY3IDQ3IDkgNDYuODMzIDkgNDYuNjI1VjQuMzc1QzkgNC4xNjcgOS4xNjcgNCA5LjM3NSA0SDI0VjB6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-40" />
 
-      <div className="container mx-auto relative px-4 py-10 md:py-14 lg:py-16">
+      <div className="max-w-7xl mx-auto relative px-4 xl:px-0 py-10 md:py-14 lg:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="max-w-xl">

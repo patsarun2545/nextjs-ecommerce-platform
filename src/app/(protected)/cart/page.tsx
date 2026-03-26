@@ -22,7 +22,7 @@ export default async function CartPage() {
   const cart = await getUserCart(user.id);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 xl:px-0 py-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">ตะกร้าของฉัน</h1>
 

@@ -11,7 +11,7 @@ export default async function FeatureProducts() {
       {/* Subtle top border gradient */}
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent" />
 
-      <div className="container mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 xl:px-0">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
           <div>
