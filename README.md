@@ -1,36 +1,260 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛒 Next.js E-Commerce Platform
 
-## Getting Started
+A full-stack e-commerce web application built with the **Next.js App Router**, combining both frontend and backend in a single application. This project features a complete **customer storefront** and **admin back-office system** with modern best practices.
 
-First, run the development server:
+---
+
+## 🛠️ Tech Stack
+
+| Layer      | Technology                                     |
+| ---------- | ---------------------------------------------- |
+| Framework  | Next.js 16 (App Router)                        |
+| Frontend   | React 19, Tailwind CSS v4, shadcn/ui, Radix UI |
+| Backend    | Next.js (Server Actions, Route Handlers)       |
+| Runtime    | Node.js                                        |
+| Database   | PostgreSQL, Prisma ORM                         |
+| Auth       | JWT (jose), bcrypt                             |
+| Storage    | ImageKit                                       |
+| Email      | Resend                                         |
+| Validation | Zod                                            |
+| Tools      | TypeScript, ESLint                             |
+
+---
+
+## ✨ Features Overview
+
+* Role-based access control — `CUSTOMER` and `ADMIN`
+* Full product catalog with category filtering and image upload
+* Shopping cart with real-time total calculation
+* Order lifecycle management with payment slip upload
+* QR Code PromptPay payment generation
+* Admin back-office with dashboard, reports, and user management
+* Product & category **soft delete / restore**
+* Image CDN management via ImageKit
+* Server-side rendering (SSR) with caching & revalidation
+* Data visualization with Recharts
+* Date handling with Day.js
+* Toast notifications with Sonner
+
+---
+
+## 📁 Project Structure
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+src/
+├── app/
+│   ├── (main)/          # Customer-facing pages
+│   │   └── page.tsx
+│   ├── (protected)/     # Auth-required pages
+│   │   ├── cart/
+│   │   ├── checkout/
+│   │   ├── my-orders/[id]/
+│   │   ├── products/[id]/
+│   │   └── profile/
+│   ├── admin/           # Admin back-office
+│   │   ├── categories/
+│   │   ├── dashboard/
+│   │   ├── orders/[id]/
+│   │   ├── products/
+│   │   │   ├── new/
+│   │   │   └── edit/[id]/
+│   │   └── users/[id]/
+│   └── auth/
+│       ├── signin/
+│       └── signup/
+├── components/
+│   ├── admin-page/
+│   ├── customer-page/
+│   └── ui/
+├── features/
+│   ├── auths/
+│   ├── carts/
+│   ├── categories/
+│   ├── dashboard/
+│   ├── orders/
+│   ├── products/
+│   └── users/
+├── hooks/
+├── lib/
+├── providers/
+└── types/
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔄 System Flow
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 01 · Authentication
 
-## Learn More
+Users can register and sign in. Default role is `CUSTOMER`.
+Admin access is protected via RBAC.
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+POST /auth/signup   → Register account
+POST /auth/signin   → Sign in (JWT via HTTP-only cookies)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 02 · Customer Flow
 
-## Deploy on Vercel
+```bash
+Browse Products → Add to Cart → Checkout → Upload Payment → Track Order
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Customers can:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* Browse products by category
+* Search & filter items
+* Add/remove items from cart
+* Checkout and upload payment slip (PromptPay)
+* Track order status
+* Manage profile
+
+---
+
+### 03 · Order Status Flow
+
+```bash
+PENDING → PAID → SHIPPED → DELIVERED
+                         ↘ CANCELLED
+```
+
+| Status      | Description                       |
+| ----------- | --------------------------------- |
+| `PENDING`   | Order placed, waiting for payment |
+| `PAID`      | Payment verified                  |
+| `SHIPPED`   | Order dispatched                  |
+| `DELIVERED` | Customer received order           |
+| `CANCELLED` | Order cancelled                   |
+
+---
+
+### 04 · Admin Back-Office
+
+#### Product Management
+
+```bash
+Create → Upload Images → Set Category → Set Price/Stock → Publish
+```
+
+* Add / edit / delete products
+* Upload multiple images (ImageKit)
+* Soft delete / restore
+* Manage categories
+
+#### Order Management
+
+* View all orders
+* Filter by status
+* Update order status
+* Add tracking number
+* View payment slips
+
+---
+
+### 05 · Admin Tools
+
+| Module         | Description                     |
+| -------------- | ------------------------------- |
+| **Dashboard**  | Sales overview, revenue stats   |
+| **Products**   | Full CRUD with image upload     |
+| **Categories** | Manage categories (soft delete) |
+| **Orders**     | Manage all orders & status      |
+| **Users**      | Manage customers & view history |
+
+---
+
+## 🗃️ Database Schema Overview
+
+| Model            | Description                 |
+| ---------------- | --------------------------- |
+| **User**         | Customers and admins        |
+| **Category**     | Product categories          |
+| **Product**      | Product info (price, stock) |
+| **ProductImage** | Images via ImageKit         |
+| **Cart**         | User shopping cart          |
+| **CartItem**     | Items inside cart           |
+| **Order**        | Customer order              |
+| **OrderItem**    | Snapshot of purchased items |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+* Node.js 20+
+* PostgreSQL
+* ImageKit account
+* npm or yarn
+
+---
+
+### Installation
+
+```bash
+# Clone repository
+git clone https://github.com/<your-username>/next-nest-2.git
+cd next-nest-2
+
+# Install dependencies
+npm install
+
+# Setup database
+npx prisma db push
+npx prisma generate
+```
+
+---
+
+### Environment Variables
+
+Create `.env` in root:
+
+```env
+DATABASE_URL=postgresql://user:password@localhost:5432/ecommerce
+
+NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY=your_public_key
+IMAGEKIT_PRIVATE_KEY=your_private_key
+NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_id
+
+JWT_SECRET=your_jwt_secret
+RESEND_API_KEY=your_resend_api_key
+```
+
+---
+
+### Run
+
+```bash
+# Development
+npm run dev
+
+# Lint
+npm run lint
+
+# Build
+npm run build
+
+# Production
+npm start
+```
+
+---
+
+## 🔐 Security
+
+* JWT authentication with HTTP-only cookies
+* Password hashing with bcrypt
+* Input validation using Zod
+* Role-based access control (RBAC)
+
+---
+
+## 👤 Author
+
+**Patsarun Kathinthong**
+Full Stack Developer · Next.js / PERN Stack
+📧 [patsarun2545@gmail.com](mailto:patsarun2545@gmail.com)
+🔗 github.com/patsarun2545
