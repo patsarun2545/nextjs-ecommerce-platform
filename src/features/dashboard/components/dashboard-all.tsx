@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useTransition, useEffect } from "react";
+import { useState, useTransition } from "react";
 import { OrderStatus } from "@prisma/client";
 
 type DashboardStats = {
@@ -98,11 +98,7 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
-
-  useEffect(() => {
-    setLastRefreshed(new Date());
-  }, []);
+  const [lastRefreshed, setLastRefreshed] = useState(new Date());
 
   const handleRefresh = () => {
     startTransition(() => {

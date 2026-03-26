@@ -12,15 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Separator } from "@/components/ui/separator";;
 import { formatPrice } from "@/lib/formatPrice";
 import { getStatusColor } from "@/lib/utils";
 import { OrderType } from "@/types/order";
