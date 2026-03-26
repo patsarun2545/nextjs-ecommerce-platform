@@ -42,6 +42,7 @@ import Image from "next/image";
 import { useState, startTransition } from "react";
 import { updateOrderStatusAction } from "../actions/orders";
 import { useForm } from "@/hooks/use-form";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface AdminOrderDetailProps {
   order: OrderType;
@@ -88,38 +89,46 @@ export default function AdminOrderDetail({ order }: AdminOrderDetailProps) {
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="pl-4">Product</TableHead>
-                  <TableHead className="text-right">Price</TableHead>
-                  <TableHead className="text-center">Qty</TableHead>
-                  <TableHead className="text-right pr-4">Total</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {order.items.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="pl-4">
-                      <div className="flex items-center gap-3">
-                        <div className="relative size-10 rounded-md overflow-hidden border flex-shrink-0">
-                          <Image
-                            alt={item.productTitle}
-                            src={item.productImage || "/images/no-product-image.webp"}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <span className="font-medium text-sm">{item.productTitle}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right text-sm">{formatPrice(item.price)}</TableCell>
-                    <TableCell className="text-center text-sm">{item.quantity}</TableCell>
-                    <TableCell className="text-right font-medium text-sm pr-4">{formatPrice(item.totalPirce)}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <div className="border-b">
+              <div className="grid grid-cols-12 bg-muted py-3 px-4 text-xs font-medium text-muted-foreground">
+                <div className="col-span-1 hidden sm:block">Image</div>
+                <div className="col-span-8 sm:col-span-5">Product Name</div>
+                <div className="col-span-2 hidden sm:block text-right">Price</div>
+                <div className="col-span-1 hidden sm:block text-center">Qty</div>
+                <div className="col-span-4 sm:col-span-3 text-right pr-2">Total</div>
+              </div>
+            </div>
+
+            <ScrollArea className="h-[280px]">   {/* ← ครอบตรงนี้ */}
+              {order.items.map((item, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-12 py-3 px-4 border-b last:border-b-0 items-center hover:bg-gray-50 transition-colors duration-100 text-sm"
+                >
+                  <div className="col-span-1 hidden sm:block">
+                    <Image
+                      alt={item.productTitle}
+                      src={item.productImage || "/images/no-product-image.webp"}
+                      width={40}
+                      height={40}
+                      className="object-cover rounded-md border"
+                    />
+                  </div>
+                  <div className="col-span-8 sm:col-span-5 truncate pr-2">
+                    <div className="font-medium truncate">{item.productTitle}</div>
+                  </div>
+                  <div className="col-span-2 hidden sm:block text-right pr-2 text-muted-foreground">
+                    {formatPrice(item.price)}
+                  </div>
+                  <div className="col-span-1 hidden sm:block text-center">
+                    <span className="text-sm text-muted-foreground">×{item.quantity}</span>
+                  </div>
+                  <div className="col-span-4 sm:col-span-3 text-right pr-2 font-medium">
+                    {formatPrice(item.totalPirce)}
+                  </div>
+                </div>
+              ))}
+            </ScrollArea>
           </CardContent>
         </Card>
 
