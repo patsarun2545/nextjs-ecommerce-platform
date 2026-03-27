@@ -254,7 +254,8 @@ npm start
 
 ## 👤 Author
 
-**Patsarun Kathinthong**
-Full Stack Developer · Next.js / PERN Stack
-📧 [patsarun2545@gmail.com](mailto:patsarun2545@gmail.com)
+**Patsarun Kathinthong**  
+Full Stack Developer · Next.js / PERN Stack  
+📧 patsarun2545@gmail.com  
 🔗 github.com/patsarun2545
+
