@@ -1,57 +1,61 @@
-# 🛒 Next.js E-Commerce Platform
+# 🛒 Next-Nest E-Commerce Platform
 
-A full-stack e-commerce web application built with the **Next.js App Router**, combining both frontend and backend in a single application. This project features a complete **customer storefront** and **admin back-office system** with modern best practices.
+A full-stack e-commerce web application built with the **Next.js App Router**, combining both frontend and backend in a single codebase. Features a complete **customer storefront** and **admin back-office system** built with modern best practices.
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer      | Technology                                     |
-| ---------- | ---------------------------------------------- |
-| Framework  | Next.js 16 (App Router)                        |
-| Frontend   | React 19, Tailwind CSS v4, shadcn/ui, Radix UI |
-| Backend    | Next.js (Server Actions, Route Handlers)       |
-| Runtime    | Node.js                                        |
-| Database   | PostgreSQL, Prisma ORM                         |
-| Auth       | JWT (jose), bcrypt                             |
-| Storage    | ImageKit                                       |
-| Email      | Resend                                         |
-| Validation | Zod                                            |
-| Tools      | TypeScript, ESLint                             |
+| Layer      | Technology                                          |
+| ---------- | --------------------------------------------------- |
+| Framework  | Next.js (App Router)                                |
+| Frontend   | React 19, Tailwind CSS, shadcn/ui, Radix UI         |
+| Backend    | Next.js Server Actions                              |
+| Runtime    | Node.js 20+                                         |
+| Database   | PostgreSQL + Prisma ORM                             |
+| Auth       | JWT (`jose`), `bcrypt`, HTTP-only cookies           |
+| Storage    | ImageKit (image CDN + upload), `sharp` (processing) |
+| Validation | Zod                                                 |
+| Caching    | Next.js `"use cache"` + `cacheTag` / `cacheLife`   |
+| UI Extras  | Sonner (toasts), Day.js, PromptPay QR               |
+| Tools      | TypeScript, ESLint                                  |
 
 ---
 
 ## ✨ Features Overview
 
-* Role-based access control — `CUSTOMER` and `ADMIN`
-* Full product catalog with category filtering and image upload
-* Shopping cart with real-time total calculation
-* Order lifecycle management with payment slip upload
-* QR Code PromptPay payment generation
-* Admin back-office with dashboard, reports, and user management
-* Product & category **soft delete / restore**
-* Image CDN management via ImageKit
-* Server-side rendering (SSR) with caching & revalidation
-* Data visualization with Recharts
-* Date handling with Day.js
-* Toast notifications with Sonner
+- Role-based access control — `Customer` and `Admin`
+- Full product catalog with category filtering, search, and sort
+- Multi-image upload with main image selection (ImageKit + Sharp)
+- Shopping cart with optimistic UI updates
+- Checkout with delivery info and optional profile auto-fill
+- Payment via PromptPay QR Code generation
+- Payment slip upload (ImageKit)
+- Order lifecycle tracking with status history
+- Admin dashboard with revenue stats, growth indicators, and stale-order alerts
+- Product & category **soft delete / restore**
+- Admin user management with role and status control
+- Server-side caching with tag-based revalidation
+- Toast notifications with Sonner
+- Responsive design (mobile + desktop)
 
 ---
 
 ## 📁 Project Structure
 
-```bash
+```
 src/
 ├── app/
-│   ├── (main)/          # Customer-facing pages
-│   │   └── page.tsx
-│   ├── (protected)/     # Auth-required pages
+│   ├── (main)/                  # Public customer-facing pages
+│   │   └── page.tsx             # Home / featured products
+│   ├── (protected)/             # Auth-required customer pages
 │   │   ├── cart/
 │   │   ├── checkout/
 │   │   ├── my-orders/[id]/
 │   │   ├── products/[id]/
 │   │   └── profile/
-│   ├── admin/           # Admin back-office
+│   │       └── layout.tsx
+│   ├── admin/                   # Admin back-office
 │   │   ├── categories/
 │   │   ├── dashboard/
 │   │   ├── orders/[id]/
@@ -59,26 +63,90 @@ src/
 │   │   │   ├── new/
 │   │   │   └── edit/[id]/
 │   │   └── users/[id]/
-│   └── auth/
-│       ├── signin/
-│       └── signup/
+│   ├── auth/
+│   │   ├── signin/
+│   │   └── signup/
+│   ├── layout.tsx
+│   └── globals.css
 ├── components/
-│   ├── admin-page/
-│   ├── customer-page/
-│   └── ui/
+│   ├── shared/                  # error-message, input-form, modal, submit-btn
+│   └── ui/                      # shadcn/ui primitives
 ├── features/
 │   ├── auths/
+│   │   ├── actions/             # authAction, signoutAction
+│   │   ├── components/          # auth-form, auth-header, auth-footer
+│   │   ├── db/                  # signup, signin, signout, authCheck
+│   │   └── schemas/             # signupSchema, signinSchema
 │   ├── carts/
+│   │   ├── actions/             # addToCart, updateCartItem, removeFromCart, clearCart
+│   │   ├── components/          # add-to-cart-button, cart-items, cart-summary, empty-cart
+│   │   ├── db/                  # getUserCart, getCartItemCount, cart mutations
+│   │   └── permissions/
 │   ├── categories/
+│   │   ├── actions/             # categoryAction, deleteCategoryAction, restoreCategoryAction
+│   │   ├── components/          # category-form, category-list, modals
+│   │   ├── db/                  # getCategories, createCategory, updateCategory, changeCategoryStatus
+│   │   ├── permissions/
+│   │   └── schemas/
 │   ├── dashboard/
+│   │   ├── components/          # dashboard-all (DashboardClient)
+│   │   └── db/                  # getDashboardStats
 │   ├── orders/
+│   │   ├── actions/             # checkoutAction, updatePaymentAction, cancelOrderStatusAction, updateOrderStatusAction
+│   │   ├── components/          # admin-order-detail, admin-order-list, cancel-order-modal, payment-form-modal
+│   │   ├── db/                  # createOrder, getAllOrders, getOrderById, uploadPaymentSlip, cancelOrderStatus, updateOrderStatus, getMyOrders
+│   │   ├── permissions/
+│   │   └── schemas/             # checkoutSchema
 │   ├── products/
+│   │   ├── actions/             # productAction, deleteProductAction, restoreProductAction
+│   │   ├── components/          # product-form, product-image-upload, product-list, product-detail-modal, modals
+│   │   ├── db/                  # getProducts, getProductById, getFeatureProducts, getProductsFiltered, createProduct, updateProduct, changeProductStatus
+│   │   ├── permissions/
+│   │   └── schemas/             # productSchema
 │   └── users/
+│       ├── actions/             # adminUpdateUserAction, adminResetPasswordAction, userUpdateProfileAction, userUpdateEmailAction, userChangePasswordAction
+│       ├── components/          # user-edit-form, user-list, user-order-detail, profile-edit-form
+│       ├── db/                  # getUserById, getAllUsers, getUserWithOrders
+│       └── schemas/             # adminUpdateUserSchema, userUpdateProfileSchema, userChangePasswordSchema, etc.
 ├── hooks/
+│   ├── use-form.ts              # useForm — wraps useActionState + toast + router.refresh
+│   └── use-sign-out.ts          # useSignout — handles signout transition
 ├── lib/
+│   ├── dataCache.ts             # getGlobalTag, getIdTag helpers
+│   ├── dayjs.ts                 # Day.js with relativeTime + localizedFormat
+│   ├── db.ts                    # Prisma singleton
+│   ├── formatDate.ts            # DD/MM/YYYY HH:mm formatter
+│   ├── formatPrice.ts           # Thai Baht (THB) formatter
+│   ├── generateOrderNumber.ts   # ORD + timestamp + random suffix
+│   ├── generatePromptPayQR.ts   # PromptPay QR URL generator
+│   ├── imageKit.ts              # uploadToImageKit, deleteFromImageKit
+│   └── utils.ts                 # cn, getStatusText, getStatusColor
 ├── providers/
-└── types/
+│   └── SidebarProvider.tsx      # Sidebar open/close context
+├── types/
+│   ├── action.ts                # InitialFormState, ActionType
+│   ├── cart.d.ts
+│   ├── category.d.ts
+│   ├── order.d.ts
+│   ├── product.d.ts
+│   └── user.d.ts
+└── middleware.ts                 # JWT proxy — injects x-user-id header
 ```
+
+---
+
+## 🗃️ Database Schema
+
+| Model            | Description                                              |
+| ---------------- | -------------------------------------------------------- |
+| **User**         | Customers and admins — role (`Customer`/`Admin`), status (`Active`/`Banned`) |
+| **Category**     | Product categories — soft delete via status (`Active`/`Inactive`) |
+| **Product**      | Product info — price, basePrice, cost, stock, sold, status |
+| **ProductImage** | Images stored in ImageKit — supports `isMain` flag       |
+| **Cart**         | User shopping cart — `cartTotal`, linked to User         |
+| **CartItem**     | Items inside cart — count, price snapshot                |
+| **Order**        | Customer order — address, phone, note, shippingFee, trackingNumber, paymentImage |
+| **OrderItem**    | Snapshot of purchased items — productTitle, productImage, price, quantity |
 
 ---
 
@@ -86,97 +154,105 @@ src/
 
 ### 01 · Authentication
 
-Users can register and sign in. Default role is `CUSTOMER`.
-Admin access is protected via RBAC.
-
-```bash
-POST /auth/signup   → Register account
-POST /auth/signin   → Sign in (JWT via HTTP-only cookies)
 ```
+POST /auth/signup  →  Register (bcrypt hash + JWT cookie)
+POST /auth/signin  →  Sign in  (verify password + JWT cookie)
+POST /auth/signout →  Delete cookie
+```
+
+- JWT signed with `jose`, stored as HTTP-only cookie (30 days)
+- Middleware decodes token and injects `x-user-id` header for server use
+- `authCheck()` reads header → fetches user from DB
 
 ---
 
 ### 02 · Customer Flow
 
-```bash
-Browse Products → Add to Cart → Checkout → Upload Payment → Track Order
+```
+Browse Products → Add to Cart → Checkout → Upload PromptPay Slip → Track Order
 ```
 
 Customers can:
-
-* Browse products by category
-* Search & filter items
-* Add/remove items from cart
-* Checkout and upload payment slip (PromptPay)
-* Track order status
-* Manage profile
+- Browse and filter products by category, price range, sort, and stock status
+- Add/remove/update items in cart (optimistic UI with `useOptimistic`)
+- Checkout with shipping address and phone (or auto-fill from profile)
+- Generate PromptPay QR Code and upload payment slip
+- Cancel pending orders (restores stock automatically)
+- Edit profile, email, and password
 
 ---
 
 ### 03 · Order Status Flow
 
-```bash
+```
 PENDING → PAID → SHIPPED → DELIVERED
-                         ↘ CANCELLED
+    ↘ CANCELLED
 ```
 
-| Status      | Description                       |
-| ----------- | --------------------------------- |
-| `PENDING`   | Order placed, waiting for payment |
-| `PAID`      | Payment verified                  |
-| `SHIPPED`   | Order dispatched                  |
-| `DELIVERED` | Customer received order           |
-| `CANCELLED` | Order cancelled                   |
+| Status      | Trigger                                    |
+| ----------- | ------------------------------------------ |
+| `Pending`   | Order created                              |
+| `Paid`      | Customer uploads payment slip              |
+| `Shipped`   | Admin updates status + adds tracking number |
+| `Delivered` | Admin marks as delivered                   |
+| `Cancelled` | Customer cancels (Pending only) — stock restored |
 
 ---
 
 ### 04 · Admin Back-Office
 
 #### Product Management
-
-```bash
-Create → Upload Images → Set Category → Set Price/Stock → Publish
 ```
+Create → Upload Images (ImageKit + Sharp) → Select Category → Set Cost/Price/Stock → Publish
+```
+- Multi-image upload with drag-select main image
+- Soft delete / restore (status toggle)
+- View product detail modal with sales statistics
 
-* Add / edit / delete products
-* Upload multiple images (ImageKit)
-* Soft delete / restore
-* Manage categories
+#### Category Management
+- Create, edit, soft delete, restore
+- Tabs: All / Active / Inactive with search
 
 #### Order Management
+- View all orders with tab/search filter
+- Update status and add tracking number
+- View payment slip image
 
-* View all orders
-* Filter by status
-* Update order status
-* Add tracking number
-* View payment slips
-
----
-
-### 05 · Admin Tools
-
-| Module         | Description                     |
-| -------------- | ------------------------------- |
-| **Dashboard**  | Sales overview, revenue stats   |
-| **Products**   | Full CRUD with image upload     |
-| **Categories** | Manage categories (soft delete) |
-| **Orders**     | Manage all orders & status      |
-| **Users**      | Manage customers & view history |
+#### User Management
+- List all users with search
+- View per-user order history with stats (total spent, cancelled count)
+- Edit user info, role, status
+- Admin reset password
 
 ---
 
-## 🗃️ Database Schema Overview
+### 05 · Caching Strategy
 
-| Model            | Description                 |
-| ---------------- | --------------------------- |
-| **User**         | Customers and admins        |
-| **Category**     | Product categories          |
-| **Product**      | Product info (price, stock) |
-| **ProductImage** | Images via ImageKit         |
-| **Cart**         | User shopping cart          |
-| **CartItem**     | Items inside cart           |
-| **Order**        | Customer order              |
-| **OrderItem**    | Snapshot of purchased items |
+All read queries use Next.js `"use cache"` with tag-based revalidation:
+
+| Tag pattern          | Scope                  | Revalidated on              |
+| -------------------- | ---------------------- | --------------------------- |
+| `global:products`    | All products           | Any product create/update   |
+| `id:<id>-products`   | Single product         | That product's update       |
+| `global:orders`      | All orders             | Any order mutation          |
+| `id:<id>-orders`     | Single order           | That order's update         |
+| `user:<id>:orders`   | User's orders          | That user's order change    |
+| `global:users`       | All users              | Any user update             |
+| `id:<id>-users`      | Single user            | That user's update          |
+| `global:categories`  | All categories         | Any category change         |
+| `cart:<userId>`      | User's cart            | Any cart mutation           |
+
+---
+
+## 🔐 Security
+
+- JWT authentication with HTTP-only cookies (no localStorage)
+- Password hashing with `bcrypt` (salt rounds: 10)
+- Input validation with Zod on all server actions
+- RBAC: Admin-only routes checked via `authCheck()` + permission helpers
+- Email domain whitelist (gmail, hotmail, outlook, yahoo)
+- Password policy: min 8 chars, uppercase, lowercase, number, special char
+- Image upload size limit: 5MB; processed to WebP via `sharp`
 
 ---
 
@@ -184,19 +260,16 @@ Create → Upload Images → Set Category → Set Price/Stock → Publish
 
 ### Prerequisites
 
-* Node.js 20+
-* PostgreSQL
-* ImageKit account
-* npm or yarn
-
----
+- Node.js 20+
+- PostgreSQL
+- ImageKit account
 
 ### Installation
 
 ```bash
 # Clone repository
-git clone https://github.com/<your-username>/next-nest-2.git
-cd next-nest-2
+git clone https://github.com/<your-username>/next-nest.git
+cd next-nest
 
 # Install dependencies
 npm install
@@ -206,24 +279,21 @@ npx prisma db push
 npx prisma generate
 ```
 
----
-
 ### Environment Variables
 
-Create `.env` in root:
+Create `.env` in project root:
 
 ```env
 DATABASE_URL=postgresql://user:password@localhost:5432/ecommerce
 
-NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY=your_public_key
+IMAGEKIT_PUBLIC_KEY=your_public_key
 IMAGEKIT_PRIVATE_KEY=your_private_key
-NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_id
+IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_id
 
-JWT_SECRET=your_jwt_secret
-RESEND_API_KEY=your_resend_api_key
+NEXT_PUBLIC_PROMPTPAY_ID=your_promptpay_id
+
+JWT_SECRET_KEY=your_jwt_secret
 ```
-
----
 
 ### Run
 
@@ -231,24 +301,15 @@ RESEND_API_KEY=your_resend_api_key
 # Development
 npm run dev
 
-# Lint
-npm run lint
-
 # Build
 npm run build
 
 # Production
 npm start
+
+# Lint
+npm run lint
 ```
-
----
-
-## 🔐 Security
-
-* JWT authentication with HTTP-only cookies
-* Password hashing with bcrypt
-* Input validation using Zod
-* Role-based access control (RBAC)
 
 ---
 
