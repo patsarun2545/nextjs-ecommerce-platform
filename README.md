@@ -1,5 +1,7 @@
 # 🛒 Next-Nest E-Commerce Platform
 
+[![Live Demo](https://img.shields.io/badge/Live-Demo-000?style=flat-square&logo=vercel&logoColor=white)](https://nextjs-ecommerce-platform-gamma.vercel.app/)
+
 A full-stack e-commerce web application built with the **Next.js App Router**, combining both frontend and backend in a single codebase. Features a complete **customer storefront** and **admin back-office system** built with modern best practices.
 
 ---
