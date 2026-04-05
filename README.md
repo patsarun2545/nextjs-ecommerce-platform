@@ -1,4 +1,4 @@
-# 🛒 Next-Nest E-Commerce Platform
+# 🛒 Next E-Commerce Platform
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-000?style=flat-square&logo=vercel&logoColor=white)](https://nextjs-ecommerce-platform-gamma.vercel.app/)
 
