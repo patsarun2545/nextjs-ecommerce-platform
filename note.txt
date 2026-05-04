@@ -3,7 +3,7 @@ page 1505
 
 npx create-next-app@latest . --ts --tailwind --eslint --app --src-dir --import-alias "@/*" --yes
 --shadcn
-npx shadcn@latest 
+npx shadcn@latest init
 ลง components ตามใช้ เช่น
     npx shadcn@latest add card
     npx shadcn@latest add label
@@ -24,6 +24,9 @@ npx prisma migrate reset
 npx next build
 npx eslint src
 
+npm run build
+npx eslint src
+
 สร้าง lib > db.ts
     import { PrismaClient } from "@prisma/client";
     const globalForPrisma = global as unknown as { prisma: PrismaClient };
@@ -33,3 +36,4 @@ npm install zod
 npm install bcrypt
 npm install --save-dev @types/bcrypt
 npm install jose
+npm install resend
