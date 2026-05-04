@@ -154,7 +154,7 @@ export default function MyOrdersClient({ orders }: { orders: Order[] }) {
 
         {/* Order list */}
         {filtered.length > 0 ? (
-          <div className="flex flex-col gap-2.5">
+          <div className="flex flex-col gap-3">
             {filtered.map((order) => <OrderCard key={order.id} order={order} />)}
           </div>
         ) : (
@@ -180,8 +180,8 @@ export default function MyOrdersClient({ orders }: { orders: Order[] }) {
 function OrderCard({ order }: { order: Order }) {
   const cfg = STATUS_CONFIG[order.status];
   const Icon = cfg.icon;
-  const preview = order.items.slice(0, 3);
-  const remaining = order.items.length - 3;
+  const firstItem = order.items[0];
+  const remaining = order.items.length - 1;
   const currentStep = cfg.step;
 
   return (
@@ -189,69 +189,65 @@ function OrderCard({ order }: { order: Order }) {
       href={`/my-orders/${order.id}`}
       className="group bg-white rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-md hover:shadow-blue-100/40 transition-all duration-200 overflow-hidden"
     >
-      {/* Top bar */}
+      {/* ── Top bar: order number + date + status ── */}
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-100 bg-slate-50/70">
-        <div className="flex items-center gap-2">
-          <Hash size={11} className="text-slate-400" />
-          <span className="text-xs font-bold text-slate-600 font-mono">{order.orderNumber}</span>
-          <span className="text-slate-300">·</span>
-          <span className="text-xs text-slate-400">{order.createdAtFormatted}</span>
+        <div className="flex items-center gap-2 min-w-0">
+          <Hash size={11} className="text-slate-400 shrink-0" />
+          <span className="text-xs font-bold text-slate-600 font-mono truncate">{order.orderNumber}</span>
+          <span className="text-slate-300 shrink-0">·</span>
+          <span className="text-xs text-slate-400 shrink-0">{order.createdAtFormatted}</span>
         </div>
-        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-semibold ${cfg.cls}`}>
+        <span className={`shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-semibold ml-2 ${cfg.cls}`}>
           <Icon size={10} />{cfg.label}
         </span>
       </div>
 
-      {/* Body */}
-      <div className="flex gap-3.5 p-3.5">
-        {/* Thumbnails */}
-        <div className="flex -space-x-2 shrink-0 self-center">
-          {preview.map((item) => (
-            <div key={item.id} className="size-14 rounded-lg border-2 border-white bg-slate-100 overflow-hidden shadow-sm">
-              {item.productImage
-                ? <Image src={item.productImage}
-                  width={80}
-                  height={80}
-                  alt={item.productTitle}
-                  className="size-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                : <div className="size-full bg-gradient-to-br from-blue-50 to-slate-100 flex items-center justify-center">
-                  <Package size={14} className="text-slate-300" />
-                </div>
-              }
-            </div>
-          ))}
-          {remaining > 0 && (
-            <div className="size-14 rounded-lg border-2 border-white bg-blue-600 flex items-center justify-center shadow-sm">
-              <span className="text-xs font-bold text-white">+{remaining}</span>
+      {/* ── Product row (Shopee-style) ── */}
+      <div className="flex items-center gap-3.5 px-4 py-3.5 border-b border-slate-100">
+        {/* Product image */}
+        <div className="shrink-0 size-[72px] rounded-lg border border-slate-200 bg-slate-100 overflow-hidden">
+          {firstItem?.productImage ? (
+            <Image
+              src={firstItem.productImage}
+              alt={firstItem.productTitle}
+              width={72}
+              height={72}
+              className="size-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          ) : (
+            <div className="size-full flex items-center justify-center">
+              <Package size={20} className="text-slate-300" />
             </div>
           )}
         </div>
 
-        {/* Info */}
-        <div className="flex flex-1 flex-col justify-between min-w-0">
-          <div>
-            <p className="font-semibold text-slate-800 text-sm line-clamp-1 group-hover:text-blue-700 transition-colors">
-              {order.items[0]?.productTitle}
-              {order.items.length > 1 && (
-                <span className="text-slate-400 font-normal text-xs"> +{order.items.length - 1} รายการ</span>
-              )}
-            </p>
-            <p className="text-xs text-slate-400 mt-0.5">{order.totalItems} ชิ้น</p>
-          </div>
-          <div className="flex items-center justify-between mt-1.5">
-            <span className="font-bold text-slate-900">{fmt(order.totalAmount)}</span>
-            <span className="text-[10px] text-slate-400">รวมจัดส่ง</span>
+        {/* Product info */}
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-slate-800 line-clamp-2 group-hover:text-blue-700 transition-colors leading-snug">
+            {firstItem?.productTitle}
+          </p>
+          <div className="flex items-center gap-2 mt-1.5">
+            <span className="text-xs text-slate-400">{order.totalItems} ชิ้น</span>
+            {remaining > 0 && (
+              <>
+                <span className="text-slate-200">|</span>
+                <span className="text-xs text-slate-400">และอีก {remaining} รายการ</span>
+              </>
+            )}
           </div>
         </div>
 
-        <div className="self-center shrink-0 hidden sm:block">
-          <ChevronRight size={16} className="text-slate-300 group-hover:text-blue-400 transition-colors" />
+        {/* Total price + chevron */}
+        <div className="shrink-0 flex flex-col items-end gap-0.5">
+          <span className="text-base font-bold text-slate-900">{fmt(order.totalAmount)}</span>
+          <span className="text-[10px] text-slate-400">รวมจัดส่ง</span>
+          <ChevronRight size={15} className="text-slate-300 group-hover:text-blue-400 transition-colors mt-1.5" />
         </div>
       </div>
 
-      {/* Progress steps */}
+      {/* ── Progress steps ── */}
       {order.status !== "Cancelled" && (
-        <div className="px-4 pb-3.5">
+        <div className="px-4 py-3">
           <div className="flex items-start">
             {STEPS.map((step, i) => {
               const done = i <= currentStep;
@@ -260,18 +256,21 @@ function OrderCard({ order }: { order: Order }) {
               return (
                 <div key={i} className="flex items-center flex-1 last:flex-none">
                   <div className="flex flex-col items-center gap-1 min-w-0">
-                    <div className={`size-6 rounded-full flex items-center justify-center border-2 transition-all ${active ? "border-blue-600 bg-blue-600 shadow-sm shadow-blue-300"
-                      : done ? "border-blue-300 bg-blue-50"
-                        : "border-slate-200 bg-white"
-                      }`}>
+                    <div className={`size-6 rounded-full flex items-center justify-center border-2 transition-all ${
+                      active ? "border-blue-600 bg-blue-600 shadow-sm shadow-blue-300"
+                      : done  ? "border-blue-300 bg-blue-50"
+                              : "border-slate-200 bg-white"
+                    }`}>
                       <StepIcon size={11} className={active ? "text-white" : done ? "text-blue-400" : "text-slate-300"} />
                     </div>
-                    <span className={`text-[9px] font-semibold leading-none text-center ${active ? "text-blue-600" : done ? "text-blue-400" : "text-slate-300"
-                      }`}>{step.label}</span>
+                    <span className={`text-[9px] font-semibold leading-none text-center ${
+                      active ? "text-blue-600" : done ? "text-blue-400" : "text-slate-300"
+                    }`}>{step.label}</span>
                   </div>
                   {i < STEPS.length - 1 && (
-                    <div className={`h-0.5 flex-1 mx-1 mb-3 rounded-full transition-colors ${done && i < currentStep ? "bg-blue-300" : "bg-slate-200"
-                      }`} />
+                    <div className={`h-0.5 flex-1 mx-1 mb-3 rounded-full transition-colors ${
+                      done && i < currentStep ? "bg-blue-300" : "bg-slate-200"
+                    }`} />
                   )}
                 </div>
               );

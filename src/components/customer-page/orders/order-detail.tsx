@@ -12,6 +12,7 @@ import { OrderType } from "@/types/order";
 import {
   Ban,
   CreditCard,
+  ExternalLink,
   MapPin,
   Package,
   Phone,
@@ -20,6 +21,7 @@ import {
   Upload,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import PaymentFormModal from "./payment-form-modal";
@@ -67,13 +69,13 @@ export default function OrderDetail({ order }: OrderDetailProps) {
             </div>
           </CardHeader>
           <CardContent className="p-0">
+            {/* Table Header */}
             <div className="border-b">
               <div className="grid grid-cols-12 bg-muted py-3 px-4 text-xs font-medium text-muted-foreground">
-                <div className="col-span-1 hidden sm:block">รูป</div>
-                <div className="col-span-8 sm:col-span-5">ชื่อสินค้า</div>
+                <div className="col-span-6 sm:col-span-6">ชื่อสินค้า</div>
                 <div className="col-span-2 hidden sm:block text-right">ราคา/ชิ้น</div>
                 <div className="col-span-1 hidden sm:block text-center">จำนวน</div>
-                <div className="col-span-4 sm:col-span-3 text-right pr-2">รวม</div>
+                <div className="col-span-6 sm:col-span-3 text-right pr-2">รวม</div>
               </div>
             </div>
 
@@ -83,25 +85,53 @@ export default function OrderDetail({ order }: OrderDetailProps) {
                   key={index}
                   className="grid grid-cols-12 py-3 px-4 border-b last:border-b-0 items-center hover:bg-gray-50 transition-colors duration-100 text-sm"
                 >
-                  <div className="col-span-1 hidden sm:block">
-                    <Image
-                      alt={item.productTitle}
-                      src={item.productImage || "/images/no-product-image.webp"}
-                      width={40}
-                      height={40}
-                      className="object-cover rounded-md border"
-                    />
+                  {/* Product image + name (always visible, clickable) */}
+                  <div className="col-span-6 sm:col-span-6 flex items-center gap-3 min-w-0 pr-2">
+                    <Link
+                      href={`/products/${item.productId}`}
+                      className="shrink-0 group/img"
+                      title={item.productTitle}
+                    >
+                      <div className="relative size-12 rounded-md border overflow-hidden bg-slate-100 hover:border-blue-400 transition-colors">
+                        <Image
+                          alt={item.productTitle}
+                          src={item.productImage || "/images/no-product-image.webp"}
+                          fill
+                          className="object-cover group-hover/img:scale-105 transition-transform duration-200"
+                        />
+                      </div>
+                    </Link>
+
+                    <Link
+                      href={`/products/${item.productId}`}
+                      className="min-w-0 group/name"
+                      title={item.productTitle}
+                    >
+                      <p className="font-medium text-sm truncate group-hover/name:text-blue-600 transition-colors leading-snug">
+                        {item.productTitle}
+                      </p>
+                      {/* Mobile-only: price × qty */}
+                      <p className="text-xs text-muted-foreground mt-0.5 sm:hidden">
+                        {formatPrice(item.price)} × {item.quantity}
+                      </p>
+                      <span className="hidden sm:inline-flex items-center gap-0.5 text-[11px] text-blue-500 group-hover/name:text-blue-700 transition-colors mt-0.5">
+                        ดูสินค้า <ExternalLink size={10} />
+                      </span>
+                    </Link>
                   </div>
-                  <div className="col-span-8 sm:col-span-5 truncate pr-2">
-                    <div className="font-medium truncate">{item.productTitle}</div>
-                  </div>
+
+                  {/* Price per unit */}
                   <div className="col-span-2 hidden sm:block text-right pr-2 text-muted-foreground">
                     {formatPrice(item.price)}
                   </div>
+
+                  {/* Quantity */}
                   <div className="col-span-1 hidden sm:block text-center">
                     <span className="text-sm text-muted-foreground">×{item.quantity}</span>
                   </div>
-                  <div className="col-span-4 sm:col-span-3 text-right pr-2 font-medium">
+
+                  {/* Line total */}
+                  <div className="col-span-6 sm:col-span-3 text-right pr-2 font-medium">
                     {formatPrice(item.totalPirce)}
                   </div>
                 </div>
