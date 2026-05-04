@@ -36,22 +36,22 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     <main className="container mx-auto px-4 py-8">
 
       <nav aria-label="breadcrumb">
-        <ol className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-          <li>
+        <ol className="flex items-center gap-2 text-sm text-muted-foreground mb-4 min-w-0">
+          <li className="shrink-0">
             <Link href="/" className="hover:text-foreground transition-colors">
               หน้าหลัก
             </Link>
           </li>
-          <li aria-hidden="true">/</li>
-          <li>
+          <li aria-hidden="true" className="shrink-0">/</li>
+          <li className="shrink-0">
             <Link href="/products" className="hover:text-foreground transition-colors">
               สินค้าทั้งหมด
             </Link>
           </li>
           {product.category && (
             <>
-              <li aria-hidden="true">/</li>
-              <li>
+              <li aria-hidden="true" className="shrink-0">/</li>
+              <li className="shrink-0">
                 <Link
                   href={`/products?category=${product.category.name}`}
                   className="hover:text-foreground transition-colors"
@@ -61,18 +61,18 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               </li>
             </>
           )}
-          <li aria-hidden="true">/</li>
+          <li aria-hidden="true" className="shrink-0">/</li>
           <li
             aria-current="page"
-            className="text-foreground font-medium line-clamp-1 max-w-[200px]"
+            className="text-foreground font-medium truncate min-w-0"
           >
             {product.title}
           </li>
         </ol>
       </nav>
 
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">{product.title}</h1>
+      <div className="flex items-center justify-between mb-6 gap-4">
+        <h1 className="text-2xl font-bold truncate min-w-0">{product.title}</h1>
 
         <Button variant="outline" asChild>
           <Link href="/products">

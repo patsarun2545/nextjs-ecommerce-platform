@@ -111,7 +111,7 @@ export default function CartItems({ cart }: CartItemsProps) {
       <h2 className="text-xl font-semibold mb-4">รายการในตะกร้า</h2>
 
       {opCart.items.map((item, index) => (
-        <div key={index} className="flex flex-col sm:flex-row gap-4 pb-4">
+        <div key={index} className="flex gap-4 pb-4">
           <div className="relative size-24 border border-primary rounded-md overflow-hidden">
             <Link href={`/products/${item.product.id}`}>
               <Image
@@ -126,15 +126,14 @@ export default function CartItems({ cart }: CartItemsProps) {
           </div>
 
           {/* Product Detail */}
-          <div className="flex-1 space-y-1">
-            <div className="flex justify-between">
+          <div className="flex-1 min-w-0 space-y-1">
+            <div className="flex justify-between gap-2">
               <Link
                 href={`/products/${item.product.id}`}
-                className="text-lg font-medium hover:text-primary transition-colors"
+                className="text-lg font-medium hover:text-primary transition-colors truncate min-w-0"
               >
                 {item.product.title}
               </Link>
-              <p className="font-semibold">{formatPrice(item.price)}</p>
             </div>
 
             <div className="text-sm text-muted-foreground">
