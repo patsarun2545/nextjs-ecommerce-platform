@@ -6,6 +6,7 @@ import { ArrowLeft, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 interface ProductDetailPageProps {
   params: Promise<{ id: string }>;
@@ -82,7 +83,9 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         </Button>
       </div>
 
-      <ProductDetailClient product={product} />
+      <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 rounded-xl" />}>
+        <ProductDetailClient product={product} />
+      </Suspense>
 
       {relatedProducts.length > 0 && (
         <section className="mt-16">

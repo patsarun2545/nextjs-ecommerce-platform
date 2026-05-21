@@ -2,6 +2,7 @@ import PageHeader from "@/components/admin-page/refactor/page-header"
 import StatBadge from "@/components/admin-page/refactor/stat-badge"
 import ProductList from "@/features/products/components/product-list"
 import { getProducts } from "@/features/products/db/products"
+import { Suspense } from "react"
 
 export default async function ProductAdminPage() {
   const products = await getProducts()
@@ -23,7 +24,9 @@ export default async function ProductAdminPage() {
           </>
         }
       />
-      <ProductList products={products} />
+      <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 rounded-xl" />}>
+        <ProductList products={products} />
+      </Suspense>
     </div>
   )
 }

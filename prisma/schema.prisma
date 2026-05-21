@@ -57,6 +57,10 @@ model User {
   updatedAt DateTime   @updatedAt
   cart      Cart[]
   orders    Order[]
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
 }
 
 model Category {
@@ -66,6 +70,8 @@ model Category {
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
   products  Product[]
+
+  @@index([status])
 }
 
 model Product {
@@ -86,6 +92,11 @@ model Product {
   images     ProductImage[]
   cartItems  CartItem[]
   orderItems OrderItem[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([status, sold])
+  @@index([categoryId, status])
 }
 
 model ProductImage {
@@ -109,6 +120,8 @@ model Cart {
   orderedById String
   orderedBy   User       @relation(fields: [orderedById], references: [id])
   products    CartItem[]
+
+  @@index([orderedById])
 }
 
 model CartItem {
@@ -120,6 +133,8 @@ model CartItem {
   cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
   productId String
   product   Product @relation(fields: [productId], references: [id])
+
+  @@index([cartId, productId])
 }
 
 model Order {
@@ -140,6 +155,12 @@ model Order {
   customerId String
   customer   User        @relation(fields: [customerId], references: [id])
   items      OrderItem[]
+
+  @@index([customerId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([customerId, status])
+  @@index([status, createdAt])
 }
 
 model OrderItem {

@@ -40,17 +40,19 @@ export const productAction = async (
       : [],
   };
 
-  const uploadedImages = [];
-
-  for (const imageFile of processedData.images) {
+  const uploadPromises = processedData.images.map(async (imageFile) => {
     const uploadResult = await uploadToImageKit(imageFile, "product");
     if (uploadResult && !uploadResult.message) {
-      uploadedImages.push({
+      return {
         url: uploadResult.url || "",
         fileId: uploadResult.fileId || "",
-      });
+      };
     }
-  }
+    return null;
+  });
+
+  const uploadResults = await Promise.all(uploadPromises);
+  const uploadedImages = uploadResults.filter((result) => result !== null);
 
   const result = processedData.id
     ? await updateProduct({

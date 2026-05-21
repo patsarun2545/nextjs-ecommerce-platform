@@ -33,14 +33,13 @@ export async function proxy(req: NextRequest) {
 
 export const config = {
   matcher: [
-    "/",
-    "/auth/:path*",
+    // Exclude static files and API routes that don't need auth
+    "/((?!_next/static|_next/image|favicon.ico).*)",
+    // Only match protected routes
     "/admin/:path*",
-    
     "/cart/:path*",
     "/checkout/:path*",
     "/my-orders/:path*",
-    "/products/:path*",
     "/profile/:path*",
   ],
 };

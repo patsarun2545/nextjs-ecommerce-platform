@@ -2,6 +2,7 @@ import PageHeader from "@/components/admin-page/refactor/page-header"
 import DashboardClient from "@/features/dashboard/components/dashboard-all"
 import { getDashboardStats } from "@/features/dashboard/db/dashboard"
 import { redirect } from "next/navigation"
+import { Suspense } from "react"
 
 export default async function AdminDashboardPage() {
   const stats = await getDashboardStats()
@@ -13,7 +14,9 @@ export default async function AdminDashboardPage() {
         title="Dashboard"
         description="Overview of your store performance"
       />
-      <DashboardClient stats={stats} />
+      <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 rounded-xl" />}>
+        <DashboardClient stats={stats} />
+      </Suspense>
     </div>
   )
 }

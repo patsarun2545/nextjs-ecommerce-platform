@@ -13,10 +13,9 @@ import {
   userChangePasswordSchema,
 } from "@/features/users/schemas/users";
 
-
 export async function adminUpdateUserAction(
   _prevState: InitialFormState,
-  formData: FormData
+  formData: FormData,
 ) {
   const me = await authCheck();
   if (!me || me.role !== "Admin") {
@@ -69,7 +68,7 @@ export async function adminUpdateUserAction(
 
 export async function adminResetPasswordAction(
   _prevState: InitialFormState,
-  formData: FormData
+  formData: FormData,
 ) {
   const me = await authCheck();
   if (!me || me.role !== "Admin") {
@@ -105,10 +104,9 @@ export async function adminResetPasswordAction(
   return { success: true, message: "รีเซ็ตรหัสผ่านสำเร็จ" };
 }
 
-
 export async function userUpdateProfileAction(
   _prevState: InitialFormState,
-  formData: FormData
+  formData: FormData,
 ) {
   const me = await authCheck();
   if (!me) return { success: false, message: "กรุณาเข้าสู่ระบบ" };
@@ -143,7 +141,7 @@ export async function userUpdateProfileAction(
 
 export async function userUpdateEmailAction(
   _prevState: InitialFormState,
-  formData: FormData
+  formData: FormData,
 ) {
   const me = await authCheck();
   if (!me) return { success: false, message: "กรุณาเข้าสู่ระบบ" };
@@ -162,7 +160,13 @@ export async function userUpdateEmailAction(
     };
   }
 
-  const user = await db.user.findUnique({ where: { id: me.id } });
+  const [user, existing] = await Promise.all([
+    db.user.findUnique({ where: { id: me.id } }),
+    db.user.findFirst({
+      where: { email: data.email, NOT: { id: me.id } },
+    }),
+  ]);
+
   if (!user) return { success: false, message: "ไม่พบข้อมูลผู้ใช้" };
 
   const isValid = await compare(data.currentPassword, user.password);
@@ -173,10 +177,6 @@ export async function userUpdateEmailAction(
       errors: { currentPassword: ["รหัสผ่านปัจจุบันไม่ถูกต้อง"] },
     };
   }
-
-  const existing = await db.user.findFirst({
-    where: { email: data.email, NOT: { id: me.id } },
-  });
   if (existing) {
     return {
       success: false,
@@ -196,7 +196,7 @@ export async function userUpdateEmailAction(
 
 export async function userChangePasswordAction(
   _prevState: InitialFormState,
-  formData: FormData
+  formData: FormData,
 ) {
   const me = await authCheck();
   if (!me) return { success: false, message: "กรุณาเข้าสู่ระบบ" };

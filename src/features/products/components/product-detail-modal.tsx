@@ -37,10 +37,12 @@ export default function ProductDetailModal({
   open,
   onOpenChange,
   product,
-}: ProductDetailModalProps)  {
+}: ProductDetailModalProps) {
   if (!product) return null;
 
-  const formattedDate = dayjs(product.createdAt).fromNow();
+  const formattedDate = new Intl.DateTimeFormat('th-TH', {
+    dateStyle: 'medium'
+  }).format(new Date(product.createdAt));
 
   const stockColor = (() => {
     switch (true) {
@@ -67,9 +69,9 @@ export default function ProductDetailModal({
   const discount =
     product.basePrice > product.price
       ? (
-          ((product.basePrice - product.price) / product.basePrice) *
-          100
-        ).toFixed(2)
+        ((product.basePrice - product.price) / product.basePrice) *
+        100
+      ).toFixed(2)
       : "0";
 
   const profitPerUnit = product.cost > 0 ? product.price - product.cost : 0;
@@ -215,8 +217,8 @@ export default function ProductDetailModal({
                       <span className="font-bold">
                         {product.cost > 0
                           ? formatPrice(
-                              product.sold * (product.price - product.cost),
-                            )
+                            product.sold * (product.price - product.cost),
+                          )
                           : "N/A"}
                       </span>
                       <span className="text-xs text-muted-foreground">
@@ -293,7 +295,9 @@ export default function ProductDetailModal({
                       <div>
                         <h2 className="text-muted-foreground">Created at</h2>
                         <p className="font-medium">
-                          {dayjs(product.createdAt).format("ll")}
+                          {new Intl.DateTimeFormat('th-TH', {
+                            dateStyle: 'long'
+                          }).format(new Date(product.createdAt))}
                         </p>
                       </div>
                     </div>

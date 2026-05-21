@@ -11,6 +11,7 @@ import { canCreateProduct, canUpdateProduct } from "../permissions/products";
 import { redirect } from "next/navigation";
 import { deleteFromImageKit } from "@/lib/imageKit";
 import { Prisma, ProductStatus } from "@prisma/client";
+import { config } from "@/lib/config";
 
 interface CreateProductInput {
   title: string;
@@ -35,24 +36,47 @@ export const getProducts = async () => {
       orderBy: {
         createdAt: "desc",
       },
-      include: {
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        cost: true,
+        basePrice: true,
+        price: true,
+        stock: true,
+        sold: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+        categoryId: true,
         category: {
           select: {
             id: true,
             name: true,
             status: true,
+            createdAt: true,
+            updatedAt: true,
           },
         },
-        images: true,
+        images: {
+          select: {
+            id: true,
+            url: true,
+            isMain: true,
+            fileId: true,
+            productId: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
       },
     });
 
     return products.map((product) => {
       const mainImage = product.images.find((image) => image.isMain);
-
       return {
         ...product,
-        lowStock: 5,
+        lowStock: config.lowStockThreshold,
         sku: product.id.substring(0, 8).toUpperCase(),
         mainImage,
       };
@@ -95,7 +119,7 @@ export const getProductById = async (id: string) => {
 
     return {
       ...product,
-      lowStock: 5,
+      lowStock: config.lowStockThreshold,
       sku: product.id.substring(0, 8).toUpperCase(),
       mainImage: mainImage || null,
       mainImageIndex,
@@ -135,10 +159,9 @@ export const getFeatureProducts = async () => {
 
     return products.map((product) => {
       const mainImage = product.images.find((image) => image.isMain);
-
       return {
         ...product,
-        lowStock: 5,
+        lowStock: config.lowStockThreshold,
         sku: product.id.substring(0, 8).toUpperCase(),
         mainImage,
       };
@@ -264,15 +287,14 @@ export const updateProduct = async (
     }
 
     if (input.deletedImageIds && input.deletedImageIds.length > 0) {
-      for (const deletedImageId of input.deletedImageIds) {
-        const imageToDelete = existingProduct.images.find(
-          (image) => image.id === deletedImageId,
-        );
-
-        if (imageToDelete) {
-          await deleteFromImageKit(imageToDelete.fileId);
-        }
-      }
+      await Promise.all(
+        input.deletedImageIds
+          .map((deletedImageId) =>
+            existingProduct.images.find((image) => image.id === deletedImageId),
+          )
+          .filter((image) => image !== undefined)
+          .map((image) => deleteFromImageKit(image.fileId)),
+      );
     }
 
     const updatedProduct = await db.$transaction(async (prisma) => {
@@ -463,7 +485,7 @@ export const getProductsFiltered = async (params?: {
       const mainImage = product.images.find((image) => image.isMain);
       return {
         ...product,
-        lowStock: 5,
+        lowStock: config.lowStockThreshold,
         sku: product.id.substring(0, 8).toUpperCase(),
         mainImage,
       };

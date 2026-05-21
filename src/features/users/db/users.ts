@@ -38,7 +38,7 @@ export const getUserById = async (id: string) => {
 export const getAllUsers = async () => {
   "use cache";
 
-  cacheLife("minutes");
+  cacheLife("hours");
   cacheTag(getUserGlobalTag());
 
   try {
@@ -68,7 +68,7 @@ export const getAllUsers = async () => {
 export const getUserWithOrders = async (userId: string) => {
   "use cache";
 
-  cacheLife("minutes");
+  cacheLife("hours");
   cacheTag(getUserIdTag(userId));
 
   try {

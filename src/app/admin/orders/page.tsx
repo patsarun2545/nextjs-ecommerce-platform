@@ -2,13 +2,14 @@ import PageHeader from "@/components/admin-page/refactor/page-header"
 import StatBadge from "@/components/admin-page/refactor/stat-badge"
 import AdminOrderList from "@/features/orders/components/admin-order-list"
 import { getAllOrders } from "@/features/orders/db/orders"
+import { Suspense } from "react"
 
 export default async function AdminOrderPage() {
   const orders = await getAllOrders()
 
-  const pendingCount   = orders.filter((o) => o.status === "Pending").length
-  const paidCount      = orders.filter((o) => o.status === "Paid").length
-  const shippedCount   = orders.filter((o) => o.status === "Shipped").length
+  const pendingCount = orders.filter((o) => o.status === "Pending").length
+  const paidCount = orders.filter((o) => o.status === "Paid").length
+  const shippedCount = orders.filter((o) => o.status === "Shipped").length
   const deliveredCount = orders.filter((o) => o.status === "Delivered").length
   const cancelledCount = orders.filter((o) => o.status === "Cancelled").length
 
@@ -19,16 +20,18 @@ export default async function AdminOrderPage() {
         description="View and manage customer orders"
         actions={
           <>
-            <StatBadge count={orders.length}   label="Total"     color="blue" />
-            <StatBadge count={pendingCount}    label="Pending"   color="yellow" />
-            <StatBadge count={paidCount}       label="Paid"      color="blue" />
-            <StatBadge count={shippedCount}    label="Shipped"   color="indigo" />
-            <StatBadge count={deliveredCount}  label="Delivered" color="green" />
-            <StatBadge count={cancelledCount}  label="Cancelled" color="red" />
+            <StatBadge count={orders.length} label="Total" color="blue" />
+            <StatBadge count={pendingCount} label="Pending" color="yellow" />
+            <StatBadge count={paidCount} label="Paid" color="blue" />
+            <StatBadge count={shippedCount} label="Shipped" color="indigo" />
+            <StatBadge count={deliveredCount} label="Delivered" color="green" />
+            <StatBadge count={cancelledCount} label="Cancelled" color="red" />
           </>
         }
       />
-      <AdminOrderList orders={orders} />
+      <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 rounded-xl" />}>
+        <AdminOrderList orders={orders} />
+      </Suspense>
     </div>
   )
 }

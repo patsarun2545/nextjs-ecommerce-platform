@@ -7,9 +7,10 @@ import Link from "next/link";
 
 interface ProductCardProps {
   product: ProductType;
+  priority?: boolean;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, priority = false }: ProductCardProps) {
   const discount =
     product.basePrice > product.price
       ? ((product.basePrice - product.price) / product.basePrice) * 100
@@ -30,7 +31,9 @@ export default function ProductCard({ product }: ProductCardProps) {
             alt={product.title}
             src={product.mainImage?.url || "/images/no-product.png"}
             fill
+            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
             className="object-cover"
+            priority={priority}
           />
         </div>
 

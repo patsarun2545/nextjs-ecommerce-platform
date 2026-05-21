@@ -7,6 +7,7 @@ import { formatPrice } from "@/lib/formatPrice";
 import { CartType } from "@/types/cart";
 import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { clearCartAction } from "../actions/carts";
 import { toast } from "sonner";
 import { useOptimistic, useTransition } from "react";
@@ -16,6 +17,7 @@ interface CartSummaryProps {
 }
 
 export default function CartSummary({ cart }: CartSummaryProps) {
+  const router = useRouter();
   const [, startTransition] = useTransition();
   const [opCart, updateOpCart] = useOptimistic(
     cart,
@@ -34,17 +36,19 @@ export default function CartSummary({ cart }: CartSummaryProps) {
   );
 
   const handleClearCart = async () => {
-    startTransition(() => {
+    startTransition(async () => {
       updateOpCart("clear");
+
+      const result = await clearCartAction();
+
+      if (result.success) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+        // Revert optimistic state on error
+        router.refresh();
+      }
     });
-
-    const result = await clearCartAction();
-
-    if (result.success) {
-      toast.success(result.message);
-    } else {
-      toast.error(result.message);
-    }
   };
 
   return (

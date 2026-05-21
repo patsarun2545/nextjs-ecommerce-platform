@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "ตะกร้าของฉัน",
@@ -37,14 +38,16 @@ export default async function CartPage() {
       {!cart || cart.items.length === 0 ? (
         <EmptyCart />
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <CartItems cart={cart} />
+        <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 rounded-xl" />}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <CartItems cart={cart} />
+            </div>
+            <div className="lg:col-span-1">
+              <CartSummary cart={cart} />
+            </div>
           </div>
-          <div className="lg:col-span-1">
-            <CartSummary cart={cart} />
-          </div>
-        </div>
+        </Suspense>
       )}
     </div>
   );

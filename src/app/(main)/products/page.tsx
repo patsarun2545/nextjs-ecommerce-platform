@@ -16,6 +16,8 @@ interface ProductsPageProps {
   }>;
 }
 
+import { Suspense } from "react";
+
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const params = await searchParams;
 
@@ -31,10 +33,12 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   ]);
 
   return (
-    <ProductsClient
-      products={products}
-      categories={["ทั้งหมด", ...categories.map((c) => c.name)]}
-      searchParams={params}
-    />
+    <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 rounded-xl" />}>
+      <ProductsClient
+        products={products}
+        categories={["ทั้งหมด", ...categories.map((c) => c.name)]}
+        searchParams={params}
+      />
+    </Suspense>
   );
 }

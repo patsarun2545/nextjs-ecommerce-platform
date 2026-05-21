@@ -74,6 +74,7 @@ export default function Hero() {
                 alt="Tech Gadgets"
                 src="/images/banner.png"
                 fill
+                priority
                 className="object-contain hover:scale-105 transition-transform duration-700 ease-out"
               />
             </div>

@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "ชำระเงิน",
@@ -38,14 +39,16 @@ export default async function CheckoutPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-          <CheckoutForm user={user} />
+      <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 rounded-xl" />}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <CheckoutForm user={user} />
+          </div>
+          <div className="lg:col-span-1">
+            <CheckoutSummary cart={cart} />
+          </div>
         </div>
-        <div className="lg:col-span-1">
-          <CheckoutSummary cart={cart} />
-        </div>
-      </div>
+      </Suspense>
     </div>
   );
 }

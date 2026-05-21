@@ -7,7 +7,7 @@ import { getUserGlobalTag } from "@/features/users/db/cache";
 export const getDashboardStats = async () => {
   "use cache";
 
-  cacheLife("minutes");
+  cacheLife("hours");
   cacheTag(getOrderGlobalTag());
   cacheTag(getProductGlobalTag());
   cacheTag(getUserGlobalTag());
@@ -15,9 +15,18 @@ export const getDashboardStats = async () => {
   const now = new Date();
   const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
+  const endOfLastMonth = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    0,
+    23,
+    59,
+    59,
+  );
 
-  const stalePendingThreshold = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+  const stalePendingThreshold = new Date(
+    now.getTime() - 3 * 24 * 60 * 60 * 1000,
+  );
 
   try {
     const [
@@ -123,7 +132,7 @@ export const getDashboardStats = async () => {
     ]);
 
     const statusMap = Object.fromEntries(
-      ordersByStatus.map((s) => [s.status, s._count.status])
+      ordersByStatus.map((s) => [s.status, s._count.status]),
     );
 
     const calcGrowth = (current: number, previous: number) => {

@@ -1,5 +1,3 @@
-"use client";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,13 +20,11 @@ import {
   TrendingUp,
   TrendingDown,
   Minus,
-  RefreshCw,
   TriangleAlert,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
 import { OrderStatus } from "@prisma/client";
+import DashboardRefreshButton from "./dashboard-refresh-button";
 
 type DashboardStats = {
   totalOrders: number;
@@ -95,18 +91,6 @@ const orderStatusRows = (stats: DashboardStats) => [
 ];
 
 export default function DashboardClient({ stats }: DashboardClientProps) {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-
-  const [lastRefreshed, setLastRefreshed] = useState(new Date());
-
-  const handleRefresh = () => {
-    startTransition(() => {
-      router.refresh();
-      setLastRefreshed(new Date());
-    });
-  };
-
   const statCards = [
     {
       title: "Revenue This Month",
@@ -146,21 +130,7 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
     <div className="flex flex-col gap-6">
 
       {/* Refresh bar */}
-      <div className="flex items-center justify-between">
-        <p className="text-xs text-muted-foreground">
-          {lastRefreshed ? `Last refreshed: ${lastRefreshed.toLocaleTimeString()}` : "Loading..."}
-        </p>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={handleRefresh}
-          disabled={isPending}
-          className="gap-1.5"
-        >
-          <RefreshCw size={13} className={isPending ? "animate-spin" : ""} />
-          {isPending ? "Refreshing..." : "Refresh"}
-        </Button>
-      </div>
+      <DashboardRefreshButton />
 
       {/* Stale pending alert */}
       {stats.stalePendingCount > 0 && (

@@ -1,8 +1,44 @@
 import { redirect } from "next/navigation";
-import { revalidateCartCache } from "./cache";
+import { revalidateCartCache, getCartTag } from "./cache";
 import { db } from "@/lib/db";
 import { authCheck } from "@/features/auths/db/auths";
 import { canUpdateUserCart } from "../permissions/carts";
+import { cacheLife, cacheTag } from "next/cache";
+import {
+  AppError,
+  NotFoundError,
+  ValidationError,
+  InsufficientStockError,
+} from "@/lib/errors";
+import { config } from "@/lib/config";
+
+interface CartItem {
+  id: string;
+  count: number;
+  price: number;
+  product: {
+    id: string;
+    title: string;
+    price: number;
+    stock: number;
+    status: string;
+    images: { id: string; url: string; isMain: boolean }[];
+    category: { id: string; name: string };
+    mainImage: { id: string; url: string; isMain: boolean } | null;
+    lowStock: number;
+    sku: string;
+  };
+}
+
+interface CartWithItems {
+  id: string;
+  cartTotal: number;
+  orderedById: string;
+  createdAt: Date;
+  updatedAt: Date;
+  items: CartItem[];
+  itemCount: number;
+}
 
 interface AddToCartInput {
   productId: string;
@@ -14,10 +50,23 @@ interface UpdateCartInput {
   newCount: number;
 }
 
-export const getUserCart = async (userId: string | null) => {
+interface OperationResult {
+  success?: boolean;
+  message?: string;
+  error?: Record<string, string[]>;
+}
+
+export const getUserCart = async (
+  userId: string | null,
+): Promise<CartWithItems | null> => {
+  "use cache";
+
   if (!userId) {
     redirect("/auth/signin");
   }
+
+  cacheLife("hours");
+  cacheTag(getCartTag(userId));
 
   try {
     const cart = await db.cart.findFirst({
@@ -29,11 +78,31 @@ export const getUserCart = async (userId: string | null) => {
       },
       include: {
         products: {
-          include: {
+          select: {
+            id: true,
+            count: true,
+            price: true,
+            productId: true,
             product: {
-              include: {
-                images: true,
-                category: true,
+              select: {
+                id: true,
+                title: true,
+                price: true,
+                stock: true,
+                status: true,
+                images: {
+                  select: {
+                    id: true,
+                    url: true,
+                    isMain: true,
+                  },
+                },
+                category: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
               },
             },
           },
@@ -47,7 +116,6 @@ export const getUserCart = async (userId: string | null) => {
       ...cart,
       items: cart.products.map((item) => {
         const mainImage = item.product.images.find((image) => image.isMain);
-
         return {
           id: item.id,
           count: item.count,
@@ -55,7 +123,7 @@ export const getUserCart = async (userId: string | null) => {
           product: {
             ...item.product,
             mainImage: mainImage || null,
-            lowStock: 5,
+            lowStock: config.lowStockThreshold,
             sku: item.product.id.substring(0, 8).toUpperCase(),
           },
         };
@@ -70,24 +138,31 @@ export const getUserCart = async (userId: string | null) => {
   }
 };
 
-export const getCartItemCount = async (userId: string | null) => {
+export const getCartItemCount = async (
+  userId: string | null,
+): Promise<number> => {
+  "use cache";
+
   if (!userId) {
     redirect("/auth/signin");
   }
 
+  cacheLife("hours");
+  cacheTag(getCartTag(userId));
+
   try {
-    const cart = await db.cart.findFirst({
+    const result = await db.cartItem.aggregate({
       where: {
-        orderedById: userId,
+        cart: {
+          orderedById: userId,
+        },
       },
-      include: {
-        products: true,
+      _sum: {
+        count: true,
       },
     });
 
-    if (!cart) return 0;
-
-    return cart.products.reduce((sum, item) => sum + item.count, 0);
+    return result._sum.count ?? 0;
   } catch (error) {
     console.error("Error getting cart item count:", error);
     return 0;
@@ -95,11 +170,12 @@ export const getCartItemCount = async (userId: string | null) => {
 };
 
 const recalculateCartTotal = async (cartId: string) => {
-  const cartItems = await db.cartItem.findMany({
+  const result = await db.cartItem.aggregate({
     where: { cartId },
+    _sum: { price: true },
   });
 
-  const cartTotal = cartItems.reduce((total, item) => total + item.price, 0);
+  const cartTotal = result._sum.price ?? 0;
 
   await db.cart.update({
     where: { id: cartId },
@@ -107,7 +183,9 @@ const recalculateCartTotal = async (cartId: string) => {
   });
 };
 
-export const addToCart = async (input: AddToCartInput) => {
+export const addToCart = async (
+  input: AddToCartInput,
+): Promise<OperationResult> => {
   const user = await authCheck();
   if (!user || !canUpdateUserCart(user)) {
     redirect("/auth/signin");
@@ -122,15 +200,11 @@ export const addToCart = async (input: AddToCartInput) => {
     });
 
     if (!product) {
-      return {
-        message: "ไม่พบสินค้าหรือไม่มีจำหน่าย",
-      };
+      throw new NotFoundError("ไม่พบสินค้าหรือไม่มีจำหน่าย");
     }
 
     if (product.stock < input.count) {
-      return {
-        message: "สต๊อกสินค้าไม่เพียงพอ",
-      };
+      throw new InsufficientStockError("สต๊อกสินค้าไม่เพียงพอ");
     }
 
     let cart = await db.cart.findFirst({
@@ -179,15 +253,22 @@ export const addToCart = async (input: AddToCartInput) => {
     await recalculateCartTotal(cart.id);
 
     revalidateCartCache(user.id);
+    return { success: true };
   } catch (error) {
-    console.error("Error addding to cart:", error);
-    return {
-      message: "เกิดข้อผิดพลาดในการเพิ่มสินค้าลงในตะกร้า",
-    };
+    console.error("Error adding to cart:", error);
+    if (error instanceof AppError) {
+      return { message: error.message };
+    }
+    if (error instanceof Error) {
+      return { message: error.message };
+    }
+    return { message: "เกิดข้อผิดพลาดในการเพิ่มสินค้าลงในตะกร้า" };
   }
 };
 
-export const updateCartItem = async (input: UpdateCartInput) => {
+export const updateCartItem = async (
+  input: UpdateCartInput,
+): Promise<OperationResult> => {
   const user = await authCheck();
   if (!user || !canUpdateUserCart(user)) {
     redirect("/auth/signin");
@@ -195,29 +276,37 @@ export const updateCartItem = async (input: UpdateCartInput) => {
 
   try {
     if (input.newCount < 1) {
-      return {
-        message: "จำนวนสินค้าต้องมีอย่างน้อย 1 ชิ้น",
-      };
+      throw new ValidationError("จำนวนสินค้าต้องมีอย่างน้อย 1 ชิ้น");
     }
 
     const cartItem = await db.cartItem.findUnique({
       where: { id: input.cartItemId },
-      include: {
-        cart: true,
-        product: true,
+      select: {
+        id: true,
+        cartId: true,
+        productId: true,
+        count: true,
+        price: true,
+        cart: {
+          select: {
+            orderedById: true,
+          },
+        },
+        product: {
+          select: {
+            stock: true,
+            price: true,
+          },
+        },
       },
     });
 
     if (!cartItem || cartItem.cart.orderedById !== user.id) {
-      return {
-        message: "ไม่พบสินค้าในตะกร้า",
-      };
+      throw new NotFoundError("ไม่พบสินค้าในตะกร้า");
     }
 
     if (cartItem.product.stock < input.newCount) {
-      return {
-        message: "สต๊อกสินค้าไม่เพียงพอ",
-      };
+      throw new InsufficientStockError("สต๊อกสินค้าไม่เพียงพอ");
     }
 
     await db.cartItem.update({
@@ -231,15 +320,22 @@ export const updateCartItem = async (input: UpdateCartInput) => {
     await recalculateCartTotal(cartItem.cartId);
 
     revalidateCartCache(user.id);
+    return { success: true };
   } catch (error) {
     console.error("Error updating cart:", error);
-    return {
-      message: "เกิดข้อผิดพลาดในการอัพเดทตะกร้าสินค้า",
-    };
+    if (error instanceof AppError) {
+      return { message: error.message };
+    }
+    if (error instanceof Error) {
+      return { message: error.message };
+    }
+    return { message: "เกิดข้อผิดพลาดในการอัพเดทตะกร้าสินค้า" };
   }
 };
 
-export const removeFromCart = async (cartItemId: string) => {
+export const removeFromCart = async (
+  cartItemId: string,
+): Promise<OperationResult> => {
   const user = await authCheck();
   if (!user || !canUpdateUserCart(user)) {
     redirect("/auth/signin");
@@ -248,8 +344,14 @@ export const removeFromCart = async (cartItemId: string) => {
   try {
     const cartItem = await db.cartItem.findUnique({
       where: { id: cartItemId },
-      include: {
-        cart: true,
+      select: {
+        id: true,
+        cartId: true,
+        cart: {
+          select: {
+            orderedById: true,
+          },
+        },
       },
     });
 
@@ -266,15 +368,20 @@ export const removeFromCart = async (cartItemId: string) => {
     await recalculateCartTotal(cartItem.cartId);
 
     revalidateCartCache(user.id);
+    return { success: true };
   } catch (error) {
     console.error("Error removing from cart:", error);
-    return {
-      message: "ไม่สามารถลบรายการสินค้านี้ออกจากตะกร้าได้",
-    };
+    if (error instanceof AppError) {
+      return { message: error.message };
+    }
+    if (error instanceof Error) {
+      return { message: error.message };
+    }
+    return { message: "ไม่สามารถลบรายการสินค้านี้ออกจากตะกร้าได้" };
   }
 };
 
-export const clearCart = async () => {
+export const clearCart = async (): Promise<OperationResult> => {
   const user = await authCheck();
   if (!user || !canUpdateUserCart(user)) {
     redirect("/auth/signin");
@@ -288,9 +395,7 @@ export const clearCart = async () => {
     });
 
     if (!cart) {
-      return {
-        message: "ตะกร้าของคุณว่างเปล่าแล้ว",
-      };
+      throw new NotFoundError("ตะกร้าของคุณว่างเปล่าแล้ว");
     }
 
     await db.cartItem.deleteMany({
@@ -303,10 +408,15 @@ export const clearCart = async () => {
     });
 
     revalidateCartCache(user.id);
+    return { success: true };
   } catch (error) {
     console.error("Error clearing cart:", error);
-    return {
-      message: "ไม่สามารถเคลียร์ตะกร้าได้",
-    };
+    if (error instanceof AppError) {
+      return { message: error.message };
+    }
+    if (error instanceof Error) {
+      return { message: error.message };
+    }
+    return { message: "ไม่สามารถเคลียร์ตะกร้าได้" };
   }
 };

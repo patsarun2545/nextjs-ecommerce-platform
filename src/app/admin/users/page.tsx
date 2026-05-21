@@ -2,6 +2,7 @@ import PageHeader from "@/components/admin-page/refactor/page-header"
 import StatBadge from "@/components/admin-page/refactor/stat-badge"
 import UserList from "@/features/users/components/user-list"
 import { getAllUsers } from "@/features/users/db/users"
+import { Suspense } from "react"
 
 export default async function AdminUsersPage() {
   const users = await getAllUsers()
@@ -21,7 +22,9 @@ export default async function AdminUsersPage() {
           </>
         }
       />
-      <UserList users={users} />
+      <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 rounded-xl" />}>
+        <UserList users={users} />
+      </Suspense>
     </div>
   )
 }
