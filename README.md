@@ -1,6 +1,6 @@
 # 🛒 Tle Store | E-Commerce Workshop
 
-![Live Demo](https://img.shields.io/badge/Live-Demo-Online-success)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-000?style=flat-square&logo=vercel&logoColor=white)](https://nextjs-ecommerce-platform-gamma.vercel.app/)
 
 A full-featured e-commerce platform built with Next.js 16, featuring role-based access control, product management, shopping cart, order processing, and admin dashboard with real-time analytics.
 
